@@ -69,7 +69,9 @@ thumbnail: ./img-k3x9a0qz.webp
 
 ## デプロイ
 
-main に push（PR をマージ）すると GitHub Actions がビルドして `wrangler deploy` する（`.github/workflows/ci.yml`）。デプロイ先は dashboard と同じ団体の Cloudflare アカウント（kait.edtc@gmail.com）で、`wrangler.jsonc` の `account_id` で固定している。
+main に push（PR をマージ）すると GitHub Actions がビルドして `wrangler deploy` する（`.github/workflows/ci.yml`）。
+
+PR では本番に反映しないバージョンをアップロードし、`https://pr-<PR番号>-edtc-homepage.kait-edtc.workers.dev` のプレビューURLを PR にコメントする。ダッシュボードから来た記事PRも、マージ前に実際のページで確認できる。デプロイ先は dashboard と同じ団体の Cloudflare アカウント（kait.edtc@gmail.com）で、`wrangler.jsonc` の `account_id` で固定している。
 
 **初回のみ**
 

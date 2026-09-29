@@ -8,7 +8,8 @@
   // kaitedtc.com のDNSはさくらにあるため、当面は workers.dev で公開する。
   // ドメインをCloudflareに移したら workers_dev を外し、routes: [{ "pattern": "kaitedtc.com", "custom_domain": true }] を追加
   "workers_dev": true,
-  "preview_urls": false,
+  // PRごとのプレビュー（wrangler versions upload）を <alias>-edtc-homepage.kait-edtc.workers.dev で見られるようにする
+  "preview_urls": true,
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page",

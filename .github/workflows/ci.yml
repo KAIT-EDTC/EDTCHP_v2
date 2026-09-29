@@ -22,7 +22,6 @@ jobs:
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-artifact@v4
-        if: github.event_name == 'push'
         with:
           name: dist
           path: dist
@@ -47,3 +46,41 @@ jobs:
       - run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  # PRごとに本番へは反映しないバージョンをアップロードし、プレビューURLをPRにコメントする
+  preview:
+    needs: build
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - id: upload
+        run: |
+          npx wrangler versions upload --preview-alias "pr-${PR_NUMBER}" --message "PR #${PR_NUMBER}" | tee upload.log
+          url=$(grep -oE 'https://pr-[^ ]+\.workers\.dev' upload.log | head -n1)
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+      - if: steps.upload.outputs.url != ''
+        run: |
+          gh pr comment "$PR_NUMBER" --edit-last --create-if-none --body "🔍 プレビュー: $URL
+
+          （最新コミット ${HEAD_SHA::7} の内容。本番には反映されていません）"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          URL: ${{ steps.upload.outputs.url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
