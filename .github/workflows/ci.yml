@@ -68,6 +68,7 @@ jobs:
       - run: npm ci
       - id: upload
         run: |
+          set -o pipefail
           npx wrangler versions upload --preview-alias "pr-${PR_NUMBER}" --message "PR #${PR_NUMBER}" | tee upload.log
           url=$(grep -oE 'https://pr-[^ ]+\.workers\.dev' upload.log | head -n1)
           echo "url=${url}" >> "$GITHUB_OUTPUT"
