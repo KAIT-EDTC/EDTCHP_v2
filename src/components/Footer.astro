@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import icon from '../assets/img/EDTC-icon.webp';
+---
+
+<footer class="footer">
+    <div class="footer__inner">
+        <ul class="footer-list">
+            <li style="text-align: center;">
+                <p class="gyou-a"></p>
+                <a href="/">ホーム　</a>
+                <a href="/blog/">ブログ　</a>
+                <a href="/products/">プロダクト</a>
+                <hr />
+            </li>
+            <li style="padding-bottom: 15px;text-align: center;">
+                <a href="/contact/">お問い合わせ</a>
+                <hr />
+                <p class="gyou"></p>
+                <b>
+                    <Image src={icon} alt="EDTCロゴ" width={50} height={50} class="syasinn" />
+                    <span class="footer-title">EDTC</span>
+                </b>
+                <p class="gyou">
+                    <span class="footer-info">学校法人 幾徳学園　神奈川工科大学<br />mail :kait.edtc@gmail.com</span>
+                </p>
+                <p class="gyou-b">&copy;　{new Date().getFullYear()}　KAIT　EDTC　All Rights Reserved</p>
+            </li>
+        </ul>
+    </div>
+</footer>

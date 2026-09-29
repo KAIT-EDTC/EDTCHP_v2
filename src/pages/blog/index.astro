@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { getPosts } from '../../lib/blog';
+import { BLOG_TAGS } from '../../lib/tags';
+import hero from '../../assets/img/EDTC-GroupPhoto.webp';
+import '../../styles/blog.css';
+
+const posts = await getPosts();
+const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
+---
+
+<Base title="ブログ" description="神奈川工科大学EDTCのブログ記事一覧。活動報告やイベント情報をお届けします。">
+    <section class="blog-hero" aria-label="ブログヒーロー">
+        <Image src={hero} alt="" class="blog-hero__bg" width={1280} height={720} loading="eager" fetchpriority="high" />
+        <div class="blog-hero__overlay">
+            <h1 class="blog-hero__title">Blog</h1>
+            <p class="blog-hero__desc">EDTCの活動や日々の取り組みをお届けします。</p>
+        </div>
+    </section>
+
+    <section class="blog-filters" aria-label="記事フィルタ">
+        <div class="blog-filters__row">
+            <div class="blog-filters__year">
+                <label for="year-select">年で絞り込み</label>
+                <select id="year-select">
+                    <option value="">すべての年</option>
+                    {years.map((y) => <option value={y}>{y}年</option>)}
+                </select>
+            </div>
+            <div class="blog-filters__tags" role="group" aria-label="タグフィルタ">
+                <button type="button" class="blog-filters__tag-btn" data-tag="" aria-pressed="true">すべて</button>
+                {BLOG_TAGS.map((t) => <button type="button" class="blog-filters__tag-btn" data-tag={t} aria-pressed="false">{t}</button>)}
+            </div>
+        </div>
+        <div class="blog-filters__meta">
+            <span class="blog-filters__count" aria-live="polite">{posts.length}件の記事</span>
+            <button class="blog-filters__clear" type="button" hidden>フィルタをクリア</button>
+        </div>
+    </section>
+
+    <div class="blog-area">
+        <ul class="blog-container">
+            {posts.map((post) => <BlogCard post={post} />)}
+        </ul>
+        <p class="blog-empty" hidden>条件に一致する記事がありません。</p>
+    </div>
+    <nav class="pagination-area pagination-area--bottom" aria-label="ページネーション" hidden></nav>
+
+    <script>
+        import { initCardFilter } from '../../scripts/cardFilter';
+        initCardFilter({ prefix: 'blog', matchAllTags: true });
+    </script>
+</Base>

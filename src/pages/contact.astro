@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="お問い合わせ" description="神奈川工科大学EDTCへのお問い合わせフォームです。出張授業やイベントのご依頼はこちらから。">
+    <div class="contact-area">
+        <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSdZ31zzlqOqCevn0sD0Fti0XwjZTHCDsz3Hja8r1q6oKgxyPw/viewform?embedded=true"
+            width="640"
+            height="1141"
+            loading="lazy"
+            title="お問い合わせフォーム">読み込んでいます…</iframe>
+    </div>
+</Base>
+
+<style>
+    .contact-area {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0;
+        background-color: #85a7cc;
+    }
+    iframe {
+        max-width: 100%;
+    }
+</style>

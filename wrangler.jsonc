@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // 静的アセットだけの Worker（Workers Static Assets）。サーバー処理は持たない
+  "name": "edtc-homepage",
+  // 団体(kait.edtc@gmail.com)のCloudflareアカウント。dashboard と同じ。個人アカウントへ誤ってデプロイしないよう固定する
+  "account_id": "f63f9ebc5db7b049a6e98a155a3d219d",
+  "compatibility_date": "2026-09-01",
+  // kaitedtc.com のDNSはさくらにあるため、当面は workers.dev で公開する。
+  // ドメインをCloudflareに移したら workers_dev を外し、routes: [{ "pattern": "kaitedtc.com", "custom_domain": true }] を追加
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "force-trailing-slash"
+  }
+}

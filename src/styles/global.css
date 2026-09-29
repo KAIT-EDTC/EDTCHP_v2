@@ -1,0 +1,86 @@
+/* Noto Sans JPのインポート */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
+* {
+    font-family: "Noto Sans JP", sans-serif;
+}
+
+a {
+    color: #4b4b4b;
+}
+
+body {
+    line-height: normal;
+    margin-top: 70px;
+}
+
+:root {
+    --main-color: #0a8cd8;
+    --bg-color: #e6e6e6;
+    --bg-color-2: #F8F7F3;
+    --item-color: #F8F7F3;
+    --breadcrumbs-hover-color: #cfcecb;
+}
+
+/* フォーカス可視化（アクセシビリティ） */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 2px;
+}
+
+.anim-fadein {
+  animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* トースト通知のスタイル (共通) */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background-color: #333;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 4px;
+    z-index: 100000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    pointer-events: none; /* クリックを透過させる */
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast.success {
+    background-color: #4CAF50; /* 緑 */
+}
+
+.toast.error {
+    background-color: #f44336; /* 赤 */
+}
+
+.toast.info {
+    background-color: #2196F3; /* 青 */
+}
+
+[hidden] {
+    display: none !important;
+}

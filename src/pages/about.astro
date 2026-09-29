@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import '../styles/base.css';
+import machine from '../assets/img/EDTC-teaching-machine.webp';
+import huukei from '../assets/img/EDTC-yugyou-huukei.webp';
+import sasaki from '../assets/img/EDTC-teaching-sasaki.webp';
+import group from '../assets/img/EDTC-GroupPhoto.webp';
+
+const cards = [
+    { img: machine, alt: 'Engineering - 工学教育の様子', letter: 'E', color: 'crimson', title: 'ngineering', desc: ['神奈川工科大学（KAIT）に属しており、', '工学', 'の知識が豊富な学生団体です。'], sub: '情報系・機械系・電気系など多様な専攻を持つメンバーが集まり、それぞれの専門知識を活かした教育活動を展開しています。' },
+    { img: huukei, alt: 'Dispatch - 出張授業の様子', letter: 'D', color: 'dodgerblue', title: 'ispatch', desc: ['学生ならではの', '迅速な派遣', 'により、より早く需要にこたえた授業展開・イベント参加を目指します。'], sub: '学校や地域からのご依頼に柔軟に対応し、子どもたちに科学の楽しさを届けています。' },
+    { img: sasaki, alt: 'Teacher - 教える活動の様子', letter: 'T', color: 'limegreen', title: 'eacher', desc: ['学生の作った教材を使った', '教える', '活動を行っています。'], sub: 'プログラミング・ロボット・電子工作など、様々なテーマで子どもたちの興味を引き出す授業を実施しています。' },
+    { img: group, alt: 'Company - チーム体制', letter: 'C', color: 'orange', title: 'ompany', desc: ['EDTC内部は企画・総務・広報・人事・営業の5つの部署に分かれ、', '企業', 'のような活動体制で運営しています。'], sub: '各部署で役割分担をし、より進化する団体運営を心掛けています。' },
+];
+---
+
+<Base title="About" description="EDTCは神奈川工科大学の学生団体です。Engineering・Dispatch・Teacher・Companyの4つの理念に基づいて活動しています。">
+    <div class="about">
+        <h1>About <span class="edtc-logo"><span class="e">E</span><span class="d">D</span><span class="t">T</span><span class="c">C</span></span></h1>
+        <p class="about-intro">EDTCは神奈川工科大学に属する学生団体です。<br />4つの理念に基づいて活動しています。</p>
+        <div class="edtc-cards">
+            {
+                cards.map((c) => (
+                    <div class="edtc-card">
+                        <div class="edtc-card__image"><Image src={c.img} alt={c.alt} width={640} height={360} loading="lazy" /></div>
+                        <div class="edtc-card__content">
+                            <div class="edtc-card__letter" style={`color: ${c.color};`}>{c.letter}</div>
+                            <h2 class="edtc-card__title">{c.title}</h2>
+                            <p class="edtc-card__description">
+                                {c.desc[0]}「<span class="highlight" style={`color: ${c.color};`}>{c.desc[1]}</span>」{c.desc[2]}
+                            </p>
+                            <p class="edtc-card__sub">{c.sub}</p>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+        <a href="/" class="back-home-btn">ホームに戻る</a>
+    </div>
+</Base>

@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex" />
+<title>移動しました</title>
+<script>
+    // 旧サイトの blog-post.html?id=<id> を /blog/<id>/ へ
+    const id = new URLSearchParams(location.search).get('id');
+    location.replace(id && /^[\w-]+$/.test(id) ? '/blog/' + id + '/' : '/blog/');
+</script>
+<a href="/blog/">移動しました</a>
