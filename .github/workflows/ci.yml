@@ -70,7 +70,11 @@ jobs:
         run: |
           set -o pipefail
           npx wrangler versions upload --preview-alias "pr-${PR_NUMBER}" --message "PR #${PR_NUMBER}" | tee upload.log
-          url=$(grep -oE 'https://pr-[^ ]+\.workers\.dev' upload.log | head -n1)
+          url=$(grep -oE 'https://pr-[^ ]+\.workers\.dev' upload.log | head -n1 || true)
+          if [ -z "$url" ]; then
+            echo "::error::プレビューURLが出力されませんでした。Worker の preview_urls が有効か確認してください（npx wrangler triggers deploy で反映される）"
+            exit 1
+          fi
           echo "url=${url}" >> "$GITHUB_OUTPUT"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
