@@ -69,14 +69,13 @@ thumbnail: ./img-k3x9a0qz.webp
 
 ## デプロイ
 
-main に push（PR をマージ）すると GitHub Actions がビルドして `wrangler deploy` する（`.github/workflows/ci.yml`）。
+Cloudflare の Workers Builds（Git 連携）でビルド・デプロイする。GitHub Actions は使わない。デプロイ先は dashboard と同じ団体の Cloudflare アカウント（kait.edtc@gmail.com）で、`wrangler.jsonc` の `account_id` で固定している。
 
-PR では本番に反映しないバージョンをアップロードし、`https://pr-<PR番号>-edtc-homepage.kait-edtc.workers.dev` のプレビューURLを PR にコメントする。ダッシュボードから来た記事PRも、マージ前に実際のページで確認できる。デプロイ先は dashboard と同じ団体の Cloudflare アカウント（kait.edtc@gmail.com）で、`wrangler.jsonc` の `account_id` で固定している。
+- **main に push（PR をマージ）**: `npm run build` → `npx wrangler deploy` で本番に反映
+- **それ以外のブランチ・PR**: `npx wrangler versions upload` で本番に出ないバージョンを作り、プレビューURLを PR のコメントとチェックに出す。ダッシュボードから来た記事PRも、マージ前に実際のページで確認できる
+- ビルド（`astro check` を含む）が失敗すると PR のチェックが赤くなる。記事の frontmatter の不備などはここで分かる
 
-**初回のみ**
-
-1. 団体アカウントで Cloudflare にログインし、My Profile → API Tokens →「Edit Cloudflare Workers」テンプレートでトークンを作る（Account Resources は団体アカウントのみ）
-2. GitHub のリポジトリ Settings → Environments に `production` を作り、Secret `CLOUDFLARE_API_TOKEN` に登録
+設定は Cloudflare ダッシュボードの Workers & Pages → `edtc-homepage` → Settings → Builds にある（Build command: `npm run build` / Deploy command: `npx wrangler deploy` / Non-production branch deploy command: `npx wrangler versions upload`）。プレビューURLのために `wrangler.jsonc` の `preview_urls` を `true` にしている。
 
 手元からデプロイする場合は `npx wrangler login`（団体アカウント）のうえで `npm run deploy`。
 
