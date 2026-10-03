@@ -1,0 +1,94 @@
+---
+// 色はロゴの赤・青・緑・橙を、白文字が読める濃さ（コントラスト4.5以上）まで落としたもの
+const letters = [
+    { letter: 'E', word: 'Engineering', color: '#c8102e', head: '工学を学ぶ学生', body: '情報・機械・電気など、さまざまな分野を学ぶ学生が集まっています。' },
+    { letter: 'D', word: 'Dispatch', color: '#0b6bcb', head: '身軽に出向く', body: '学校や地域のイベントへ、ロボットと教材を持って出張します。' },
+    { letter: 'T', word: 'Teacher', color: '#1e7d32', head: '教えることで学ぶ', body: '自分たちで作った教材で、子どもたちにモノづくりを教えます。' },
+    { letter: 'C', word: 'Company', color: '#c25100', head: '企業のような運営', body: '5つの部署に分かれ、企画から運営までを学生だけで行っています。' },
+];
+---
+
+<ul class="letters">
+    {
+        letters.map((l) => (
+            <li style={`--c: ${l.color};`}>
+                <div class="band">
+                    <span class="letter" aria-hidden="true">{l.letter}</span>
+                    <p class="word" lang="en">{l.word}</p>
+                </div>
+                <div class="text">
+                    <h3>{l.head}</h3>
+                    <p class="body">{l.body}</p>
+                </div>
+            </li>
+        ))
+    }
+</ul>
+
+<style>
+    .letters {
+        display: grid;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0;
+        gap: 16px;
+        text-align: left;
+    }
+    li {
+        list-style: none;
+        background: #fff;
+        border: 2px solid var(--c);
+        border-radius: 14px;
+        color: #222;
+        line-break: strict;
+        font-feature-settings: 'palt' 1;
+    }
+    /* 色を付けるのは枠と見出しだけ */
+    .band {
+        padding: 24px 22px 0;
+    }
+    .text {
+        padding: 4px 22px 28px;
+    }
+    .letter {
+        display: block;
+        font-size: 88px;
+        font-weight: 900;
+        line-height: 1;
+    }
+    .word {
+        margin-top: 4px;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #555;
+    }
+    h3 {
+        margin: 20px 0 8px;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--c);
+    }
+    .body {
+        font-size: 16px;
+        line-height: 1.8;
+    }
+    @supports (word-break: auto-phrase) {
+        h3 {
+            word-break: auto-phrase;
+        }
+    }
+    @media screen and (min-width: 600px) {
+        .letters {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media screen and (min-width: 1024px) {
+        .letters {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .letter {
+            font-size: 120px;
+        }
+    }
+</style>
