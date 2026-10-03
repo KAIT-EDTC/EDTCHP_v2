@@ -15,3 +15,13 @@ export function formatDate(date: Date): string {
     const d = String(date.getUTCDate()).padStart(2, '0');
     return `${y}.${m}.${d}`;
 }
+
+/** 関連記事: 共通タグが多い順、同点なら実施日が近い順 */
+export function relatedPosts(post: BlogEntry, posts: BlogEntry[], count = 4): BlogEntry[] {
+    const shared = (p: BlogEntry) => p.data.tags.filter((t) => post.data.tags.includes(t)).length;
+    const distance = (p: BlogEntry) => Math.abs(p.data.date.valueOf() - post.data.date.valueOf());
+    return posts
+        .filter((p) => p.id !== post.id)
+        .sort((a, b) => shared(b) - shared(a) || distance(a) - distance(b))
+        .slice(0, count);
+}

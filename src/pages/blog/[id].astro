@@ -1,147 +1,299 @@
 ---
-import { getImage } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { formatDate, getPosts, type BlogEntry } from '../../lib/blog';
-import '../../styles/blog-temp.css';
+import { formatDate, getPosts, relatedPosts, type BlogEntry } from '../../lib/blog';
+import fallback from '../../assets/img/EDTC-icon.webp';
+import '../../styles/detail.css';
 
 export async function getStaticPaths() {
     const posts = await getPosts();
     return posts.map((post) => ({
         params: { id: post.id },
-        props: { post, others: posts.filter((p) => p.id !== post.id).slice(0, 5) },
+        props: { post, related: relatedPosts(post, posts) },
     }));
 }
 
 interface Props {
     post: BlogEntry;
-    others: BlogEntry[];
+    related: BlogEntry[];
 }
-const { post, others } = Astro.props;
-const { title, date, author, description, thumbnail } = post.data;
+const { post, related } = Astro.props;
+const { title, date, author, description, tags, thumbnail } = post.data;
 const { Content } = await render(post);
 const ogImage = thumbnail ? (await getImage({ src: thumbnail, width: 1200, format: 'jpeg' })).src : undefined;
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+const shares = [
+    { name: 'X', cls: 'x', url: 'https://x.com/intent/tweet?url={url}&text={text}', path: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z' },
+    { name: 'Facebook', cls: 'fb', url: 'https://www.facebook.com/sharer/sharer.php?u={url}', path: 'M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z' },
+];
+const fill = (tpl: string, url: string) => tpl.replace('{url}', encodeURIComponent(url)).replace('{text}', encodeURIComponent(title));
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <Base title={title} description={description} image={ogImage} type="article">
-    <nav aria-label="パンくずリスト">
-        <div class="breadcrumbs">
-            <a href="/blog/">ブログ</a>
-            <span aria-hidden="true">›</span>
+    <div class="detail">
+        <nav aria-label="パンくずリスト" class="breadcrumbs">
+            <a href="/">ホーム</a><span aria-hidden="true">›</span>
+            <a href="/blog/">ブログ</a><span aria-hidden="true">›</span>
             <span aria-current="page">{title}</span>
-        </div>
-    </nav>
-    <h1 class="blog-title">{title}</h1>
-    <div class="blog-date">イベント実施日: <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time></div>
+        </nav>
 
-    <div class="blog-body">
-        <article class="blog-main">
-            <div class="blog-content">
-                <Content />
-            </div>
-            {
-                author && (
-                    <div class="author-container">
-                        <p class="author-caption">ブログ著者</p>
-                        <p class="author">{author}</p>
-                    </div>
-                )
-            }
-        </article>
-        <aside class="pc-only">
-            <div class="side-menu">
-                <div class="Archives">
-                    <h3>他の記事もどうぞ！</h3>
-                    <ul>
-                        {others.map((p) => <li><a href={`/blog/${p.id}/`}><span class="archives-note" title={p.data.title}>{p.data.title}</span></a></li>)}
-                    </ul>
+        <div class="post">
+            <article class="post__main card">
+                <header class="post__header">
+                    {
+                        tags.length > 0 && (
+                            <div class="chips">
+                                {tags.map((t) => <a class="chip" href={`/blog/?tags=${encodeURIComponent(t)}`}>{t}</a>)}
+                            </div>
+                        )
+                    }
+                    <h1 class="post__title">{title}</h1>
+                    <p class="post__meta">
+                        <span>イベント実施日 <time datetime={iso(date)}>{formatDate(date)}</time></span>
+                        {author && <span>文・{author}</span>}
+                    </p>
+                </header>
+                <div class="prose">
+                    <Content />
                 </div>
-            </div>
-        </aside>
-    </div>
+            </article>
 
-    <div class="share-buttons">
-        <button class="share-btn share-x" type="button" aria-label="Xで共有">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
-        </button>
-        <button class="share-btn share-copy" type="button" aria-label="リンクをコピー">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M13.723 18.654l-3.61 3.609c-2.316 2.315-6.063 2.315-8.378 0-1.12-1.118-1.735-2.606-1.735-4.188 0-1.582.615-3.07 1.734-4.189l4.866-4.865c2.355-2.355 6.114-2.262 8.377 0 .453.453.81.973 1.089 1.527l-1.593 1.592c-.18-.613-.5-1.189-.964-1.652-1.448-1.448-3.93-1.51-5.439-.001l-.001.002-4.867 4.865c-1.5 1.499-1.5 3.941 0 5.44 1.517 1.517 3.958 1.488 5.442 0l2.425-2.424c.993.284 1.791.335 2.654.284zm.161-16.918l-3.574 3.576c.847-.05 1.655 0 2.653.283l2.393-2.389c1.498-1.502 3.94-1.5 5.44-.001 1.517 1.518 1.486 3.959 0 5.442l-4.831 4.831-.003.002c-1.438 1.437-3.886 1.552-5.439-.002-.473-.474-.785-1.042-.956-1.643l-.084.068-1.517 1.515c.28.556.635 1.075 1.088 1.528 2.245 2.245 6.004 2.374 8.378 0l4.832-4.831c2.314-2.316 2.316-6.062-.001-8.377-2.317-2.321-6.067-2.313-8.379-.002z"></path></svg>
-        </button>
+            <aside class="post__side">
+                <section class="side-card card" aria-labelledby="share-heading">
+                    <h2 class="side-card__title" id="share-heading">この記事をシェア</h2>
+                    <div class="share">
+                        {
+                            shares.map((s) => (
+                                <a class={`share__btn share__btn--${s.cls}`} href={fill(s.url, canonical)} data-share={s.url} target="_blank" rel="noopener noreferrer" aria-label={`${s.name}でシェア`}>
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d={s.path} /></svg>
+                                </a>
+                            ))
+                        }
+                        <button class="share__btn share__btn--copy" type="button" aria-label="リンクをコピー">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        </button>
+                    </div>
+                    <p class="share__status" role="status"></p>
+                </section>
+
+                <section class="side-card card" aria-labelledby="related-heading">
+                    <h2 class="side-card__title" id="related-heading">関連記事</h2>
+                    <ul class="related">
+                        {
+                            related.map((p) => (
+                                <li>
+                                    <a class="related__item" href={`/blog/${p.id}/`}>
+                                        <Image class="related__img" src={p.data.thumbnail ?? fallback} alt="" width={176} height={120} fit="cover" />
+                                        <span class="related__body">
+                                            <time class="related__date" datetime={iso(p.data.date)}>{formatDate(p.data.date)}</time>
+                                            <span class="related__title">{p.data.title}</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            ))
+                        }
+                    </ul>
+                    <a class="side-card__more" href="/blog/">ブログ一覧へ <span aria-hidden="true">→</span></a>
+                </section>
+            </aside>
+        </div>
     </div>
-    <div id="prev"><a href="/blog/">← ブログ一覧へ戻る</a></div>
 
     <script>
-        const check = '<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M24 4.685l-16.327 17.315-7.673-9.054.761-.648 6.95 8.203 15.561-16.501.728.685z"/></svg>';
-        document.querySelector('.share-x')?.addEventListener('click', () => {
-            const text = document.querySelector('.blog-title')?.textContent ?? document.title;
-            const url = `https://x.com/intent/tweet?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank', 'noopener,noreferrer,width=550,height=420');
+        // ponytail: kaitedtc.com への移行前は workers.dev で公開しているため、共有URLは実行時のURLで組み立て直す。移行後は不要
+        const url = encodeURIComponent(location.origin + location.pathname);
+        const text = encodeURIComponent(document.querySelector('.post__title')?.textContent ?? document.title);
+        document.querySelectorAll<HTMLAnchorElement>('[data-share]').forEach((a) => {
+            a.href = a.dataset.share!.replace('{url}', url).replace('{text}', text);
         });
-        document.querySelector('.share-copy')?.addEventListener('click', async (e) => {
-            const btn = e.currentTarget as HTMLButtonElement;
-            await navigator.clipboard.writeText(location.href).catch(() => {});
-            const original = btn.innerHTML;
-            btn.innerHTML = check;
-            setTimeout(() => (btn.innerHTML = original), 1500);
+
+        const status = document.querySelector<HTMLElement>('.share__status')!;
+        let timer: number | undefined;
+        document.querySelector('.share__btn--copy')?.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(location.origin + location.pathname);
+                status.textContent = 'リンクをコピーしました';
+            } catch {
+                status.textContent = 'コピーできませんでした';
+            }
+            clearTimeout(timer);
+            timer = setTimeout(() => (status.textContent = ''), 2000);
         });
     </script>
 </Base>
 
 <style>
-    /* Markdown 本文。ダッシュボードのプレビューと大きくずれないよう素直なスタイルにする */
-    .blog-content {
-        padding-top: 1em;
-        line-height: 1.9;
+    .post {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 32px;
+        align-items: start;
     }
-    .blog-content :global(p) {
-        margin: 0 0 1em;
+    .post__main {
+        padding: clamp(20px, 4vw, 48px);
     }
-    .blog-content :global(h2) {
-        font-size: 1.4em;
-        margin: 1.6em 0 0.6em;
-        padding-left: 8px;
-        border-left: 4px solid var(--main-color);
+    .post__header {
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #eee;
     }
-    .blog-content :global(h3) {
-        font-size: 1.2em;
-        margin: 1.4em 0 0.5em;
+    .post__title {
+        margin: 12px 0 10px;
+        font-size: clamp(1.4rem, 3vw, 2rem);
+        line-height: 1.45;
+        font-weight: 700;
+        color: #222;
     }
-    .blog-content :global(img) {
+    .post__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 20px;
+        font-size: 0.875rem;
+        color: #777;
+    }
+
+    .post__side {
+        position: sticky;
+        top: 90px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .side-card {
+        padding: 20px;
+    }
+    .side-card__title {
+        margin-bottom: 14px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #222;
+    }
+    .side-card__more {
         display: block;
-        width: auto;
-        max-width: 100%;
-        max-height: 80vh;
-        height: auto;
-        margin: 1em auto;
-        border-radius: 8px;
-    }
-    .blog-content :global(ul),
-    .blog-content :global(ol) {
-        margin: 0 0 1em 1.5em;
-    }
-    .blog-content :global(ul) {
-        list-style: disc;
-    }
-    .blog-content :global(ol) {
-        list-style: decimal;
-    }
-    .blog-content :global(a) {
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid #eee;
+        font-size: 0.875rem;
+        font-weight: 600;
         color: var(--main-color);
+        text-align: right;
+        text-decoration: none;
+    }
+    .side-card__more:hover {
         text-decoration: underline;
     }
-    .blog-content :global(blockquote) {
-        margin: 0 0 1em;
-        padding: 0.5em 1em;
-        border-left: 4px solid #ccc;
-        color: #555;
+
+    /* シェア */
+    .share {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
     }
-    .blog-content :global(table) {
-        border-collapse: collapse;
-        margin: 0 0 1em;
+    .share__btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        cursor: pointer;
+        transition: transform 0.15s, opacity 0.15s;
     }
-    .blog-content :global(th),
-    .blog-content :global(td) {
-        border: 1px solid #ccc;
-        padding: 4px 8px;
+    .share__btn:hover {
+        opacity: 0.85;
+        transform: translateY(-2px);
+    }
+    .share__btn svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+    .share__btn--copy svg {
+        fill: none;
+    }
+    .share__btn--x {
+        background: #000;
+    }
+    .share__btn--fb {
+        background: #1877f2;
+    }
+    .share__btn--copy {
+        background: #eef1f4;
+        color: #333;
+    }
+    .share__status {
+        min-height: 1.5em;
+        margin-top: 8px;
+        font-size: 0.8rem;
+        color: var(--main-color);
+        text-align: center;
+    }
+
+    /* 関連記事 */
+    .related {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .related__item {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 8px;
+        margin: 0 -8px;
+        border-radius: 10px;
+        color: inherit;
+        text-decoration: none;
+        transition: background 0.15s;
+    }
+    .related__item:hover {
+        background: #f3f7fa;
+    }
+    .related__img {
+        flex-shrink: 0;
+        width: 88px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        background: #eee;
+    }
+    .related__body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .related__date {
+        font-size: 0.75rem;
+        color: #888;
+    }
+    .related__title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+    .related__item:hover .related__title {
+        color: var(--main-color);
+    }
+
+    @media (max-width: 900px) {
+        .post {
+            grid-template-columns: 1fr;
+        }
+        .post__side {
+            position: static;
+        }
+        .breadcrumbs {
+            padding: 14px 0;
+        }
     }
 </style>
