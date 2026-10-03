@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { BLOG_TAGS, PRODUCT_TAGS } from './lib/tags';
+import { BLOG_TAGS, WORK_TAGS } from './lib/tags';
 
 /**
  * ブログ記事。ダッシュボードが PR で送る content/blog/<YY-MM-DD-slug>/index.md をそのまま受け入れる。
@@ -24,25 +24,24 @@ const blog = defineCollection({
         }),
 });
 
-const products = defineCollection({
+/** 制作物。content/works/<ID>/index.md。ID = フォルダ名（旧 /products/<ID>/ と同じ） */
+const works = defineCollection({
     loader: glob({
-        pattern: '*.json',
-        base: './content/products',
-        // ファイル名をそのままIDにする（既定では小文字化される）
-        generateId: ({ entry }) => entry.replace(/\.json$/, ''),
+        pattern: '*/index.md',
+        base: './content/works',
+        generateId: ({ entry }) => entry.split('/')[0],
     }),
-    schema: z.object({
-        title: z.string(),
-        /** src/assets/products/ 内のファイル名 */
-        thumbnail: z.string().optional(),
-        caption: z.string().default(''),
-        headline: z.string().optional(),
-        maker: z.string().optional(),
-        price: z.string().optional(),
-        target: z.string().optional(),
-        tags: z.array(z.enum(PRODUCT_TAGS)).default([]),
-        sections: z.array(z.object({ paragraphs: z.array(z.string()).default([]) })).default([]),
-    }),
+    schema: ({ image }) =>
+        z.object({
+            title: z.string().min(1),
+            description: z.string().default(''),
+            headline: z.string().optional(),
+            maker: z.string().optional(),
+            tags: z.array(z.enum(WORK_TAGS)).default([]),
+            capacity: z.string().optional(),
+            duration: z.string().optional(),
+            thumbnail: image().optional(),
+        }),
 });
 
-export const collections = { blog, products };
+export const collections = { blog, works };

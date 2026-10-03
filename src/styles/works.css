@@ -3,13 +3,13 @@ body {
 }
 
 /* ===== ヒーロー ===== */
-.pdct-hero {
+.works-hero {
     position: relative;
     height: 35vh;
     overflow: hidden;
 }
 
-.pdct-hero__bg {
+.works-hero__bg {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -19,7 +19,7 @@ body {
     pointer-events: none;
 }
 
-.pdct-hero__overlay {
+.works-hero__overlay {
     position: absolute;
     inset: 0;
     display: flex;
@@ -29,7 +29,7 @@ body {
     padding: 1rem;
 }
 
-.pdct-hero__title {
+.works-hero__title {
     color: #fff;
     font-size: clamp(3rem, 12vw, 8rem);
     font-weight: 700;
@@ -37,7 +37,7 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-.pdct-hero__desc {
+.works-hero__desc {
     margin-top: 0.8rem;
     color: #fff;
     font-size: clamp(0.9rem, 2vw, 1.25rem);
@@ -47,38 +47,38 @@ body {
 }
 
 /* ===== フィルタ ===== */
-.pdct-filters {
+.works-filters {
     max-width: 1200px;
     margin: 2rem auto 0;
     padding: 0 5%;
 }
 
-.pdct-filters__row {
+.works-filters__row {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     align-items: flex-start;
 }
 
-.pdct-filters__age {
+.works-filters__age {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
 }
 
-.pdct-filters__label {
+.works-filters__label {
     font-size: 0.85rem;
     font-weight: 600;
 }
 
-.pdct-filters__tags {
+.works-filters__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
 }
 
-.pdct-filters__tag-btn {
+.works-filters__tag-btn {
     padding: 0.35em 0.9em;
     border: 1.5px solid var(--main-color);
     border-radius: 999px;
@@ -90,12 +90,12 @@ body {
     transition: background 0.2s, color 0.2s;
 }
 
-.pdct-filters__tag-btn[aria-pressed="true"] {
+.works-filters__tag-btn[aria-pressed="true"] {
     background: var(--main-color);
     color: #fff;
 }
 
-.pdct-filters__meta {
+.works-filters__meta {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -104,7 +104,7 @@ body {
     color: #666;
 }
 
-.pdct-filters__clear {
+.works-filters__clear {
     padding: 0.3em 0.8em;
     border: none;
     border-radius: 6px;
@@ -113,12 +113,12 @@ body {
     cursor: pointer;
 }
 
-.pdct-filters__clear:hover {
+.works-filters__clear:hover {
     background: #ddd;
 }
 
 /* ===== カード一覧 ===== */
-.pdct-container {
+.works-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     max-width: 1200px;
@@ -128,7 +128,7 @@ body {
     list-style: none;
 }
 
-.pdct-card {
+.works-card {
     border-radius: 10px;
     overflow: hidden;
     background: var(--item-color);
@@ -136,24 +136,24 @@ body {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.pdct-card:hover {
+.works-card:hover {
     /* transform: translateY(-6px); */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.pdct-card a {
+.works-card a {
     display: block;
     height: 100%;
     text-decoration: none;
     color: inherit;
 }
 
-.pdct-card__img-wrap {
+.works-card__img-wrap {
     position: relative;
     overflow: hidden;
 }
 
-.pdct-card__img {
+.works-card__img {
     width: 100%;
     height: auto;
     aspect-ratio: 3 / 2;
@@ -162,11 +162,11 @@ body {
     transition: transform 0.4s;
 }
 
-.pdct-card:hover .pdct-card__img {
+.works-card:hover .works-card__img {
     transform: scale(1.05);
 }
 
-.pdct-card__tags {
+.works-card__tags {
     position: absolute;
     bottom: 8px;
     left: 8px;
@@ -175,7 +175,7 @@ body {
     flex-wrap: wrap;
 }
 
-.pdct-card__tag {
+.works-card__tag {
     padding: 0.15em 0.55em;
     background: rgba(0, 0, 0, 0.6);
     color: #fff;
@@ -183,11 +183,11 @@ body {
     border-radius: 4px;
 }
 
-.pdct-card__body {
+.works-card__body {
     padding: 0.8rem 1rem 1rem;
 }
 
-.pdct-card__title {
+.works-card__title {
     margin: 0 0 0.4rem;
     font-size: 1rem;
     font-weight: 600;
@@ -198,7 +198,7 @@ body {
     overflow: hidden;
 }
 
-.pdct-card__caption {
+.works-card__caption {
     font-size: 0.82rem;
     color: #666;
     display: -webkit-box;
@@ -208,7 +208,7 @@ body {
 }
 
 /* ===== 空状態 ===== */
-.pdct-empty {
+.works-empty {
     text-align: center;
     padding: 4rem 1rem;
     color: #888;
@@ -295,22 +295,22 @@ body {
 
 /* ===== レスポンシブ ===== */
 @media (max-width: 768px) {
-    .pdct-container {
+    .works-container {
         grid-template-columns: repeat(2, 1fr);
     }
-    .pdct-hero {
+    .works-hero {
         height: 28vh;
     }
 }
 
 @media (max-width: 480px) {
-    .pdct-container {
+    .works-container {
         grid-template-columns: 1fr;
     }
-    .pdct-hero {
+    .works-hero {
         height: 35vw;
     }
-    .pdct-filters__row {
+    .works-filters__row {
         flex-direction: column;
     }
 }
@@ -328,19 +328,19 @@ body {
 
 /* ===== prefers-reduced-motion ===== */
 @media (prefers-reduced-motion: reduce) {
-    .pdct-hero__bg {
+    .works-hero__bg {
         filter: brightness(0.55);
         transform: none;
     }
-    .pdct-card,
-    .pdct-card__img,
+    .works-card,
+    .works-card__img,
     .pagination-area button {
         transition: none;
     }
-    .pdct-card:hover {
+    .works-card:hover {
         transform: none;
     }
-    .pdct-card:hover .pdct-card__img {
+    .works-card:hover .works-card__img {
         transform: none;
     }
     .anim-fadein {
