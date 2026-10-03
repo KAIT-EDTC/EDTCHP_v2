@@ -1,41 +1,264 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import '../styles/base.css';
-import machine from '../assets/img/EDTC-teaching-machine.webp';
-import huukei from '../assets/img/EDTC-yugyou-huukei.webp';
-import sasaki from '../assets/img/EDTC-teaching-sasaki.webp';
 import group from '../assets/img/EDTC-GroupPhoto.webp';
+import huukei from '../assets/img/EDTC-yugyou-huukei.webp';
+import machine from '../assets/img/EDTC-teaching-machine.webp';
 
-const cards = [
-    { img: machine, alt: 'Engineering - 工学教育の様子', letter: 'E', color: 'crimson', title: 'ngineering', desc: ['神奈川工科大学（KAIT）に属しており、', '工学', 'の知識が豊富な学生団体です。'], sub: '情報系・機械系・電気系など多様な専攻を持つメンバーが集まり、それぞれの専門知識を活かした教育活動を展開しています。' },
-    { img: huukei, alt: 'Dispatch - 出張授業の様子', letter: 'D', color: 'dodgerblue', title: 'ispatch', desc: ['学生ならではの', '迅速な派遣', 'により、より早く需要にこたえた授業展開・イベント参加を目指します。'], sub: '学校や地域からのご依頼に柔軟に対応し、子どもたちに科学の楽しさを届けています。' },
-    { img: sasaki, alt: 'Teacher - 教える活動の様子', letter: 'T', color: 'limegreen', title: 'eacher', desc: ['学生の作った教材を使った', '教える', '活動を行っています。'], sub: 'プログラミング・ロボット・電子工作など、様々なテーマで子どもたちの興味を引き出す授業を実施しています。' },
-    { img: group, alt: 'Company - チーム体制', letter: 'C', color: 'orange', title: 'ompany', desc: ['EDTC内部は企画・総務・広報・人事・営業の5つの部署に分かれ、', '企業', 'のような活動体制で運営しています。'], sub: '各部署で役割分担をし、より進化する団体運営を心掛けています。' },
+const profile = [
+    ['名称', 'KAIT EDTC（カイト エドテック）'],
+    ['所属', '神奈川工科大学（学校法人 幾徳学園）'],
+    ['設立', '2021年4月'],
+    ['活動内容', '小・中・高校生へのロボット工作・プログラミングの授業、イベントでのロボット展示'],
+    ['連絡先', 'kait.edtc@gmail.com'],
+];
+
+const events = [
+    { name: '遊行塾', body: '藤嶺学園藤沢中学校で全10回のロボット工作授業を行っています。基板のはんだ付けからArduinoのプログラミングまで、ライントレーサーを一から作ります。' },
+    { name: '幾徳祭（学園祭）', body: 'KAIT工房でロボットを展示し、かんたんなプログラミング教室を開いています。' },
+    { name: 'サイエンスサマー／ウィンター', body: '親子で楽しめるロボット展示を行っています。地域の方々と交流する場にもなっています。' },
+    { name: '富士発明工夫展', body: 'ブースをお借りして、自作のロボットを展示しています。' },
+    { name: '富士市ものづくり交流フェア', body: 'ロボットを展示し、企業の取り組みを学びながら、来場者の方から意見をいただいています。' },
+];
+
+const steps = [
+    { name: '計画', body: 'イベントの前に、内容や当日の流れを入念に計画します。' },
+    { name: '実施', body: '授業や展示を通して、モノづくりの楽しさを伝えます。' },
+    { name: '振り返り', body: '参加メンバーが活動報告書を書き、反省点を次のイベントに活かします。' },
+];
+
+const departments = [
+    { name: '企画部', body: '教材・ロボットの開発。参加する子どもたちが楽しく作れるように工夫しています。' },
+    { name: '営業部', body: '外部との窓口。イベントの依頼を受け、学内外の組織との調整を担当します。' },
+    { name: '広報部', body: 'SNS（X・Instagram）やYouTube、公式サイトで活動を発信します。' },
+    { name: '総務部', body: '書類作成や、ロボットパーツなど備品の管理、活動スペースの維持を行います。' },
+    { name: '人事部', body: '新メンバーの勧誘や、メンバーの得意分野に合わせた仕事の割り振りを行います。' },
 ];
 ---
 
-<Base title="About" description="EDTCは神奈川工科大学の学生団体です。Engineering・Dispatch・Teacher・Companyの4つの理念に基づいて活動しています。">
-    <div class="about">
-        <h1>About <span class="edtc-logo"><span class="e">E</span><span class="d">D</span><span class="t">T</span><span class="c">C</span></span></h1>
-        <p class="about-intro">EDTCは神奈川工科大学に属する学生団体です。<br />4つの理念に基づいて活動しています。</p>
-        <div class="edtc-cards">
-            {
-                cards.map((c) => (
-                    <div class="edtc-card">
-                        <div class="edtc-card__image"><Image src={c.img} alt={c.alt} width={640} height={360} loading="lazy" /></div>
-                        <div class="edtc-card__content">
-                            <div class="edtc-card__letter" style={`color: ${c.color};`}>{c.letter}</div>
-                            <h2 class="edtc-card__title">{c.title}</h2>
-                            <p class="edtc-card__description">
-                                {c.desc[0]}「<span class="highlight" style={`color: ${c.color};`}>{c.desc[1]}</span>」{c.desc[2]}
-                            </p>
-                            <p class="edtc-card__sub">{c.sub}</p>
+<Base title="About" description="EDTCは神奈川工科大学の学生団体です。小・中・高校生にロボット工作やプログラミングを教え、学生自身も教えることで学んでいます。">
+    <section class="hero">
+        <h1>学ぶ側、教える側、<br />どちらも学べる環境づくりを</h1>
+        <p class="lead">
+            EDTCは、神奈川工科大学（KAIT）の学生団体です。<br />
+            小・中・高校生や地域の方々にロボット工作やプログラミングを教えています。教わる子どもたちだけでなく、教える学生自身も、考え工夫することで学べる場をつくっています。
+        </p>
+    </section>
+
+    <section class="section">
+        <h2>団体概要</h2>
+        <div class="split">
+            <dl class="profile">
+                {
+                    profile.map(([k, v]) => (
+                        <div>
+                            <dt>{k}</dt>
+                            <dd>{v}</dd>
                         </div>
-                    </div>
+                    ))
+                }
+            </dl>
+            <Image src={group} alt="EDTCメンバーの集合写真" width={640} height={360} class="photo" />
+        </div>
+    </section>
+
+    <section class="section section--gray">
+        <h2>主な活動</h2>
+        <div class="split">
+            <p class="section-lead">自作のロボット工作キットやロボットを使い、学校での授業やイベントへの出展を行っています。</p>
+            <Image src={huukei} alt="遊行塾での授業の様子" width={640} height={360} class="photo" />
+        </div>
+        <ul class="cards">
+            {
+                events.map((e) => (
+                    <li>
+                        <h3>{e.name}</h3>
+                        <p>{e.body}</p>
+                    </li>
                 ))
             }
+        </ul>
+        <p class="more"><a href="/blog/">活動の様子はブログで紹介しています</a></p>
+    </section>
+
+    <section class="section">
+        <h2>活動の進め方</h2>
+        <ol class="steps">
+            {
+                steps.map((s, i) => (
+                    <li>
+                        <span class="num">{i + 1}</span>
+                        <h3>{s.name}</h3>
+                        <p>{s.body}</p>
+                    </li>
+                ))
+            }
+        </ol>
+    </section>
+
+    <section class="section section--gray">
+        <h2>運営体制</h2>
+        <p class="section-lead">メンバーは5つの部署に分かれ、それぞれの分野のスペシャリストを目指して活動しています。</p>
+        <ul class="cards">
+            {
+                departments.map((d) => (
+                    <li>
+                        <h3>{d.name}</h3>
+                        <p>{d.body}</p>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>教材づくり</h2>
+        <div class="split">
+            <p class="section-lead">
+                授業や展示で使うロボットは、すべてメンバーが開発しています。新しく入った1年生は「アイデアコンテスト」に参加し、新しい教材の企画から計画までを経験します。
+            </p>
+            <Image src={machine} alt="自作ロボットを使った授業の様子" width={640} height={360} class="photo" />
         </div>
-        <a href="/" class="back-home-btn">ホームに戻る</a>
-    </div>
+        <p class="more"><a href="/products/">これまでに作った教材・ロボットを見る</a></p>
+    </section>
+
+    <section class="cta">
+        <h2>出張授業・イベントのご依頼</h2>
+        <p>授業やイベントへの出展のご相談は、お問い合わせフォームからご連絡ください。</p>
+        <a href="/contact/" class="btn">お問い合わせ</a>
+    </section>
 </Base>
+
+<style>
+    .hero {
+        background: #fff;
+        padding: 72px max(16px, calc((100% - 1100px) / 2)) 24px;
+    }
+    .hero h1 {
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: 900;
+        color: #222;
+        line-height: 1.4;
+        margin-bottom: 24px;
+    }
+    .lead {
+        max-width: 40em;
+        margin: 0;
+        font-size: clamp(16px, 2.2vw, 18px);
+        line-height: 1.9;
+        text-align: left;
+    }
+    .section {
+        padding: 56px 16px;
+        background: #fff;
+    }
+    .section > * {
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .section--gray {
+        background: var(--bg-color-2);
+    }
+    h2 {
+        font-size: clamp(24px, 4vw, 32px);
+        color: #333;
+        font-weight: 900;
+        margin-bottom: 24px;
+    }
+    .section-lead {
+        font-size: 17px;
+        line-height: 1.9;
+        margin-bottom: 24px;
+    }
+    .split {
+        display: grid;
+        gap: 24px;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    .photo {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+    }
+    .profile {
+        margin: 0;
+    }
+    .profile div {
+        display: grid;
+        grid-template-columns: 6em 1fr;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid #ddd;
+        line-height: 1.7;
+    }
+    .profile dt {
+        font-weight: 700;
+        color: var(--main-color);
+    }
+    .profile dd {
+        margin: 0;
+    }
+    .cards,
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 32px 24px;
+        padding: 0;
+    }
+    .cards li,
+    .steps li {
+        list-style: none;
+        border-top: 4px solid #222;
+        padding-top: 16px;
+        line-height: 1.7;
+    }
+    h3 {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    .num {
+        display: inline-grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--main-color);
+        color: #fff;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .more {
+        margin-top: 32px;
+    }
+    .more a {
+        color: var(--main-color);
+        font-weight: 700;
+    }
+    .cta {
+        background: var(--main-color);
+        color: #fff;
+        text-align: center;
+        padding: 56px 16px;
+    }
+    .cta h2 {
+        color: #fff;
+        border: 0;
+        padding: 0;
+    }
+    .cta p {
+        margin-bottom: 24px;
+        line-height: 1.8;
+    }
+    .cta .btn {
+        background: #fff;
+        color: var(--main-color);
+    }
+    @media screen and (min-width: 768px) {
+        .split {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
