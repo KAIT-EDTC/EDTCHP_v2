@@ -1,0 +1,272 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getWorks } from '../../lib/works';
+import fallback from '../../assets/img/EDTC-icon.webp';
+import '../../styles/detail.css';
+
+type Work = CollectionEntry<'works'>;
+
+export async function getStaticPaths() {
+    const works = await getWorks();
+    return works.map((work, i) => ({
+        params: { id: work.id },
+        // 一覧で次に並ぶものから順に
+        props: { work, others: [...works.slice(i + 1), ...works.slice(0, i)].slice(0, 3) },
+    }));
+}
+
+interface Props {
+    work: Work;
+    others: Work[];
+}
+const { work, others } = Astro.props;
+const { title, description, headline, maker, tags, capacity, duration, thumbnail } = work.data;
+const { Content } = await render(work);
+const ogImage = thumbnail ? (await getImage({ src: thumbnail, width: 1200, format: 'jpeg' })).src : undefined;
+
+const specs = [
+    ['対象', tags.join('・')],
+    ['対応人数', capacity],
+    ['授業時間', duration],
+    ['製作者', maker],
+].filter(([, v]) => v);
+---
+
+<Base title={title} description={description} image={ogImage}>
+    <div class="detail">
+        <nav aria-label="パンくずリスト" class="breadcrumbs">
+            <a href="/">ホーム</a><span aria-hidden="true">›</span>
+            <a href="/works/">制作物</a><span aria-hidden="true">›</span>
+            <span aria-current="page">{title}</span>
+        </nav>
+
+        <section class="work card">
+            <div class="work__media">
+                <Image src={thumbnail ?? fallback} alt={title} widths={[480, 960]} sizes="(max-width: 900px) 100vw, 560px" loading="eager" fetchpriority="high" />
+            </div>
+            <div class="work__info">
+                {
+                    tags.length > 0 && (
+                        <div class="chips">
+                            {tags.map((t) => <a class="chip" href={`/works/?tags=${encodeURIComponent(t)}`}>{t}</a>)}
+                        </div>
+                    )
+                }
+                <h1 class="work__title">{title}</h1>
+                {headline && <p class="work__headline">{headline}</p>}
+                {
+                    specs.length > 0 && (
+                        <dl class="work__specs">
+                            {specs.map(([k, v]) => (
+                                <div>
+                                    <dt>{k}</dt>
+                                    <dd>{v}</dd>
+                                </div>
+                            ))}
+                        </dl>
+                    )
+                }
+                <a href="/contact/" class="work__cta">
+                    授業・出張のご相談はこちら
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                </a>
+            </div>
+        </section>
+
+        <section class="work-body card" aria-label="詳細">
+            <div class="prose">
+                <Content />
+            </div>
+        </section>
+
+        {
+            others.length > 0 && (
+                <section class="others" aria-labelledby="others-heading">
+                    <h2 class="others__heading" id="others-heading">ほかの制作物</h2>
+                    <ul class="others__list">
+                        {others.map((w) => (
+                            <li>
+                                <a class="others__item card" href={`/works/${w.id}/`}>
+                                    <Image class="others__img" src={w.data.thumbnail ?? fallback} alt="" width={480} height={300} fit="cover" />
+                                    <span class="others__body">
+                                        <span class="others__title">{w.data.title}</span>
+                                        <span class="others__desc">{w.data.description}</span>
+                                    </span>
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                    <a class="others__more" href="/works/">制作物一覧へ <span aria-hidden="true">→</span></a>
+                </section>
+            )
+        }
+    </div>
+</Base>
+
+<style>
+    .work {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        overflow: hidden;
+    }
+    .work__media {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f2f4f6;
+    }
+    .work__media img {
+        width: 100%;
+        height: 100%;
+        max-height: 560px;
+        object-fit: contain;
+    }
+    .work__info {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: clamp(24px, 4vw, 48px);
+    }
+    .work__title {
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+        font-weight: 700;
+        line-height: 1.3;
+        color: #222;
+    }
+    .work__headline {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #555;
+    }
+    .work__specs {
+        display: grid;
+        border-top: 1px solid #eee;
+    }
+    .work__specs div {
+        display: grid;
+        grid-template-columns: 6em 1fr;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    .work__specs dt {
+        font-weight: 700;
+        color: #888;
+    }
+    .work__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        align-self: flex-start;
+        margin-top: 8px;
+        padding: 14px 28px;
+        border-radius: 999px;
+        background: var(--main-color);
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(10, 140, 216, 0.3);
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .work__cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(10, 140, 216, 0.4);
+    }
+    .work__cta svg {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.15s;
+    }
+    .work__cta:hover svg {
+        transform: translateX(3px);
+    }
+
+    .work-body {
+        max-width: 800px;
+        margin: 32px auto 0;
+        padding: clamp(20px, 4vw, 48px);
+    }
+    .work-body :global(img) {
+        max-height: 420px;
+    }
+
+    .others {
+        margin-top: 56px;
+    }
+    .others__heading {
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #222;
+    }
+    .others__list {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+    }
+    .others__item {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+        color: inherit;
+        text-decoration: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .others__item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    }
+    .others__img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 8 / 5;
+        object-fit: cover;
+    }
+    .others__body {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 16px 18px 20px;
+    }
+    .others__title {
+        font-weight: 700;
+    }
+    .others__item:hover .others__title {
+        color: var(--main-color);
+    }
+    .others__desc {
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: #666;
+    }
+    .others__more {
+        display: block;
+        width: fit-content;
+        margin: 24px 0 0 auto;
+        font-weight: 600;
+        color: var(--main-color);
+        text-decoration: none;
+    }
+    .others__more:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+        .work {
+            grid-template-columns: 1fr;
+        }
+        .work__media img {
+            max-height: 360px;
+        }
+        .work__cta {
+            align-self: stretch;
+            justify-content: center;
+        }
+    }
+</style>

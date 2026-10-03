@@ -5,7 +5,7 @@
 const PAGE_SIZE = 15;
 
 interface Options {
-    /** クラス名の接頭辞（blog / pdct） */
+    /** クラス名の接頭辞（blog / works） */
     prefix: string;
     /** true: 選んだタグをすべて含む記事 / false: いずれかを含む記事 */
     matchAllTags: boolean;
@@ -43,7 +43,7 @@ export function initCardFilter({ prefix, matchAllTags }: Options) {
     const clearBtn = document.querySelector<HTMLButtonElement>(`.${prefix}-filters__clear`)!;
     const emptyEl = document.querySelector<HTMLElement>(`.${prefix}-empty`)!;
     const pager = document.querySelector<HTMLElement>('.pagination-area--bottom')!;
-    const unit = prefix === 'blog' ? '件の記事' : '件のプロダクト';
+    const unit = prefix === 'blog' ? '件の記事' : '件の制作物';
 
     function update(next: State) {
         writeState(next);

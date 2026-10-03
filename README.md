@@ -21,16 +21,16 @@ npx wrangler dev   # 本番と同じ Cloudflare の配信（リダイレクト�
 ```
 content/
   blog/<記事ID>/index.md   # ブログ記事（dashboard がPRで追加する）＋画像
-  products/<ID>.json       # プロダクト
+  works/<ID>/index.md      # 制作物（教材・ロボット）＋画像
 src/
-  content.config.ts        # 記事・プロダクトのスキーマ（frontmatter の検証）
+  content.config.ts        # 記事・制作物のスキーマ（frontmatter の検証）
   lib/tags.ts              # タグの語彙（dashboard と同期する）
   pages/                   # 1ファイル = 1URL
     index.astro            # /
     about.astro            # /about/
     blog/index.astro       # /blog/          一覧（年・タグの絞り込みはクライアント側）
     blog/[id].astro        # /blog/<記事ID>/
-    products/…             # /products/, /products/<ID>/
+    works/…                # /works/, /works/<ID>/（旧 /products/ は _redirects で転送）
     contact.astro          # /contact/       Googleフォーム
   components/ layouts/     # ヘッダー・フッター・共通の <head>
   styles/                  # 旧サイトのCSSを引き継いだもの
@@ -66,6 +66,25 @@ thumbnail: ./img-k3x9a0qz.webp
 - 手で記事を書く場合も同じ形式でよい
 
 旧サイトの JSON 記事は `scripts/migrate-legacy-blog.mjs` でこの形式に変換済み。
+
+## 制作物
+
+ブログと同じく Markdown。ID = フォルダ名（URL は /works/<ID>/）。一覧の並び順は `src/lib/works.ts` の `ORDER`。
+
+```markdown
+---
+title: "ぶるぶるくん"
+description: "一覧やOGPに出る概要"
+headline: "詳細ページのリード文"
+maker: "製作者"
+tags: ["小学生"]            # src/lib/tags.ts の WORK_TAGS
+capacity: "10人ほど"        # 対応人数（任意）
+duration: "1時間ほど"       # 授業時間（任意）
+thumbnail: ./buruburu.webp
+---
+
+本文（GFM）。注意書きは > で囲むと目立つ枠になる。
+```
 
 ## デプロイ
 

@@ -1,0 +1,69 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { getWorks } from '../../lib/works';
+import { WORK_TAGS } from '../../lib/tags';
+import hero from '../../assets/img/EDTC-teaching-machine.webp';
+import fallback from '../../assets/img/EDTC-icon.webp';
+import '../../styles/works.css';
+
+const works = await getWorks();
+---
+
+<Base title="制作物" description="神奈川工科大学EDTCが開発した教材・ロボットなどの制作物の一覧ページです。">
+    <section class="works-hero" aria-label="制作物ヒーロー">
+        <Image src={hero} alt="" class="works-hero__bg" width={1280} height={720} loading="eager" fetchpriority="high" />
+        <div class="works-hero__overlay">
+            <h1 class="works-hero__title">Works</h1>
+            <p class="works-hero__desc">EDTCが開発した教材・ロボットなどの制作物をご紹介します。</p>
+        </div>
+    </section>
+
+    <section class="works-filters" aria-label="制作物フィルタ">
+        <div class="works-filters__row">
+            <div class="works-filters__age">
+                <span class="works-filters__label">対象年齢</span>
+                <div class="works-filters__tags" role="group" aria-label="対象年齢フィルタ">
+                    <button type="button" class="works-filters__tag-btn" data-tag="" aria-pressed="true">すべて</button>
+                    {WORK_TAGS.map((t) => <button type="button" class="works-filters__tag-btn" data-tag={t} aria-pressed="false">{t}</button>)}
+                </div>
+            </div>
+        </div>
+        <div class="works-filters__meta">
+            <span class="works-filters__count" aria-live="polite">{works.length}件の制作物</span>
+            <button class="works-filters__clear" type="button" hidden>フィルタをクリア</button>
+        </div>
+    </section>
+
+    <div class="works-area">
+        <ul class="works-container">
+            {
+                works.map(({ id, data }) => (
+                    <li class="works-card" data-tags={data.tags.join('|')}>
+                        <a href={`/works/${id}/`}>
+                            <div class="works-card__img-wrap">
+                                <Image class="works-card__img" src={data.thumbnail ?? fallback} alt={data.title} width={640} height={360} fit="cover" />
+                                {data.tags.length > 0 && (
+                                    <div class="works-card__tags">
+                                        {data.tags.map((t) => <span class="works-card__tag">{t}</span>)}
+                                    </div>
+                                )}
+                            </div>
+                            <div class="works-card__body">
+                                <h2 class="works-card__title">{data.title}</h2>
+                                <p class="works-card__caption">{data.description}</p>
+                            </div>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+        <p class="works-empty" hidden>条件に一致する制作物がありません。</p>
+    </div>
+    <nav class="pagination-area pagination-area--bottom" aria-label="ページネーション" hidden></nav>
+
+    <script>
+        import { initCardFilter } from '../../scripts/cardFilter';
+        initCardFilter({ prefix: 'works', matchAllTags: false });
+    </script>
+</Base>
