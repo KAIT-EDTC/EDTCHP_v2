@@ -5,6 +5,7 @@ headline: "ロボットがついてくる！？ 手に追従するロボット�
 maker: "番倉萌"
 tags: ["中学生"]
 thumbnail: ./ArtoRo-front.webp
+images: [./ArtoRo-diagonally.webp, ./ArtoRo-flyer.webp]
 ---
 
 ArtoRoは動物の形をした手に追従するロボットです。
@@ -14,7 +15,3 @@ ArtoRoは動物の形をした手に追従するロボットです。
 授業では追従する仕組みをプログラミングできます！
 
 > ⚠︎ 本機体は貸し出し機となっています。
-
-![ArtoRoを斜めから見たところ](./ArtoRo-diagonally.webp)
-
-![ArtoRoのチラシ](./ArtoRo-flyer.webp)

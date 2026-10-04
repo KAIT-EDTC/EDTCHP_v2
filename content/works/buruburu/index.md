@@ -7,6 +7,7 @@ tags: ["小学生"]
 capacity: "10人ほど(はんだ付け込み)、15人ほど(はんだ付けなし)"
 duration: "1時間半ほど(はんだ付け込み)、1時間ほど(はんだ付けなし)"
 thumbnail: ./buruburu.webp
+images: [./buruburu-single.webp]
 ---
 
 おもりのついたモーターを回転させることで虫のような動きをします。
@@ -14,5 +15,3 @@ thumbnail: ./buruburu.webp
 基盤が剥き出しにすることにより、好きな装飾ができる！
 
 はんだ付け有無を選択できるので幅広い年齢層の方に楽しんでいただけます！
-
-![ぶるぶるくん単体](./buruburu-single.webp)

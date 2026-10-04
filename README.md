@@ -81,6 +81,7 @@ tags: ["小学生"]            # src/lib/tags.ts の WORK_TAGS
 capacity: "10人ほど"        # 対応人数（任意）
 duration: "1時間ほど"       # 授業時間（任意）
 thumbnail: ./buruburu.webp
+images: [./buruburu-single.webp]   # 2枚目以降（任意）。あるとサムネイルと一緒にスライダーになる
 ---
 
 本文（GFM）。注意書きは > で囲むと目立つ枠になる。

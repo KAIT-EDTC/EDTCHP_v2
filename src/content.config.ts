@@ -41,6 +41,7 @@ const works = defineCollection({
             capacity: z.string().optional(),
             duration: z.string().optional(),
             thumbnail: image().optional(),
+            images: z.array(image()).default([]), // サムネイルに続けて上のスライダーに並ぶ
         }),
 });
 
