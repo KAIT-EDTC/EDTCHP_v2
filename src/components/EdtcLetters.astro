@@ -1,0 +1,169 @@
+---
+// 色はロゴの赤・青・緑・橙を、白文字が読める濃さ（コントラスト4.5以上）まで落としたもの
+const letters = [
+    { letter: 'E', word: 'Engineering', color: '#c8102e', head: '工学を学ぶ学生', body: '情報・機械・電気など、さまざまな分野を学ぶ学生が集まっています。' },
+    { letter: 'D', word: 'Dispatch', color: '#0b6bcb', head: '身軽に出向く', body: '学校や地域のイベントへ、ロボットと教材を持って出張します。' },
+    { letter: 'T', word: 'Teacher', color: '#1e7d32', head: '教えることで学ぶ', body: '自分たちで作った教材で、子どもたちにモノづくりを教えます。' },
+    { letter: 'C', word: 'Company', color: '#c25100', head: '企業のような運営', body: '5つの部署に分かれ、企画から運営までを学生だけで行っています。' },
+];
+---
+
+<ul class="letters">
+    {
+        letters.map((l, i) => (
+            <li style={`--c: ${l.color}; --p: ${i};`}>
+                <div class="band">
+                    <span class="letter" aria-hidden="true">{l.letter}</span>
+                    <p class="word" lang="en">{l.word}</p>
+                </div>
+                <div class="text">
+                    <h3>{l.head}</h3>
+                    <p class="body">{l.body}</p>
+                </div>
+            </li>
+        ))
+    }
+</ul>
+<p class="hint">タップかスワイプでカードをめくれます</p>
+
+<script>
+    // スマホ幅のときだけ、先頭のカードを後ろに回す（C の次は E に戻る）
+    const list = document.querySelector<HTMLElement>('.letters');
+    if (list) {
+        const order = [...list.children] as HTMLElement[];
+        const isMobile = () => matchMedia('(max-width: 599px)').matches;
+        let busy = false;
+        let startX = 0;
+        let startY = 0;
+
+        const flip = () => {
+            if (busy) return;
+            busy = true;
+            const top = order[0];
+            top.classList.add('out');
+            setTimeout(() => {
+                top.style.transition = 'none';
+                order.push(order.shift()!);
+                order.forEach((li, i) => li.style.setProperty('--p', String(i)));
+                top.classList.remove('out');
+                top.offsetWidth; // 戻る動きを見せないよう、再描画を挟んでから transition を戻す
+                top.style.transition = '';
+                busy = false;
+            }, 300);
+        };
+
+        list.addEventListener('pointerdown', (e) => {
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+        list.addEventListener('pointerup', (e) => {
+            const dx = Math.abs(e.clientX - startX);
+            const dy = Math.abs(e.clientY - startY);
+            if (isMobile() && (dx > 40 || (dx < 10 && dy < 10))) flip();
+        });
+    }
+</script>
+
+<style>
+    .letters {
+        display: grid;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0;
+        gap: 16px;
+        text-align: left;
+    }
+    li {
+        list-style: none;
+        background: #fff;
+        border: 2px solid var(--c);
+        border-radius: 14px;
+        color: #222;
+        line-break: strict;
+        font-feature-settings: 'palt' 1;
+    }
+    /* 色を付けるのは枠と見出しだけ */
+    .band {
+        padding: 24px 22px 0;
+    }
+    .text {
+        padding: 4px 22px 28px;
+    }
+    .letter {
+        display: block;
+        font-size: 88px;
+        font-weight: 900;
+        line-height: 1;
+    }
+    .word {
+        margin-top: 4px;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #555;
+    }
+    h3 {
+        margin: 20px 0 8px;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--c);
+    }
+    .body {
+        font-size: 16px;
+        line-height: 1.8;
+    }
+    @supports (word-break: auto-phrase) {
+        h3 {
+            word-break: auto-phrase;
+        }
+    }
+    .hint {
+        display: none;
+    }
+    /* スマホ: 4枚を右に少しずつずらして重ね、先頭をめくる */
+    @media screen and (max-width: 599px) {
+        .letters {
+            padding-right: 36px;
+            touch-action: pan-y;
+            cursor: pointer;
+            user-select: none;
+        }
+        li {
+            grid-area: 1 / 1;
+            z-index: calc(4 - var(--p));
+            transform: translateX(calc(var(--p) * 12px));
+            transition:
+                transform 0.3s,
+                opacity 0.3s;
+        }
+        li.out {
+            transform: translateX(-110%) rotate(-8deg);
+            opacity: 0;
+        }
+        .hint {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #555;
+            text-align: center;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        li {
+            transition: none;
+        }
+    }
+    @media screen and (min-width: 600px) {
+        .letters {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media screen and (min-width: 1024px) {
+        .letters {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .letter {
+            font-size: 120px;
+        }
+    }
+</style>
