@@ -209,8 +209,12 @@ body {
     display: none;
 }
 
+.blog-carousel {
+    --visible: 2.5; /* 1画面に見せるカードの枚数（端数ぶんは次のカードをのぞかせる） */
+}
+
 .blog-carousel__track > .blog-card {
-    flex: 0 0 calc((100% - 48px) / 3);
+    flex: 0 0 calc((100% - 24px * (var(--visible) - 1)) / var(--visible));
     scroll-snap-align: start;
 }
 
@@ -220,8 +224,8 @@ body {
     z-index: 1;
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 56px;
+    height: 56px;
     padding: 0;
     border: none;
     border-radius: 50%;
@@ -234,16 +238,16 @@ body {
 }
 
 .blog-carousel__btn svg {
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
 }
 
 .blog-carousel__btn--prev {
-    left: calc(5% - 22px);
+    left: calc(5% - 28px);
 }
 
 .blog-carousel__btn--next {
-    right: calc(5% - 22px);
+    right: calc(5% - 28px);
 }
 
 .blog-carousel__btn:hover:not(:disabled) {
@@ -343,8 +347,8 @@ body {
     .blog-container {
         grid-template-columns: repeat(2, 1fr);
     }
-    .blog-carousel__track > .blog-card {
-        flex-basis: calc((100% - 24px) / 2);
+    .blog-carousel {
+        --visible: 1.6;
     }
     .blog-hero {
         height: 28vh;
@@ -355,18 +359,22 @@ body {
     .blog-container {
         grid-template-columns: 1fr;
     }
-    .blog-carousel__track > .blog-card {
-        flex-basis: 85%; /* 次の記事を少しのぞかせて、横に続くことを示す */
+    .blog-carousel {
+        --visible: 1.15;
     }
     .blog-carousel__btn {
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
+    }
+    .blog-carousel__btn svg {
+        width: 22px;
+        height: 22px;
     }
     .blog-carousel__btn--prev {
-        left: calc(5% - 18px);
+        left: calc(5% - 22px);
     }
     .blog-carousel__btn--next {
-        right: calc(5% - 18px);
+        right: calc(5% - 22px);
     }
     .blog-hero {
         height: 35vw;
