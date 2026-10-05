@@ -5,9 +5,12 @@
   // 団体(kait.edtc@gmail.com)のCloudflareアカウント。dashboard と同じ。個人アカウントへ誤ってデプロイしないよう固定する
   "account_id": "f63f9ebc5db7b049a6e98a155a3d219d",
   "compatibility_date": "2026-09-01",
-  // kaitedtc.com のDNSはさくらにあるため、当面は workers.dev で公開する。
-  // ドメインをCloudflareに移したら workers_dev を外し、routes: [{ "pattern": "kaitedtc.com", "custom_domain": true }] を追加
-  "workers_dev": true,
+  // kaitedtc.com は Cloudflare の DNS ゾーン。Custom Domain は DNS レコードを自動で作る（同名の A/CNAME が残っているとデプロイが失敗するので先に消す）
+  // www は canonical（https://kaitedtc.com）への重複を避けるため、ダッシュボードの Redirect Rule で apex に転送する
+  "routes": [
+    { "pattern": "kaitedtc.com", "custom_domain": true },
+    { "pattern": "www.kaitedtc.com", "custom_domain": true }
+  ],
   // バージョンごとのプレビューURL（wrangler versions upload 時の <version>-edtc-homepage.kait-edtc.workers.dev）を有効にする
   "preview_urls": true,
   // Workers Builds がPR・ブランチごとに実行する `wrangler preview`（Previews）に必要。空でよい

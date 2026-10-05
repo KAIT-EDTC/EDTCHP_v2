@@ -115,4 +115,4 @@ Cloudflare の Workers Builds（Git 連携）でビルド・デプロイする�
 
 手元からデプロイする場合は `npx wrangler login`（団体アカウント）のうえで `npm run deploy`。
 
-**公開URL**: 当面は `https://edtc-homepage.kait-edtc.workers.dev`。`kaitedtc.com` の DNS はさくらインターネットにあるため、Cloudflare にゾーンを移してから `wrangler.jsonc` の `workers_dev` を外し `routes`（`custom_domain: true`）を追加する。旧URL（`base.html`, `blog-post.html?id=…` など）は `public/_redirects` と `public/*-post.html` で新URLに転送する。
+**公開URL**: `https://kaitedtc.com`（`wrangler.jsonc` の `routes` で Custom Domain として割り当て。`www` は Redirect Rule で apex へ転送）。旧URL（`base.html`, `blog-post.html?id=…` など）は `public/_redirects` と `public/*-post.html` で新URLに転送する。
