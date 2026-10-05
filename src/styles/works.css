@@ -1,0 +1,160 @@
+body {
+    background-color: var(--bg-color);
+}
+
+/* ===== ヒーロー ===== */
+.works-hero {
+    position: relative;
+    height: 35vh;
+    overflow: hidden;
+}
+
+.works-hero__bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: blur(1.5px) brightness(0.65);
+    transform: scale(1.05);
+    pointer-events: none;
+}
+
+.works-hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.works-hero__title {
+    color: #fff;
+    font-size: clamp(3rem, 12vw, 8rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.works-hero__desc {
+    margin-top: 0.8rem;
+    color: #fff;
+    font-size: clamp(0.9rem, 2vw, 1.25rem);
+    background: rgba(0, 0, 0, 0.35);
+    padding: 0.5em 1.2em;
+    border-radius: 6px;
+}
+
+/* ===== カード一覧 ===== */
+.works-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1200px;
+    margin: 2.5rem auto 4rem;
+    padding: 0 5%;
+    gap: 24px;
+    list-style: none;
+}
+
+.works-card {
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--item-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.works-card:hover {
+    /* transform: translateY(-6px); */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.works-card a {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.works-card__img-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.works-card__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+}
+
+.works-card:hover .works-card__img {
+    transform: scale(1.05);
+}
+
+.works-card__body {
+    padding: 0.8rem 1rem 1rem;
+}
+
+.works-card__title {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.works-card__caption {
+    font-size: 0.82rem;
+    color: #666;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 768px) {
+    .works-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .works-hero {
+        height: 28vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .works-container {
+        grid-template-columns: 1fr;
+    }
+    .works-hero {
+        height: 35vw;
+    }
+}
+
+/* ===== prefers-reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+    .works-hero__bg {
+        filter: brightness(0.55);
+        transform: none;
+    }
+    .works-card,
+    .works-card__img {
+        transition: none;
+    }
+    .works-card:hover {
+        transform: none;
+    }
+    .works-card:hover .works-card__img {
+        transform: none;
+    }
+    .anim-fadein {
+        animation: none;
+    }
+}

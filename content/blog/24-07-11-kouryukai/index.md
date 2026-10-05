@@ -3,7 +3,7 @@ title: "地域連携サークル交流会に参加しました"
 date: 2024-07-11
 author: "足立"
 description: "今回はKAIT内部のサークルの集い地域連携サークル交流会にご招待いただいたので参加してきました。"
-tags: ["イベント"]
+series: oncampus
 thumbnail: ./24-07-11-kouryu-01.webp
 ---
 

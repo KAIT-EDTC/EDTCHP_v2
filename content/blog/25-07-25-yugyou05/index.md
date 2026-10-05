@@ -3,7 +3,7 @@ title: "第五回遊行塾に行ってきました！"
 date: 2025-07-25
 author: "青沼"
 description: "藤嶺学園藤沢中学校に第五回遊行塾を実施しました。今回はLED制御のプログラミングを行いました！"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./25-07-25-yugyou05-01.webp
 ---
 

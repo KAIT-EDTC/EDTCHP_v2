@@ -3,7 +3,7 @@ title: "第一回遊行塾に行ってきました！"
 date: 2026-05-16
 author: "相馬　悠介"
 description: "今年度も遊行塾が開始しました！"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./26-05-16-yugyou01-01.webp
 ---
 

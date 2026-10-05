@@ -3,7 +3,7 @@ title: "第六回遊行塾に行ってきました！"
 date: 2024-09-28
 author: "根本"
 description: "藤嶺学園藤沢中学校に第六回遊行塾を実施しました。後期始めにふさわしい快調なスタートを切ることが出来ました"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./24-09-28-yugyou06-01.webp
 ---
 

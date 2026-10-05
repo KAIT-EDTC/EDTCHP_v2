@@ -3,7 +3,7 @@ title: "第四回遊行塾に行ってきました！"
 date: 2025-06-14
 author: "魚谷"
 description: "第四回遊行塾を実施しました。パソコンを使ったプログラミングの練習がスタートしました！"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./25-06-14-yugyou04.webp
 ---
 

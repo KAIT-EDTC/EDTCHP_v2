@@ -3,7 +3,7 @@ title: "サイエンスサマーで展示を行いました！"
 date: 2025-08-08
 author: "大谷"
 description: "神奈川工科大学で開催されたサイエンスサマーに参加し、ロボットの展示を行いました！"
-tags: ["対外活動","イベント"]
+series: oncampus
 thumbnail: ./25-08-08-sciencesummer-02.webp
 ---
 

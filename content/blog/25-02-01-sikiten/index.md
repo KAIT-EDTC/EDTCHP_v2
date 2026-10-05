@@ -3,7 +3,8 @@ title: "厚木市制70周年記念式典にて表彰されました!"
 date: 2025-02-01
 author: "根本"
 description: "厚木市制70周年という記念すべき節目を祝う式典にて、「未来へつながる一歩功労」という賞を受賞することができました。"
-tags: ["対外活動","ピックアップ"]
+series: offcampus
+pickup: true
 thumbnail: ./25-02-01-70th_anniversary_ceremony.webp
 ---
 

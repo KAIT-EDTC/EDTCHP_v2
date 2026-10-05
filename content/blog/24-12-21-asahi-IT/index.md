@@ -3,7 +3,7 @@ title: "放課後等デイサービスあさひ学苑IT校様が、神奈川工�
 date: 2024-12-21
 author: "番倉"
 description: "今年度第3回目となる今回は大学探検やKAIT工房での木工体験を行いました！"
-tags: ["対外活動"]
+series: oncampus
 thumbnail: ./24-12-21-asahi-IT.webp
 ---
 

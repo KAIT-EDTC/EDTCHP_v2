@@ -3,8 +3,8 @@
 <meta name="robots" content="noindex" />
 <title>移動しました</title>
 <script>
-    // 旧サイトの product-post.html?id=<id> を /products/<id>/ へ
+    // 旧サイトの product-post.html?id=<id> を /works/<id>/ へ
     const id = new URLSearchParams(location.search).get('id');
-    location.replace(id && /^[\w-]+$/.test(id) ? '/products/' + id + '/' : '/products/');
+    location.replace(id && /^[\w-]+$/.test(id) ? '/works/' + id + '/' : '/works/');
 </script>
-<a href="/products/">移動しました</a>
+<a href="/works/">移動しました</a>

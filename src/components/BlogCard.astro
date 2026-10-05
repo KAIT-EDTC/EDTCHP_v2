@@ -8,20 +8,13 @@ interface Props {
     post: BlogEntry;
 }
 const { post } = Astro.props;
-const { title, date, description, tags, thumbnail } = post.data;
+const { title, date, description, thumbnail } = post.data;
 ---
 
-<li class="blog-card" data-year={String(date.getUTCFullYear())} data-tags={tags.join('|')}>
+<li class="blog-card">
     <a href={`/blog/${post.id}/`}>
         <div class="blog-card__img-wrap">
             <Image class="blog-card__img" src={thumbnail ?? fallback} alt={title} width={640} height={360} fit="cover" />
-            {
-                tags.length > 0 && (
-                    <div class="blog-card__tags">
-                        {tags.map((t) => <span class="blog-card__tag">{t}</span>)}
-                    </div>
-                )
-            }
         </div>
         <div class="blog-card__body">
             <span class="blog-card__date">{formatDate(date)}</span>

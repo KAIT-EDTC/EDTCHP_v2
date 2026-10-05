@@ -3,7 +3,7 @@ title: "第三回遊行塾に行ってきました！"
 date: 2026-06-12
 author: "橋野"
 description: "第三回遊行塾を実施しました。今回は前回の続きを行い、機体を完成させました。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./26-06-12-yugyou03-01.webp
 ---
 

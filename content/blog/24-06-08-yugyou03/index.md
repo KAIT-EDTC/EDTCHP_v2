@@ -3,7 +3,7 @@ title: "第三回遊行塾を実施しました!"
 date: 2024-06-18
 author: "鈴木"
 description: "モータの取り付けを終え、いよいよ次回はロボットを動かす段階へ。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./24-06-08-yugyou03.webp
 ---
 

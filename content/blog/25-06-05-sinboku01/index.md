@@ -3,7 +3,7 @@ title: "EDTC親睦会！ vol.1"
 date: 2025-06-05
 author: "米川"
 description: "第2回KAITEDCT親睦会を開催しました！ 今回は初めての運動を行うレクリエーションということでみんなで体を動かし親睦を深めました"
-tags: ["遊び"]
+series: play
 thumbnail: ./25-06-05-sinboku01.webp
 ---
 

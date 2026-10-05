@@ -3,7 +3,7 @@ title: "第二回遊行塾を行いました！"
 date: 2026-06-06
 author: "大久保"
 description: "第二回遊行塾を行いました！今回からはんだ付けに入ります。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./26-06-06-yugyou02-01.webp
 ---
 

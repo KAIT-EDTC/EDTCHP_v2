@@ -46,84 +46,220 @@ body {
     border-radius: 6px;
 }
 
-/* ===== フィルタ ===== */
-.blog-filters {
+/* ===== 活動の種類（ページ内リンク） ===== */
+.blog-nav {
     max-width: 1200px;
     margin: 2rem auto 0;
     padding: 0 5%;
 }
 
-.blog-filters__row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: flex-start;
-}
-
-.blog-filters__year {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-
-.blog-filters__year label {
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.blog-filters__year select {
-    padding: 0.4em 0.8em;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    background: #fff;
-}
-
-.blog-filters__tags {
+.blog-nav__list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    align-items: flex-end;
-    padding-top: 1.4rem; /* labelの高さに揃える */
+    list-style: none;
 }
 
-.blog-filters__tag-btn {
+.blog-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
     padding: 0.35em 0.9em;
     border: 1.5px solid var(--main-color);
     border-radius: 999px;
-    background: transparent;
     color: var(--main-color);
     font-size: 0.85rem;
     font-weight: 600;
-    cursor: pointer;
+    text-decoration: none;
     transition: background 0.2s, color 0.2s;
 }
 
-.blog-filters__tag-btn[aria-pressed="true"] {
+.blog-nav__link:hover {
     background: var(--main-color);
     color: #fff;
 }
 
-.blog-filters__meta {
+.blog-nav__count {
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+/* ===== セクション（タグごと） ===== */
+.blog-section {
+    margin-top: 3rem;
+    scroll-margin-top: 80px; /* 固定ヘッダーの下に見出しが来るように */
+}
+
+.blog-section:last-of-type {
+    margin-bottom: 4rem;
+}
+
+.blog-section__head {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.blog-section__title {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 0.8rem;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding-left: 0.7rem;
+    border-left: 5px solid var(--main-color);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.blog-section__count {
     font-size: 0.85rem;
+    font-weight: 400;
+    color: #888;
+}
+
+.blog-section__intro {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.7;
+}
+
+.blog-section__title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.blog-section__title a:hover {
+    text-decoration: underline;
+}
+
+.blog-section__more {
+    display: block;
+    width: fit-content;
+    margin: 1.2rem auto 0;
+    padding: 0.5em 1.4em;
+    border: 1.5px solid var(--main-color);
+    border-radius: 999px;
+    color: var(--main-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.blog-section__more:hover {
+    background: var(--main-color);
+    color: #fff;
+}
+
+/* ===== タグごとの一覧ページ ===== */
+.blog-tag-page__head {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 5% 0; /* margin だと body の margin-top と相殺される */
+}
+
+.blog-tag-page__crumbs {
+    display: flex;
+    gap: 0.5em;
+    margin-bottom: 1.2rem;
+    font-size: 0.9rem;
     color: #666;
 }
 
-.blog-filters__clear {
-    padding: 0.3em 0.8em;
-    border: none;
-    border-radius: 6px;
-    background: #eee;
-    font-size: 0.8rem;
-    cursor: pointer;
+.blog-tag-page__year {
+    margin-top: 2.5rem;
 }
 
-.blog-filters__clear:hover {
-    background: #ddd;
+.blog-tag-page__year:last-of-type {
+    margin-bottom: 4rem;
+}
+
+.blog-tag-page__year-title {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #444;
+}
+
+/* ===== カルーセル（セクションごとの横スクロール） ===== */
+/* 画面の横幅いっぱいに広げる。カードの大きさは、本文幅（1200px）の中に3枚並べたときと同じ */
+.blog-carousel {
+    --content: calc(min(1200px, 100vw) - 10vw); /* 見出しなどの本文幅 */
+    --gutter: calc((100% - min(1200px, 100%)) / 2 + 5%); /* 画面の左端から本文までの余白（先頭のカードを見出しにそろえる） */
+    position: relative;
+    margin: 1.5rem 0 0;
+}
+
+.blog-carousel__track {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    /* overflow で影が切れないように、上下に余白を取って打ち消す */
+    padding: 4px var(--gutter) 28px;
+    scroll-padding-inline: var(--gutter);
+    margin-bottom: -16px;
+}
+
+.blog-carousel__track::-webkit-scrollbar {
+    display: none;
+}
+
+.blog-carousel__track > .blog-card {
+    flex: 0 0 calc((var(--content) - 48px) / 3);
+    scroll-snap-align: start;
+}
+
+.blog-carousel__btn {
+    position: absolute;
+    top: 45%;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--main-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background 0.2s, color 0.2s, opacity 0.2s;
+}
+
+.blog-carousel__btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.blog-carousel__btn--prev {
+    left: 16px;
+}
+
+.blog-carousel__btn--next {
+    right: 16px;
+}
+
+.blog-carousel__btn:hover:not(:disabled) {
+    background: var(--main-color);
+    color: #fff;
+}
+
+.blog-carousel__btn:disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.blog-carousel__btn[hidden] {
+    display: none;
 }
 
 /* ===== カード一覧 ===== */
@@ -175,23 +311,6 @@ body {
     transform: scale(1.05);
 }
 
-.blog-card__tags {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-}
-
-.blog-card__tag {
-    padding: 0.15em 0.55em;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    font-size: 0.7rem;
-    border-radius: 4px;
-}
-
 .blog-card__body {
     padding: 0.8rem 1rem 1rem;
 }
@@ -221,96 +340,13 @@ body {
     overflow: hidden;
 }
 
-/* ===== 空状態 ===== */
-.blog-empty {
-    text-align: center;
-    padding: 4rem 1rem;
-    color: #888;
-    font-size: 1rem;
-}
-
-/* ===== ページネーション ===== */
-.pagination-area {
-    display: flex;
-    margin: 1.5rem auto;
-    gap: 6px;
-    padding: 0 1rem;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.pagination-area button {
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    min-width: 44px;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.pagination-area__arrow {
-    background: #333;
-    color: #fff;
-    padding: 0.4em 0.7em;
-    font-size: 0.95rem;
-}
-
-.pagination-area__arrow:hover:not(:disabled) {
-    background: #555;
-    transform: scale(1.04);
-}
-
-.pagination-area__arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.pagination-area__num {
-    background: var(--item-color);
-    color: #333;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.pagination-area__num:hover {
-    background: #ddd;
-}
-
-.pagination-area__current {
-    background: var(--main-color) !important;
-    color: #fff !important;
-    pointer-events: none;
-}
-
-.pagination-area__ellipsis {
-    width: 20px;
-    text-align: center;
-    color: #888;
-    font-size: 1rem;
-    user-select: none;
-}
-
-.pagination-area--top {
-    margin-bottom: 0;
-}
-
-.pagination-area--bottom {
-    margin-top: 1rem;
-    margin-bottom: 3rem;
-}
-
 /* ===== レスポンシブ ===== */
 @media (max-width: 768px) {
     .blog-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+    .blog-carousel__track > .blog-card {
+        flex-basis: calc((var(--content) - 24px) / 2);
     }
     .blog-hero {
         height: 28vh;
@@ -321,26 +357,22 @@ body {
     .blog-container {
         grid-template-columns: 1fr;
     }
+    .blog-carousel__track > .blog-card {
+        flex-basis: calc(var(--content) * 0.85); /* 次の記事を少しのぞかせて、横に続くことを示す */
+    }
+    .blog-carousel__btn {
+        width: 36px;
+        height: 36px;
+    }
+    .blog-carousel__btn--prev {
+        left: 8px;
+    }
+    .blog-carousel__btn--next {
+        right: 8px;
+    }
     .blog-hero {
         height: 35vw;
     }
-    .blog-filters__row {
-        flex-direction: column;
-    }
-    .blog-filters__tags {
-        padding-top: 0;
-    }
-}
-
-/* ===== タップフィードバック ===== */
-.pagination-area__num:active {
-    background: var(--main-color);
-    color: #fff;
-    transform: scale(0.95);
-}
-
-.pagination-area__arrow:active:not(:disabled) {
-    transform: scale(0.95);
 }
 
 /* ===== prefers-reduced-motion ===== */
@@ -350,8 +382,7 @@ body {
         transform: none;
     }
     .blog-card,
-    .blog-card__img,
-    .pagination-area button {
+    .blog-card__img {
         transition: none;
     }
     .blog-card:hover {

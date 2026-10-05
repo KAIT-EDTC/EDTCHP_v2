@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { getWorks } from '../../lib/works';
+import hero from '../../assets/img/EDTC-teaching-machine.webp';
+import fallback from '../../assets/img/EDTC-icon.webp';
+import '../../styles/works.css';
+
+const works = await getWorks();
+---
+
+<Base title="制作物" description="神奈川工科大学EDTCが開発した教材・ロボットなどの制作物の一覧ページです。">
+    <section class="works-hero" aria-label="制作物ヒーロー">
+        <Image src={hero} alt="" class="works-hero__bg" width={1280} height={720} loading="eager" fetchpriority="high" />
+        <div class="works-hero__overlay">
+            <h1 class="works-hero__title">Works</h1>
+            <p class="works-hero__desc">EDTCが開発した教材・ロボットなどの制作物をご紹介します。</p>
+        </div>
+    </section>
+
+    <div class="works-area">
+        <ul class="works-container">
+            {
+                works.map(({ id, data }) => (
+                    <li class="works-card">
+                        <a href={`/works/${id}/`}>
+                            <div class="works-card__img-wrap">
+                                <Image class="works-card__img" src={data.thumbnail ?? fallback} alt={data.title} width={640} height={360} fit="cover" />
+                            </div>
+                            <div class="works-card__body">
+                                <h2 class="works-card__title">{data.title}</h2>
+                                <p class="works-card__caption">{data.description}</p>
+                            </div>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+
+</Base>
