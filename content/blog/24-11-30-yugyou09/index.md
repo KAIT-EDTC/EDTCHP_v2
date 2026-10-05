@@ -3,7 +3,7 @@ title: "第九回遊行塾に行ってきました！"
 date: 2024-11-30
 author: "山口"
 description: "第九回遊行塾を実施しました。これまでの総復習です！"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./24-11-30-yugyou09.webp
 ---
 

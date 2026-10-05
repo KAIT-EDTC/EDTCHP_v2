@@ -3,7 +3,7 @@ title: "ものづくり交流フェアに参加しました！"
 date: 2025-02-07
 author: "渡邉、山口"
 description: "EDTCが富士市で行われたものづくり交流フェアにお邪魔しました！企業の方々から貴重な話を聞くことが出来ました。"
-tags: ["学外イベント"]
+series: offcampus
 thumbnail: ./25-02-07-FujiFair-03.webp
 ---
 

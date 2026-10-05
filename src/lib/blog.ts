@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { BLOG_TAG_INFO } from './tags';
+import { BLOG_SERIES } from './tags';
 
 export type BlogEntry = CollectionEntry<'blog'>;
 
@@ -9,13 +9,6 @@ export async function getPosts(): Promise<BlogEntry[]> {
     return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
-/** 記事に付いているタグ（使われている数の多い順、同数は名前順） */
-export function getTags(posts: BlogEntry[]): string[] {
-    const counts = new Map<string, number>();
-    for (const tag of posts.flatMap((p) => p.data.tags)) counts.set(tag, (counts.get(tag) ?? 0) + 1);
-    return [...counts.keys()].sort((a, b) => counts.get(b)! - counts.get(a)! || a.localeCompare(b, 'ja'));
-}
-
 export interface BlogSection {
     tag: string;
     slug: string;
@@ -23,18 +16,11 @@ export interface BlogSection {
     posts: BlogEntry[];
 }
 
-/** タグ（活動）ごとの記事。並びは BLOG_TAG_INFO の順 → それ以外のタグを使用数順 → タグなしは「その他」 */
+/** 一覧のセクション。ピックアップ → 種別（BLOG_SERIES の順）。記事のないセクションは出さない */
 export function getSections(posts: BlogEntry[]): BlogSection[] {
-    const tags = [...new Set([...Object.keys(BLOG_TAG_INFO), ...getTags(posts)])];
     return [
-        ...tags.map((tag) => ({
-            tag,
-            // ponytail: BLOG_TAG_INFO に無いタグはタグ名がそのままURLになる（/ # ? を含むと引けない）
-            slug: BLOG_TAG_INFO[tag]?.slug ?? tag,
-            intro: BLOG_TAG_INFO[tag]?.intro,
-            posts: posts.filter((p) => p.data.tags.includes(tag)),
-        })),
-        { tag: 'その他', slug: 'other', posts: posts.filter((p) => p.data.tags.length === 0) },
+        { tag: 'ピックアップ', slug: 'pickup', intro: 'EDTCの活動の中から、特に読んでほしい記事です。', posts: posts.filter((p) => p.data.pickup) },
+        ...BLOG_SERIES.map((s) => ({ tag: s.label, slug: s.id, intro: s.intro, posts: posts.filter((p) => p.data.series === s.id) })),
     ].filter((s) => s.posts.length > 0);
 }
 

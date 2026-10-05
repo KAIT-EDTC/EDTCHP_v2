@@ -3,7 +3,7 @@ title: "第四回遊行塾に行ってきました!"
 date: 2024-06-15
 author: "根本"
 description: "今回の第4回ではライントレースロボットのプログラミングの前段階として、導入となる基礎的なプログラミングの指導を実施しました。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./24-06-15-yugyou04.webp
 ---
 

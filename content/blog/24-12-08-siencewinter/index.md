@@ -3,7 +3,7 @@ title: "サイエンスウィンターに参加しました！"
 date: 2024-12-08
 author: "棚橋"
 description: "12月8日サイエンスウィンターに参加しました。厚木市子ども科学館にて行われたサイエンスウィンターに参加しました。"
-tags: ["学外イベント"]
+series: offcampus
 thumbnail: ./24-12-08-science-winter-03.webp
 ---
 

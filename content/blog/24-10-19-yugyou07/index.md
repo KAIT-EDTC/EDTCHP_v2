@@ -3,7 +3,7 @@ title: "第七回遊行塾に行ってきました！"
 date: 2024-10-19
 author: "髙橋"
 description: "藤嶺学園藤沢中学校に第七回遊行塾を実施しました。今回からライントレース部分のプログラミングに入っていきます。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./24-10-19-yugyou07.webp
 ---
 

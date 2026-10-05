@@ -233,23 +233,6 @@ body {
     transform: scale(1.05);
 }
 
-.blog-card__tags {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-}
-
-.blog-card__tag {
-    padding: 0.15em 0.55em;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    font-size: 0.7rem;
-    border-radius: 4px;
-}
-
 .blog-card__body {
     padding: 0.8rem 1rem 1rem;
 }

@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { WORK_TAGS } from './lib/tags';
+import { BLOG_SERIES_IDS, WORK_TAGS } from './lib/tags';
 
 /**
  * ブログ記事。ダッシュボードが PR で送る content/blog/<YY-MM-DD-slug>/index.md をそのまま受け入れる。
@@ -19,8 +19,8 @@ const blog = defineCollection({
             date: z.coerce.date(),
             author: z.string().default(''),
             description: z.string().default(''),
-            // タグはダッシュボードのDBで管理者が増減するため、固定リストでは検証しない
-            tags: z.array(z.string().min(1)).default([]),
+            series: z.enum(BLOG_SERIES_IDS),
+            pickup: z.boolean().default(false),
             thumbnail: image().optional(),
         }),
 });
