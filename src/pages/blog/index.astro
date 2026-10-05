@@ -3,12 +3,20 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import { getPosts, getTags } from '../../lib/blog';
+import { BLOG_TAG_INTRO } from '../../lib/tags';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
 import '../../styles/blog.css';
 
+/** 各セクションで最初から見せる件数（残りは「すべて見る」に入れる） */
+const PREVIEW = 3;
+
 const posts = await getPosts();
-const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
-const tags = getTags(posts);
+const known = Object.keys(BLOG_TAG_INTRO);
+const tags = [...new Set([...known, ...getTags(posts)])];
+const sections = [
+    ...tags.map((tag) => ({ tag, intro: BLOG_TAG_INTRO[tag], posts: posts.filter((p) => p.data.tags.includes(tag)) })),
+    { tag: 'その他', intro: undefined, posts: posts.filter((p) => p.data.tags.length === 0) },
+].filter((s) => s.posts.length > 0);
 ---
 
 <Base title="ブログ" description="神奈川工科大学EDTCのブログ記事一覧。活動報告やイベント情報をお届けします。">
@@ -20,36 +28,43 @@ const tags = getTags(posts);
         </div>
     </section>
 
-    <section class="blog-filters" aria-label="記事フィルタ">
-        <div class="blog-filters__row">
-            <div class="blog-filters__year">
-                <label for="year-select">年で絞り込み</label>
-                <select id="year-select">
-                    <option value="">すべての年</option>
-                    {years.map((y) => <option value={y}>{y}年</option>)}
-                </select>
-            </div>
-            <div class="blog-filters__tags" role="group" aria-label="タグフィルタ">
-                <button type="button" class="blog-filters__tag-btn" data-tag="" aria-pressed="true">すべて</button>
-                {tags.map((t) => <button type="button" class="blog-filters__tag-btn" data-tag={t} aria-pressed="false">{t}</button>)}
-            </div>
-        </div>
-        <div class="blog-filters__meta">
-            <span class="blog-filters__count" aria-live="polite">{posts.length}件の記事</span>
-            <button class="blog-filters__clear" type="button" hidden>フィルタをクリア</button>
-        </div>
-    </section>
-
-    <div class="blog-area">
-        <ul class="blog-container">
-            {posts.map((post) => <BlogCard post={post} />)}
+    <nav class="blog-nav" aria-label="活動の種類">
+        <ul class="blog-nav__list">
+            {
+                sections.map(({ tag, posts }, i) => (
+                    <li>
+                        <a class="blog-nav__link" href={`#tag-${i}`}>
+                            {tag}
+                            <span class="blog-nav__count">{posts.length}</span>
+                        </a>
+                    </li>
+                ))
+            }
         </ul>
-        <p class="blog-empty" hidden>条件に一致する記事がありません。</p>
-    </div>
-    <nav class="pagination-area pagination-area--bottom" aria-label="ページネーション" hidden></nav>
+    </nav>
 
-    <script>
-        import { initCardFilter } from '../../scripts/cardFilter';
-        initCardFilter({ prefix: 'blog', matchAllTags: true });
-    </script>
+    {
+        sections.map(({ tag, intro, posts }, i) => (
+            <section class="blog-section" id={`tag-${i}`} aria-labelledby={`tag-${i}-title`}>
+                <div class="blog-section__head">
+                    <h2 class="blog-section__title" id={`tag-${i}-title`}>
+                        {tag}
+                        <span class="blog-section__count">{posts.length}件</span>
+                    </h2>
+                    {intro && <p class="blog-section__intro">{intro}</p>}
+                </div>
+                <ul class="blog-container">
+                    {posts.slice(0, PREVIEW).map((post) => <BlogCard post={post} />)}
+                </ul>
+                {posts.length > PREVIEW && (
+                    <details class="blog-section__more">
+                        <summary>すべて見る（{posts.length}件）</summary>
+                        <ul class="blog-container">
+                            {posts.slice(PREVIEW).map((post) => <BlogCard post={post} />)}
+                        </ul>
+                    </details>
+                )}
+            </section>
+        ))
+    }
 </Base>
