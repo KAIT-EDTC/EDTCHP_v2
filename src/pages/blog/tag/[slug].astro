@@ -1,17 +1,17 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import BlogCard from '../../../components/BlogCard.astro';
-import { getPosts, getSections, type BlogSection } from '../../../lib/blog';
+import { fiscalYear, getPosts, getSections, type BlogSection } from '../../../lib/blog';
 import '../../../styles/blog.css';
 
-/** タグ（活動）ごとの全記事を、年ごとの見出しで並べる */
+/** タグ（活動）ごとの全記事を、年度ごとの見出しで並べる */
 export async function getStaticPaths() {
     return getSections(await getPosts()).map((section) => ({ params: { slug: section.slug }, props: section }));
 }
 
 type Props = BlogSection;
 const { tag, intro, posts } = Astro.props;
-const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
+const years = [...new Set(posts.map((p) => fiscalYear(p.data.date)))];
 ---
 
 <Base title={`${tag}の記事`} description={intro ?? `神奈川工科大学EDTCのブログから「${tag}」の記事一覧です。`}>
@@ -30,13 +30,13 @@ const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
 
     {
         years.map((year) => (
-            <section class="blog-tag-page__year" aria-labelledby={`y${year}`}>
-                <h2 class="blog-tag-page__year-title" id={`y${year}`}>
-                    {year}年
+            <section class="blog-tag-page__year" aria-labelledby={`fy${year}`}>
+                <h2 class="blog-tag-page__year-title" id={`fy${year}`}>
+                    {year}年度
                 </h2>
                 <ul class="blog-container">
                     {posts
-                        .filter((p) => p.data.date.getUTCFullYear() === year)
+                        .filter((p) => fiscalYear(p.data.date) === year)
                         .map((post) => (
                             <BlogCard post={post} />
                         ))}

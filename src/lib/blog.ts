@@ -24,6 +24,11 @@ export function getSections(posts: BlogEntry[]): BlogSection[] {
     ].filter((s) => s.posts.length > 0);
 }
 
+/** 年度（4月〜翌年3月）。2026-03-31 は 2025年度、2026-04-01 は 2026年度。日付は UTC 0時にパースされるので UTC で数える */
+export function fiscalYear(date: Date): number {
+    return date.getUTCMonth() >= 3 ? date.getUTCFullYear() : date.getUTCFullYear() - 1;
+}
+
 /** 日付は JST の暦日として扱う（date: 2026-10-17 は UTC 0時にパースされるため UTC で整形すればずれない） */
 export function formatDate(date: Date): string {
     const y = date.getUTCFullYear();

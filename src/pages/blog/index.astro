@@ -8,7 +8,7 @@ import '../../styles/blog.css';
 
 /** カルーセルに並べる件数（新しい順。全件はタグごとの一覧ページへ） */
 const CAROUSEL_MAX = 12;
-/** 「すべて見る」リンクを出す件数（これを超えるセクションだけ） */
+/** 「年度別に見る」リンクを出す件数（これを超えるセクションだけ） */
 const MORE_FROM = 3;
 
 const sections = getSections(await getPosts());
@@ -61,7 +61,7 @@ const sections = getSections(await getPosts());
                 </div>
                 {posts.length > MORE_FROM && (
                     <a class="blog-section__more" href={`/blog/tag/${slug}/`}>
-                        {tag}の記事をすべて見る（{posts.length}件）→
+                        {tag}を年度別に見る（{posts.length}件）→
                     </a>
                 )}
             </section>
