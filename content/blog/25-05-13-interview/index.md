@@ -3,7 +3,8 @@ title: "KAIT広報誌取材での感想"
 date: 2025-05-13
 author: "根本"
 description: "今回はKAIT広報誌さんからの取材を受けました。少し緊張していましたが、当日は取材担当の方々が、にこやかに寄り添って下さり、安心して臨むことができました。"
-tags: ["対外活動","ピックアップ"]
+series: offcampus
+pickup: true
 thumbnail: ./25-05-13-interview.webp
 ---
 

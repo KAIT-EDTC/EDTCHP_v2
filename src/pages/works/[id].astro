@@ -22,14 +22,14 @@ interface Props {
     others: Work[];
 }
 const { work, others } = Astro.props;
-const { title, description, headline, maker, tags, capacity, duration, thumbnail, images } = work.data;
+const { title, description, headline, maker, age, capacity, duration, thumbnail, images } = work.data;
 const { Content } = await render(work);
 const ogImage = thumbnail ? (await getImage({ src: thumbnail, width: 1200, format: 'jpeg' })).src : undefined;
 
 const slides = [thumbnail ?? fallback, ...images];
 
 const specs = [
-    ['対象', tags.join('・')],
+    ['対象年齢', age],
     ['対応人数', capacity],
     ['授業時間', duration],
     ['製作者', maker],
@@ -64,13 +64,6 @@ const specs = [
                 }
             </div>
             <div class="work__info">
-                {
-                    tags.length > 0 && (
-                        <div class="chips">
-                            {tags.map((t) => <a class="chip" href={`/works/?tags=${encodeURIComponent(t)}`}>{t}</a>)}
-                        </div>
-                    )
-                }
                 <h1 class="work__title">{title}</h1>
                 {headline && <p class="work__headline">{headline}</p>}
                 {

@@ -3,7 +3,7 @@ title: "防犯ブザー"
 description: "本格的な機械工作体験をしてみませんか？作りながら防犯ブザーの仕組みを理解しよう！"
 headline: "あなたの身を守る、実際に使える防犯ブザー はんだごてなどを用いた本格的な機械工作体験"
 maker: "足立遥大"
-tags: ["全年齢"]
+age: 全年齢
 capacity: "5～10人ほど"
 duration: "1時間ほど"
 thumbnail: ./buzzer.webp

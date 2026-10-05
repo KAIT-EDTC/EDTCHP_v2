@@ -3,7 +3,7 @@ title: "第六回遊行塾に行ってきました！"
 date: 2025-09-27
 author: "根本"
 description: "第六回遊行塾を実施しました。今回はライントレースの前段階として、if 文および while 文に関する授業を行いました。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./25-09-27-yugyou06-01.webp
 ---
 

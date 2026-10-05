@@ -3,7 +3,7 @@ title: "第三回遊行塾を行いました!"
 date: 2025-06-07
 author: "大島"
 description: "第三回遊行塾を実施しました。機体の組み立ては最後になります。当ブログは一年生で初めての執筆となります^^"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./25-06-07-yugyou03-02.webp
 ---
 

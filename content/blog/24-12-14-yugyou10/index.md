@@ -3,7 +3,7 @@ title: "第十回遊行塾に行ってきました！"
 date: 2024-12-14
 author: "渡邉"
 description: "今年度最後となる第十回遊行塾を実施しました！今回はタイムアタックを行いました。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./24-12-14-yugyou10-02.webp
 ---
 

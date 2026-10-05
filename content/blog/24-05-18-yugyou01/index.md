@@ -3,7 +3,7 @@ title: "第一回遊行塾に行ってきました！"
 date: 2024-05-18
 author: "安藤"
 description: "今年度初回の遊行塾です。ギアボックスとタイヤを組み立てました！"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./24-05-18-yugyou01-01.webp
 ---
 

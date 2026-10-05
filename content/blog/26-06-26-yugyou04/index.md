@@ -3,7 +3,7 @@ title: "第四回遊行塾"
 date: 2026-06-26
 author: "小森"
 description: "6月20日に第4回遊行塾を実施しました。今回はArduino IDEを使ってプログラムを組み立てました。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./26-06-26-yugyou04-01.webp
 ---
 

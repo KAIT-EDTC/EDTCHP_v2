@@ -3,7 +3,7 @@ title: "レクを楽しみました！"
 date: 2025-07-03
 author: "山口"
 description: "EDTCメンバーでレクリエーションを楽しみました！"
-tags: ["遊び"]
+series: play
 thumbnail: ./25-07-03-reku-02.webp
 ---
 

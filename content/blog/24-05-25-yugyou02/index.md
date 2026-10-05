@@ -3,7 +3,7 @@ title: "第二回遊行塾に行ってきました！"
 date: 2024-05-25
 author: "番倉"
 description: "第二回遊行塾に行きました。今回はライントレーサーの機体のはんだ付けです。"
-tags: ["遊行塾"]
+series: yugyou
 thumbnail: ./24-05-25-yugyou02-01.webp
 ---
 

@@ -1,0 +1,47 @@
+---
+import Base from '../../../layouts/Base.astro';
+import BlogCard from '../../../components/BlogCard.astro';
+import { fiscalYear, getPosts, getSections, type BlogSection } from '../../../lib/blog';
+import '../../../styles/blog.css';
+
+/** タグ（活動）ごとの全記事を、年度ごとの見出しで並べる */
+export async function getStaticPaths() {
+    return getSections(await getPosts()).map((section) => ({ params: { slug: section.slug }, props: section }));
+}
+
+type Props = BlogSection;
+const { tag, intro, posts } = Astro.props;
+const years = [...new Set(posts.map((p) => fiscalYear(p.data.date)))];
+---
+
+<Base title={`${tag}の記事`} description={intro ?? `神奈川工科大学EDTCのブログから「${tag}」の記事一覧です。`}>
+    <div class="blog-tag-page__head">
+        <nav class="blog-tag-page__crumbs" aria-label="パンくずリスト">
+            <a href="/blog/">ブログ</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">{tag}</span>
+        </nav>
+        <h1 class="blog-section__title">
+            {tag}
+            <span class="blog-section__count">{posts.length}件</span>
+        </h1>
+        {intro && <p class="blog-section__intro">{intro}</p>}
+    </div>
+
+    {
+        years.map((year) => (
+            <section class="blog-tag-page__year" aria-labelledby={`fy${year}`}>
+                <h2 class="blog-tag-page__year-title" id={`fy${year}`}>
+                    {year}年度
+                </h2>
+                <ul class="blog-container">
+                    {posts
+                        .filter((p) => fiscalYear(p.data.date) === year)
+                        .map((post) => (
+                            <BlogCard post={post} />
+                        ))}
+                </ul>
+            </section>
+        ))
+    }
+</Base>

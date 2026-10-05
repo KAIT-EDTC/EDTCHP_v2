@@ -3,7 +3,7 @@ title: "相撲ロボット"
 description: "ロボットで相撲をしよう！リンク機構を用いた相撲ロボット"
 headline: "ロボットで相撲！ 相撲ロボット"
 maker: "上條慶"
-tags: ["中学生"]
+age: 中学生
 thumbnail: ./SumoRobot.webp
 ---
 

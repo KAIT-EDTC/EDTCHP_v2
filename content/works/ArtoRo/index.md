@@ -3,7 +3,7 @@ title: "ArtoRo(アトロ)"
 description: "まるで動物のようについてくるロボット 仕組みから学ぶ、ロボット製作体験！"
 headline: "ロボットがついてくる！？ 手に追従するロボット！"
 maker: "番倉萌"
-tags: ["中学生"]
+age: 中学生
 thumbnail: ./ArtoRo-front.webp
 images: [./ArtoRo-diagonally.webp, ./ArtoRo-flyer.webp]
 ---

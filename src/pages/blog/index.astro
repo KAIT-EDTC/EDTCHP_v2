@@ -2,13 +2,16 @@
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import BlogCard from '../../components/BlogCard.astro';
-import { getPosts, getTags } from '../../lib/blog';
+import { getPosts, getSections } from '../../lib/blog';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
 import '../../styles/blog.css';
 
-const posts = await getPosts();
-const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
-const tags = getTags(posts);
+/** カルーセルに並べる件数（新しい順。全件はタグごとの一覧ページへ） */
+const CAROUSEL_MAX = 12;
+/** 「年度別に見る」リンクを出す件数（これを超えるセクションだけ） */
+const MORE_FROM = 3;
+
+const sections = getSections(await getPosts());
 ---
 
 <Base title="ブログ" description="神奈川工科大学EDTCのブログ記事一覧。活動報告やイベント情報をお届けします。">
@@ -20,36 +23,78 @@ const tags = getTags(posts);
         </div>
     </section>
 
-    <section class="blog-filters" aria-label="記事フィルタ">
-        <div class="blog-filters__row">
-            <div class="blog-filters__year">
-                <label for="year-select">年で絞り込み</label>
-                <select id="year-select">
-                    <option value="">すべての年</option>
-                    {years.map((y) => <option value={y}>{y}年</option>)}
-                </select>
-            </div>
-            <div class="blog-filters__tags" role="group" aria-label="タグフィルタ">
-                <button type="button" class="blog-filters__tag-btn" data-tag="" aria-pressed="true">すべて</button>
-                {tags.map((t) => <button type="button" class="blog-filters__tag-btn" data-tag={t} aria-pressed="false">{t}</button>)}
-            </div>
-        </div>
-        <div class="blog-filters__meta">
-            <span class="blog-filters__count" aria-live="polite">{posts.length}件の記事</span>
-            <button class="blog-filters__clear" type="button" hidden>フィルタをクリア</button>
-        </div>
-    </section>
-
-    <div class="blog-area">
-        <ul class="blog-container">
-            {posts.map((post) => <BlogCard post={post} />)}
+    <nav class="blog-nav" aria-label="活動の種類">
+        <ul class="blog-nav__list">
+            {
+                sections.map(({ tag, slug, posts }) => (
+                    <li>
+                        <a class="blog-nav__link" href={`#${slug}`}>
+                            {tag}
+                            <span class="blog-nav__count">{posts.length}</span>
+                        </a>
+                    </li>
+                ))
+            }
         </ul>
-        <p class="blog-empty" hidden>条件に一致する記事がありません。</p>
-    </div>
-    <nav class="pagination-area pagination-area--bottom" aria-label="ページネーション" hidden></nav>
+    </nav>
+
+    {
+        sections.map(({ tag, slug, intro, posts }) => (
+            <section class="blog-section" id={slug} aria-labelledby={`${slug}-title`}>
+                <div class="blog-section__head">
+                    <h2 class="blog-section__title" id={`${slug}-title`}>
+                        <a href={`/blog/tag/${slug}/`}>{tag}</a>
+                        <span class="blog-section__count">{posts.length}件</span>
+                    </h2>
+                    {intro && <p class="blog-section__intro">{intro}</p>}
+                </div>
+                <div class="blog-carousel" data-carousel>
+                    <button type="button" class="blog-carousel__btn blog-carousel__btn--prev" data-carousel-prev aria-label={`${tag}の前の記事`} hidden>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+                    </button>
+                    <ul class="blog-carousel__track" data-carousel-track tabindex="0" aria-label={`${tag}の記事`}>
+                        {posts.slice(0, CAROUSEL_MAX).map((post) => <BlogCard post={post} />)}
+                    </ul>
+                    <button type="button" class="blog-carousel__btn blog-carousel__btn--next" data-carousel-next aria-label={`${tag}の次の記事`} hidden>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+                {posts.length > MORE_FROM && (
+                    <a class="blog-section__more" href={`/blog/tag/${slug}/`}>
+                        {tag}を年度別に見る（{posts.length}件）→
+                    </a>
+                )}
+            </section>
+        ))
+    }
 
     <script>
-        import { initCardFilter } from '../../scripts/cardFilter';
-        initCardFilter({ prefix: 'blog', matchAllTags: true });
+        // 矢印は横スクロールの補助。JSがなくてもスワイプ・トラックパッド・キーボードで送れるので、矢印は最初は隠しておく
+        const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+            const track = root.querySelector<HTMLElement>('[data-carousel-track]')!;
+            const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
+            const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
+
+            // 1回で見えている枚数ぶん進む
+            const move = (dir: number) => {
+                const [a, b] = track.children as HTMLCollectionOf<HTMLElement>;
+                const step = b ? b.offsetLeft - a.offsetLeft : track.clientWidth;
+                const gap = b ? step - a.offsetWidth : 0;
+                const visible = Math.max(1, Math.round((track.clientWidth + gap) / step));
+                track.scrollBy({ left: dir * visible * step, behavior: smooth ? 'smooth' : 'auto' });
+            };
+            const update = () => {
+                const overflow = track.scrollWidth > track.clientWidth + 1;
+                prev.hidden = next.hidden = !overflow;
+                prev.disabled = track.scrollLeft <= 1;
+                next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+            };
+            prev.addEventListener('click', () => move(-1));
+            next.addEventListener('click', () => move(1));
+            track.addEventListener('scroll', update, { passive: true });
+            new ResizeObserver(update).observe(track);
+            update();
+        });
     </script>
 </Base>

@@ -3,7 +3,7 @@ title: "第96回藤嶺祭に出展させていただきました！"
 date: 2025-10-26
 author: "山口"
 description: "EDTCが藤嶺祭にお邪魔しました！"
-tags: ["対外活動"]
+series: offcampus
 thumbnail: ./25-10-26-toureisai-01.webp
 ---
 

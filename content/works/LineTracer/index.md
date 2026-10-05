@@ -3,7 +3,7 @@ title: "ライントレーサー"
 description: "ライントレースの基本を学ぼう！基盤からプログラミングまで体験できる！"
 headline: "基盤からプログラミングまで体験できる！ 本格的なライントレーサー"
 maker: "須藤陸"
-tags: ["中学生"]
+age: 中学生
 capacity: "15人"
 duration: "例として全10回の授業では1コマ100分として提供しています。"
 thumbnail: ./LineTracer.webp
