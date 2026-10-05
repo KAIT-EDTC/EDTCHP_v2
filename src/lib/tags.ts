@@ -15,5 +15,3 @@ export const BLOG_SERIES = [
 
 export type BlogSeriesId = (typeof BLOG_SERIES)[number]['id'];
 export const BLOG_SERIES_IDS = BLOG_SERIES.map((s) => s.id) as [BlogSeriesId, ...BlogSeriesId[]];
-
-export const WORK_TAGS = ['小学生', '中学生', '高校生', '全年齢'] as const;

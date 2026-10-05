@@ -26,11 +26,6 @@ const works = await getWorks();
                         <a href={`/works/${id}/`}>
                             <div class="works-card__img-wrap">
                                 <Image class="works-card__img" src={data.thumbnail ?? fallback} alt={data.title} width={640} height={360} fit="cover" />
-                                {data.tags.length > 0 && (
-                                    <div class="works-card__tags">
-                                        {data.tags.map((t) => <span class="works-card__tag">{t}</span>)}
-                                    </div>
-                                )}
                             </div>
                             <div class="works-card__body">
                                 <h2 class="works-card__title">{data.title}</h2>

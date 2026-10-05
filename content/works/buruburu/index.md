@@ -3,7 +3,7 @@ title: "ぶるぶるくん"
 description: "虫のように振動する！？モーターを使った不思議なロボット"
 headline: "まるで虫みたい！ 振動するロボット！"
 maker: "鈴木一平"
-tags: ["小学生"]
+age: 小学生
 capacity: "10人ほど(はんだ付け込み)、15人ほど(はんだ付けなし)"
 duration: "1時間半ほど(はんだ付け込み)、1時間ほど(はんだ付けなし)"
 thumbnail: ./buruburu.webp

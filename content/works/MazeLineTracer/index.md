@@ -3,7 +3,7 @@ title: "ライントレース迷路ロボット"
 description: "ライントレースで迷路を攻略しよう！自分で作った迷路をロボットが走る！"
 headline: "ロボット自身が迷路を攻略！ ライントレース迷路ロボット"
 maker: "4年生"
-tags: ["中学生"]
+age: 中学生
 thumbnail: ./MazeLineTracer.webp
 ---
 
