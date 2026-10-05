@@ -3,47 +3,52 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import Pagination from '../../components/Pagination.astro';
-import { getPosts, getTags, type BlogEntry } from '../../lib/blog';
+import { getPosts, getTags, getFilters, filterSegments, filterHref, type BlogEntry, type BlogFilter } from '../../lib/blog';
 import { paginate } from '../../lib/listing';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
 import '../../styles/blog.css';
 
-/** 一覧 / 年別 / タグ別（それぞれ15件ごとのページ付き）を静的に出力する */
+/** 記事がある絞り込み（年 × 複数タグ）ごとに、15件ずつのページを静的に出力する */
 export async function getStaticPaths() {
     const posts = await getPosts();
-    const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
-    const tags = getTags(posts);
-    const filters = { years, tags };
-    return paginate([
-        { items: posts, props: filters },
-        ...years.map((year) => ({
-            base: `year/${year}`,
-            items: posts.filter((p) => p.data.date.getUTCFullYear() === year),
-            props: { ...filters, year },
-        })),
-        // ponytail: タグ名に / # ? など URL で特別な文字を含むと、ページが引けない/入れ子になる。必要になれば slug 化する
-        ...tags.map((tag) => ({
-            base: `tag/${tag}`,
-            items: posts.filter((p) => p.data.tags.includes(tag)),
-            props: { ...filters, tag },
-        })),
-    ]);
+    // ponytail: タグ名に / # ? など URL で特別な文字を含むと、ページが引けない/入れ子になる。必要になれば slug 化する
+    return paginate(
+        getFilters(posts).map(({ items, ...filter }) => ({ base: filterSegments(filter).join('/'), items, props: filter })),
+    );
 }
 
-interface Props {
+interface Props extends BlogFilter {
     items: BlogEntry[];
     page: number;
     total: number;
     count: number;
-    years: number[];
-    tags: string[];
-    year?: number;
-    tag?: string;
 }
-const { items, page, total, count, years, tags, year, tag } = Astro.props;
-const isAll = year === undefined && tag === undefined;
-const base = year ? `/blog/year/${year}/` : tag ? `/blog/tag/${encodeURIComponent(tag)}/` : '/blog/';
-const label = year ? `${year}年` : tag ? `タグ「${tag}」` : '';
+const { items, page, total, count, year, tags: selected } = Astro.props;
+
+const posts = await getPosts();
+const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
+const allTags = getTags(posts);
+const exists = new Set(getFilters(posts).map(filterHref));
+
+interface Pill {
+    label: string;
+    to: BlogFilter;
+    current: boolean;
+}
+const yearPills: Pill[] = [
+    { label: 'すべて', to: { tags: selected }, current: !year },
+    ...years.map((y) => ({ label: `${y}年`, to: { year: y, tags: selected }, current: y === year })),
+];
+const tagPills: Pill[] = [
+    { label: 'すべて', to: { year, tags: [] }, current: selected.length === 0 },
+    ...allTags.map((t) => {
+        const on = selected.includes(t);
+        return { label: t, to: { year, tags: on ? selected.filter((x) => x !== t) : [...selected, t] }, current: on };
+    }),
+];
+
+const base = filterHref({ year, tags: selected });
+const label = [year && `${year}年`, selected.length > 0 && selected.map((t) => `「${t}」`).join('')].filter(Boolean).join(' ');
 const title = ['ブログ', label, page > 1 && `${page}ページ目`].filter(Boolean).join(' ');
 ---
 
@@ -58,20 +63,25 @@ const title = ['ブログ', label, page > 1 && `${page}ページ目`].filter(Boo
 
     <section class="blog-filters" aria-label="記事フィルタ">
         <div class="blog-filters__row">
-            <div class="blog-filters__group">
-                <span class="blog-filters__label">年</span>
-                <nav class="blog-filters__tags" aria-label="年フィルタ">
-                    <a class="blog-filters__tag" href="/blog/" aria-current={isAll ? 'page' : undefined}>すべて</a>
-                    {years.map((y) => <a class="blog-filters__tag" href={`/blog/year/${y}/`} aria-current={y === year ? 'page' : undefined}>{y}年</a>)}
-                </nav>
-            </div>
-            <div class="blog-filters__group">
-                <span class="blog-filters__label">タグ</span>
-                <nav class="blog-filters__tags" aria-label="タグフィルタ">
-                    <a class="blog-filters__tag" href="/blog/" aria-current={isAll ? 'page' : undefined}>すべて</a>
-                    {tags.map((t) => <a class="blog-filters__tag" href={`/blog/tag/${encodeURIComponent(t)}/`} aria-current={t === tag ? 'page' : undefined}>{t}</a>)}
-                </nav>
-            </div>
+            {
+                [
+                    { name: '年', pills: yearPills },
+                    { name: 'タグ（複数選択可）', pills: tagPills },
+                ].map(({ name, pills }) => (
+                    <div class="blog-filters__group">
+                        <span class="blog-filters__label">{name}</span>
+                        <nav class="blog-filters__tags" aria-label={`${name}フィルタ`}>
+                            {pills.map(({ label, to, current }) =>
+                                exists.has(filterHref(to)) ? (
+                                    <a class="blog-filters__tag" href={filterHref(to)} aria-current={current ? 'true' : undefined}>{label}</a>
+                                ) : (
+                                    <span class="blog-filters__tag" aria-disabled="true">{label}</span>
+                                ),
+                            )}
+                        </nav>
+                    </div>
+                ))
+            }
         </div>
         <div class="blog-filters__meta">
             <span class="blog-filters__count">{count}件の記事</span>

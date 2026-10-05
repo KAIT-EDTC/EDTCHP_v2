@@ -90,9 +90,13 @@ body {
     transition: background 0.2s, color 0.2s;
 }
 
-.blog-filters__tag[aria-current="page"] {
+.blog-filters__tag[aria-current="true"] {
     background: var(--main-color);
     color: #fff;
+}
+
+.blog-filters__tag[aria-disabled="true"] {
+    opacity: 0.35;
 }
 
 .blog-filters__meta {
