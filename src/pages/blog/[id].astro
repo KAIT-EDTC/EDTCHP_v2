@@ -53,7 +53,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
                     <h1 class="post__title">{title}</h1>
                     <p class="post__meta">
                         <span>イベント実施日 <time datetime={iso(date)}>{formatDate(date)}</time></span>
-                        {author && <span>文・{author}</span>}
+                        {author && <span>執筆者：{author}</span>}
                     </p>
                 </header>
                 <div class="prose">
