@@ -76,13 +76,12 @@ const sections = getSections(await getPosts());
             const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
             const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
 
-            // 1回で、見えているカードぶん進む
+            // 1回で見えている枚数ぶん進む
             const move = (dir: number) => {
                 const [a, b] = track.children as HTMLCollectionOf<HTMLElement>;
                 const step = b ? b.offsetLeft - a.offsetLeft : track.clientWidth;
                 const gap = b ? step - a.offsetWidth : 0;
-                // 端数ぶん（次のカードののぞき）は数えず、完全に見えている枚数ぶん進む
-                const visible = Math.max(1, Math.floor((track.clientWidth + gap) / step + 0.01));
+                const visible = Math.max(1, Math.round((track.clientWidth + gap) / step));
                 track.scrollBy({ left: dir * visible * step, behavior: smooth ? 'smooth' : 'auto' });
             };
             const update = () => {
