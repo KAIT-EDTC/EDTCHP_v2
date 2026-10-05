@@ -37,9 +37,9 @@ export function formatDate(date: Date): string {
     return `${y}.${m}.${d}`;
 }
 
-/** 関連記事: 共通タグが多い順、同点なら実施日が近い順 */
+/** 関連記事: 同じ種別を先に、同じ並びの中では実施日が近い順 */
 export function relatedPosts(post: BlogEntry, posts: BlogEntry[], count = 4): BlogEntry[] {
-    const shared = (p: BlogEntry) => p.data.tags.filter((t) => post.data.tags.includes(t)).length;
+    const shared = (p: BlogEntry) => (p.data.series === post.data.series ? 1 : 0);
     const distance = (p: BlogEntry) => Math.abs(p.data.date.valueOf() - post.data.date.valueOf());
     return posts
         .filter((p) => p.id !== post.id)

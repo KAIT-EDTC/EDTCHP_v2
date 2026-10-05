@@ -3,6 +3,7 @@ import { Image, getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { formatDate, getPosts, relatedPosts, type BlogEntry } from '../../lib/blog';
+import { BLOG_SERIES } from '../../lib/tags';
 import fallback from '../../assets/img/EDTC-icon.webp';
 import '../../styles/detail.css';
 
@@ -19,7 +20,7 @@ interface Props {
     related: BlogEntry[];
 }
 const { post, related } = Astro.props;
-const { title, date, author, description, tags, thumbnail } = post.data;
+const { title, date, author, description, series, pickup, thumbnail } = post.data;
 const { Content } = await render(post);
 const ogImage = thumbnail ? (await getImage({ src: thumbnail, width: 1200, format: 'jpeg' })).src : undefined;
 const iso = (d: Date) => d.toISOString().slice(0, 10);
@@ -44,11 +45,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
             <article class="post__main card">
                 <header class="post__header">
                     {
-                        tags.length > 0 && (
-                            <div class="chips">
-                                {tags.map((t) => <a class="chip" href={`/blog/?tags=${encodeURIComponent(t)}`}>{t}</a>)}
-                            </div>
-                        )
+                        <div class="chips">
+                            <a class="chip" href={`/blog/tag/${series}/`}>{BLOG_SERIES.find((s) => s.id === series)?.label}</a>
+                            {pickup && <a class="chip" href="/blog/tag/pickup/">ピックアップ</a>}
+                        </div>
                     }
                     <h1 class="post__title">{title}</h1>
                     <p class="post__meta">
