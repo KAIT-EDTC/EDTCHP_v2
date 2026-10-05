@@ -2,21 +2,14 @@
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import BlogCard from '../../components/BlogCard.astro';
-import { getPosts, getTags } from '../../lib/blog';
-import { BLOG_TAG_INTRO } from '../../lib/tags';
+import { getPosts, getSections } from '../../lib/blog';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
 import '../../styles/blog.css';
 
-/** 各セクションで最初から見せる件数（残りは「すべて見る」に入れる） */
+/** 各セクションで見せる件数（残りはタグごとの一覧ページへ） */
 const PREVIEW = 3;
 
-const posts = await getPosts();
-const known = Object.keys(BLOG_TAG_INTRO);
-const tags = [...new Set([...known, ...getTags(posts)])];
-const sections = [
-    ...tags.map((tag) => ({ tag, intro: BLOG_TAG_INTRO[tag], posts: posts.filter((p) => p.data.tags.includes(tag)) })),
-    { tag: 'その他', intro: undefined, posts: posts.filter((p) => p.data.tags.length === 0) },
-].filter((s) => s.posts.length > 0);
+const sections = getSections(await getPosts());
 ---
 
 <Base title="ブログ" description="神奈川工科大学EDTCのブログ記事一覧。活動報告やイベント情報をお届けします。">
@@ -31,9 +24,9 @@ const sections = [
     <nav class="blog-nav" aria-label="活動の種類">
         <ul class="blog-nav__list">
             {
-                sections.map(({ tag, posts }, i) => (
+                sections.map(({ tag, slug, posts }) => (
                     <li>
-                        <a class="blog-nav__link" href={`#tag-${i}`}>
+                        <a class="blog-nav__link" href={`#${slug}`}>
                             {tag}
                             <span class="blog-nav__count">{posts.length}</span>
                         </a>
@@ -44,11 +37,11 @@ const sections = [
     </nav>
 
     {
-        sections.map(({ tag, intro, posts }, i) => (
-            <section class="blog-section" id={`tag-${i}`} aria-labelledby={`tag-${i}-title`}>
+        sections.map(({ tag, slug, intro, posts }) => (
+            <section class="blog-section" id={slug} aria-labelledby={`${slug}-title`}>
                 <div class="blog-section__head">
-                    <h2 class="blog-section__title" id={`tag-${i}-title`}>
-                        {tag}
+                    <h2 class="blog-section__title" id={`${slug}-title`}>
+                        <a href={`/blog/tag/${slug}/`}>{tag}</a>
                         <span class="blog-section__count">{posts.length}件</span>
                     </h2>
                     {intro && <p class="blog-section__intro">{intro}</p>}
@@ -57,12 +50,9 @@ const sections = [
                     {posts.slice(0, PREVIEW).map((post) => <BlogCard post={post} />)}
                 </ul>
                 {posts.length > PREVIEW && (
-                    <details class="blog-section__more">
-                        <summary>すべて見る（{posts.length}件）</summary>
-                        <ul class="blog-container">
-                            {posts.slice(PREVIEW).map((post) => <BlogCard post={post} />)}
-                        </ul>
-                    </details>
+                    <a class="blog-section__more" href={`/blog/tag/${slug}/`}>
+                        {tag}の記事をすべて見る（{posts.length}件）→
+                    </a>
                 )}
             </section>
         ))
