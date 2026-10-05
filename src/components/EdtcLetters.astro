@@ -120,10 +120,10 @@ const letters = [
     .hint {
         display: none;
     }
-    /* スマホ: 4枚を少しずつずらして重ね、先頭をめくる */
+    /* スマホ: 4枚を右に少しずつずらして重ね、先頭をめくる */
     @media screen and (max-width: 599px) {
         .letters {
-            padding-bottom: 36px;
+            padding-right: 36px;
             touch-action: pan-y;
             cursor: pointer;
             user-select: none;
@@ -131,8 +131,7 @@ const letters = [
         li {
             grid-area: 1 / 1;
             z-index: calc(4 - var(--p));
-            transform-origin: bottom center;
-            transform: translateY(calc(var(--p) * 12px)) scale(calc(1 - var(--p) * 0.04));
+            transform: translateX(calc(var(--p) * 12px));
             transition:
                 transform 0.3s,
                 opacity 0.3s;
