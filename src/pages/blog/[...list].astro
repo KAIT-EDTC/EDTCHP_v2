@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getPosts, getTags, type BlogEntry } from '../../lib/blog';
+import { paginate } from '../../lib/listing';
+import hero from '../../assets/img/EDTC-GroupPhoto.webp';
+import '../../styles/blog.css';
+
+/** 一覧 / 年別 / タグ別（それぞれ15件ごとのページ付き）を静的に出力する */
+export async function getStaticPaths() {
+    const posts = await getPosts();
+    const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
+    const tags = getTags(posts);
+    const filters = { years, tags };
+    return paginate([
+        { items: posts, props: filters },
+        ...years.map((year) => ({
+            base: `year/${year}`,
+            items: posts.filter((p) => p.data.date.getUTCFullYear() === year),
+            props: { ...filters, year },
+        })),
+        // ponytail: タグ名に / # ? など URL で特別な文字を含むと、ページが引けない/入れ子になる。必要になれば slug 化する
+        ...tags.map((tag) => ({
+            base: `tag/${tag}`,
+            items: posts.filter((p) => p.data.tags.includes(tag)),
+            props: { ...filters, tag },
+        })),
+    ]);
+}
+
+interface Props {
+    items: BlogEntry[];
+    page: number;
+    total: number;
+    count: number;
+    years: number[];
+    tags: string[];
+    year?: number;
+    tag?: string;
+}
+const { items, page, total, count, years, tags, year, tag } = Astro.props;
+const isAll = year === undefined && tag === undefined;
+const base = year ? `/blog/year/${year}/` : tag ? `/blog/tag/${encodeURIComponent(tag)}/` : '/blog/';
+const label = year ? `${year}年` : tag ? `タグ「${tag}」` : '';
+const title = ['ブログ', label, page > 1 && `${page}ページ目`].filter(Boolean).join(' ');
+---
+
+<Base title={title} description="神奈川工科大学EDTCのブログ記事一覧。活動報告やイベント情報をお届けします。">
+    <section class="blog-hero" aria-label="ブログヒーロー">
+        <Image src={hero} alt="" class="blog-hero__bg" width={1280} height={720} loading="eager" fetchpriority="high" />
+        <div class="blog-hero__overlay">
+            <h1 class="blog-hero__title">Blog</h1>
+            <p class="blog-hero__desc">EDTCの活動や日々の取り組みをお届けします。</p>
+        </div>
+    </section>
+
+    <section class="blog-filters" aria-label="記事フィルタ">
+        <div class="blog-filters__row">
+            <div class="blog-filters__group">
+                <span class="blog-filters__label">年</span>
+                <nav class="blog-filters__tags" aria-label="年フィルタ">
+                    <a class="blog-filters__tag" href="/blog/" aria-current={isAll ? 'page' : undefined}>すべて</a>
+                    {years.map((y) => <a class="blog-filters__tag" href={`/blog/year/${y}/`} aria-current={y === year ? 'page' : undefined}>{y}年</a>)}
+                </nav>
+            </div>
+            <div class="blog-filters__group">
+                <span class="blog-filters__label">タグ</span>
+                <nav class="blog-filters__tags" aria-label="タグフィルタ">
+                    <a class="blog-filters__tag" href="/blog/" aria-current={isAll ? 'page' : undefined}>すべて</a>
+                    {tags.map((t) => <a class="blog-filters__tag" href={`/blog/tag/${encodeURIComponent(t)}/`} aria-current={t === tag ? 'page' : undefined}>{t}</a>)}
+                </nav>
+            </div>
+        </div>
+        <div class="blog-filters__meta">
+            <span class="blog-filters__count">{count}件の記事</span>
+        </div>
+    </section>
+
+    <div class="blog-area">
+        <ul class="blog-container">
+            {items.map((post) => <BlogCard post={post} />)}
+        </ul>
+    </div>
+    <Pagination base={base} page={page} total={total} />
+</Base>

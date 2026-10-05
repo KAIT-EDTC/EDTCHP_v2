@@ -1,0 +1,36 @@
+---
+import '../styles/pagination.css';
+
+interface Props {
+    /** 1ページ目のパス（末尾スラッシュ付き。例: /blog/tag/遊び/） */
+    base: string;
+    page: number;
+    total: number;
+}
+const { base, page, total } = Astro.props;
+const href = (n: number) => (n === 1 ? base : `${base}page/${n}/`);
+---
+
+{
+    total > 1 && (
+        <nav class="pagination-area pagination-area--bottom" aria-label="ページネーション">
+            {page > 1 ? (
+                <a class="pagination-area__arrow" href={href(page - 1)} rel="prev" aria-label="前のページ">‹</a>
+            ) : (
+                <span class="pagination-area__arrow" aria-disabled="true">‹</span>
+            )}
+            {Array.from({ length: total }, (_, i) => i + 1).map((n) =>
+                n === page ? (
+                    <span class="pagination-area__num pagination-area__current" aria-current="page">{n}</span>
+                ) : (
+                    <a class="pagination-area__num" href={href(n)}>{n}</a>
+                ),
+            )}
+            {page < total ? (
+                <a class="pagination-area__arrow" href={href(page + 1)} rel="next" aria-label="次のページ">›</a>
+            ) : (
+                <span class="pagination-area__arrow" aria-disabled="true">›</span>
+            )}
+        </nav>
+    )
+}

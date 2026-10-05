@@ -60,34 +60,25 @@ body {
     align-items: flex-start;
 }
 
-.blog-filters__year {
+.blog-filters__group {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
 }
 
-.blog-filters__year label {
+.blog-filters__label {
     font-size: 0.85rem;
     font-weight: 600;
-}
-
-.blog-filters__year select {
-    padding: 0.4em 0.8em;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    background: #fff;
 }
 
 .blog-filters__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    align-items: flex-end;
-    padding-top: 1.4rem; /* labelの高さに揃える */
+    align-items: center;
 }
 
-.blog-filters__tag-btn {
+.blog-filters__tag {
     padding: 0.35em 0.9em;
     border: 1.5px solid var(--main-color);
     border-radius: 999px;
@@ -95,11 +86,11 @@ body {
     color: var(--main-color);
     font-size: 0.85rem;
     font-weight: 600;
-    cursor: pointer;
+    text-decoration: none;
     transition: background 0.2s, color 0.2s;
 }
 
-.blog-filters__tag-btn[aria-pressed="true"] {
+.blog-filters__tag[aria-current="page"] {
     background: var(--main-color);
     color: #fff;
 }
@@ -111,19 +102,6 @@ body {
     margin-top: 0.8rem;
     font-size: 0.85rem;
     color: #666;
-}
-
-.blog-filters__clear {
-    padding: 0.3em 0.8em;
-    border: none;
-    border-radius: 6px;
-    background: #eee;
-    font-size: 0.8rem;
-    cursor: pointer;
-}
-
-.blog-filters__clear:hover {
-    background: #ddd;
 }
 
 /* ===== カード一覧 ===== */
@@ -221,92 +199,6 @@ body {
     overflow: hidden;
 }
 
-/* ===== 空状態 ===== */
-.blog-empty {
-    text-align: center;
-    padding: 4rem 1rem;
-    color: #888;
-    font-size: 1rem;
-}
-
-/* ===== ページネーション ===== */
-.pagination-area {
-    display: flex;
-    margin: 1.5rem auto;
-    gap: 6px;
-    padding: 0 1rem;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.pagination-area button {
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    min-width: 44px;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.pagination-area__arrow {
-    background: #333;
-    color: #fff;
-    padding: 0.4em 0.7em;
-    font-size: 0.95rem;
-}
-
-.pagination-area__arrow:hover:not(:disabled) {
-    background: #555;
-    transform: scale(1.04);
-}
-
-.pagination-area__arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.pagination-area__num {
-    background: var(--item-color);
-    color: #333;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.pagination-area__num:hover {
-    background: #ddd;
-}
-
-.pagination-area__current {
-    background: var(--main-color) !important;
-    color: #fff !important;
-    pointer-events: none;
-}
-
-.pagination-area__ellipsis {
-    width: 20px;
-    text-align: center;
-    color: #888;
-    font-size: 1rem;
-    user-select: none;
-}
-
-.pagination-area--top {
-    margin-bottom: 0;
-}
-
-.pagination-area--bottom {
-    margin-top: 1rem;
-    margin-bottom: 3rem;
-}
-
 /* ===== レスポンシブ ===== */
 @media (max-width: 768px) {
     .blog-container {
@@ -327,20 +219,6 @@ body {
     .blog-filters__row {
         flex-direction: column;
     }
-    .blog-filters__tags {
-        padding-top: 0;
-    }
-}
-
-/* ===== タップフィードバック ===== */
-.pagination-area__num:active {
-    background: var(--main-color);
-    color: #fff;
-    transform: scale(0.95);
-}
-
-.pagination-area__arrow:active:not(:disabled) {
-    transform: scale(0.95);
 }
 
 /* ===== prefers-reduced-motion ===== */
@@ -350,8 +228,7 @@ body {
         transform: none;
     }
     .blog-card,
-    .blog-card__img,
-    .pagination-area button {
+    .blog-card__img {
         transition: none;
     }
     .blog-card:hover {

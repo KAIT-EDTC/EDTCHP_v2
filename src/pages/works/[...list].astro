@@ -1,16 +1,40 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import Pagination from '../../components/Pagination.astro';
 import { getWorks } from '../../lib/works';
+import { paginate } from '../../lib/listing';
 import { WORK_TAGS } from '../../lib/tags';
 import hero from '../../assets/img/EDTC-teaching-machine.webp';
 import fallback from '../../assets/img/EDTC-icon.webp';
 import '../../styles/works.css';
 
-const works = await getWorks();
+type Work = Awaited<ReturnType<typeof getWorks>>[number];
+
+/** 一覧 / 対象年齢別を静的に出力する（該当0件のタグはページを作らない） */
+export async function getStaticPaths() {
+    const works = await getWorks();
+    return paginate([
+        { items: works },
+        ...WORK_TAGS.map((tag) => ({ base: `tag/${tag}`, items: works.filter((w) => w.data.tags.includes(tag)), props: { tag } })).filter(
+            (g) => g.items.length > 0,
+        ),
+    ]);
+}
+
+interface Props {
+    items: Work[];
+    page: number;
+    total: number;
+    count: number;
+    tag?: string;
+}
+const { items, page, total, count, tag } = Astro.props;
+const base = tag ? `/works/tag/${encodeURIComponent(tag)}/` : '/works/';
+const title = ['制作物', tag && `対象年齢「${tag}」`, page > 1 && `${page}ページ目`].filter(Boolean).join(' ');
 ---
 
-<Base title="制作物" description="神奈川工科大学EDTCが開発した教材・ロボットなどの制作物の一覧ページです。">
+<Base title={title} description="神奈川工科大学EDTCが開発した教材・ロボットなどの制作物の一覧ページです。">
     <section class="works-hero" aria-label="制作物ヒーロー">
         <Image src={hero} alt="" class="works-hero__bg" width={1280} height={720} loading="eager" fetchpriority="high" />
         <div class="works-hero__overlay">
@@ -23,23 +47,22 @@ const works = await getWorks();
         <div class="works-filters__row">
             <div class="works-filters__age">
                 <span class="works-filters__label">対象年齢</span>
-                <div class="works-filters__tags" role="group" aria-label="対象年齢フィルタ">
-                    <button type="button" class="works-filters__tag-btn" data-tag="" aria-pressed="true">すべて</button>
-                    {WORK_TAGS.map((t) => <button type="button" class="works-filters__tag-btn" data-tag={t} aria-pressed="false">{t}</button>)}
-                </div>
+                <nav class="works-filters__tags" aria-label="対象年齢フィルタ">
+                    <a class="works-filters__tag" href="/works/" aria-current={tag ? undefined : 'page'}>すべて</a>
+                    {WORK_TAGS.map((t) => <a class="works-filters__tag" href={`/works/tag/${encodeURIComponent(t)}/`} aria-current={t === tag ? 'page' : undefined}>{t}</a>)}
+                </nav>
             </div>
         </div>
         <div class="works-filters__meta">
-            <span class="works-filters__count" aria-live="polite">{works.length}件の制作物</span>
-            <button class="works-filters__clear" type="button" hidden>フィルタをクリア</button>
+            <span class="works-filters__count">{count}件の制作物</span>
         </div>
     </section>
 
     <div class="works-area">
         <ul class="works-container">
             {
-                works.map(({ id, data }) => (
-                    <li class="works-card" data-tags={data.tags.join('|')}>
+                items.map(({ id, data }) => (
+                    <li class="works-card">
                         <a href={`/works/${id}/`}>
                             <div class="works-card__img-wrap">
                                 <Image class="works-card__img" src={data.thumbnail ?? fallback} alt={data.title} width={640} height={360} fit="cover" />
@@ -58,12 +81,6 @@ const works = await getWorks();
                 ))
             }
         </ul>
-        <p class="works-empty" hidden>条件に一致する制作物がありません。</p>
     </div>
-    <nav class="pagination-area pagination-area--bottom" aria-label="ページネーション" hidden></nav>
-
-    <script>
-        import { initCardFilter } from '../../scripts/cardFilter';
-        initCardFilter({ prefix: 'works', matchAllTags: false });
-    </script>
+    <Pagination base={base} page={page} total={total} />
 </Base>

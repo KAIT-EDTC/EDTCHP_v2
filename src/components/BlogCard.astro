@@ -11,7 +11,7 @@ const { post } = Astro.props;
 const { title, date, description, tags, thumbnail } = post.data;
 ---
 
-<li class="blog-card" data-year={String(date.getUTCFullYear())} data-tags={tags.join('|')}>
+<li class="blog-card">
     <a href={`/blog/${post.id}/`}>
         <div class="blog-card__img-wrap">
             <Image class="blog-card__img" src={thumbnail ?? fallback} alt={title} width={640} height={360} fit="cover" />

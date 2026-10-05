@@ -1,0 +1,96 @@
+/* ===== ページネーション ===== */
+.pagination-area {
+    display: flex;
+    margin: 1.5rem auto;
+    gap: 6px;
+    padding: 0 1rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pagination-area a,
+.pagination-area span {
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-area__arrow {
+    background: #333;
+    color: #fff;
+    padding: 0.4em 0.7em;
+    font-size: 0.95rem;
+}
+
+a.pagination-area__arrow:hover {
+    background: #555;
+    transform: scale(1.04);
+}
+
+.pagination-area__arrow[aria-disabled="true"] {
+    opacity: 0.3;
+}
+
+.pagination-area__num {
+    background: var(--item-color);
+    color: #333;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+a.pagination-area__num:hover {
+    background: #ddd;
+}
+
+.pagination-area__current {
+    background: var(--main-color) !important;
+    color: #fff !important;
+    pointer-events: none;
+}
+
+.pagination-area__ellipsis {
+    width: 20px;
+    text-align: center;
+    color: #888;
+    font-size: 1rem;
+    user-select: none;
+}
+
+.pagination-area--top {
+    margin-bottom: 0;
+}
+
+.pagination-area--bottom {
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+}
+
+/* ===== タップフィードバック ===== */
+a.pagination-area__num:active {
+    background: var(--main-color);
+    color: #fff;
+    transform: scale(0.95);
+}
+
+a.pagination-area__arrow:active {
+    transform: scale(0.95);
+}
+
+/* ===== prefers-reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+    .pagination-area a,
+    .pagination-area span {
+        transition: none;
+    }
+}
