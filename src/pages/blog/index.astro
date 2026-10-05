@@ -6,8 +6,10 @@ import { getPosts, getSections } from '../../lib/blog';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
 import '../../styles/blog.css';
 
-/** 各セクションで見せる件数（残りはタグごとの一覧ページへ） */
-const PREVIEW = 3;
+/** カルーセルに並べる件数（新しい順。全件はタグごとの一覧ページへ） */
+const CAROUSEL_MAX = 12;
+/** 「すべて見る」リンクを出す件数（これを超えるセクションだけ） */
+const MORE_FROM = 3;
 
 const sections = getSections(await getPosts());
 ---
@@ -46,10 +48,18 @@ const sections = getSections(await getPosts());
                     </h2>
                     {intro && <p class="blog-section__intro">{intro}</p>}
                 </div>
-                <ul class="blog-container">
-                    {posts.slice(0, PREVIEW).map((post) => <BlogCard post={post} />)}
-                </ul>
-                {posts.length > PREVIEW && (
+                <div class="blog-carousel" data-carousel>
+                    <button type="button" class="blog-carousel__btn blog-carousel__btn--prev" data-carousel-prev aria-label={`${tag}の前の記事`} hidden>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+                    </button>
+                    <ul class="blog-carousel__track" data-carousel-track tabindex="0" aria-label={`${tag}の記事`}>
+                        {posts.slice(0, CAROUSEL_MAX).map((post) => <BlogCard post={post} />)}
+                    </ul>
+                    <button type="button" class="blog-carousel__btn blog-carousel__btn--next" data-carousel-next aria-label={`${tag}の次の記事`} hidden>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+                {posts.length > MORE_FROM && (
                     <a class="blog-section__more" href={`/blog/tag/${slug}/`}>
                         {tag}の記事をすべて見る（{posts.length}件）→
                     </a>
@@ -57,4 +67,34 @@ const sections = getSections(await getPosts());
             </section>
         ))
     }
+
+    <script>
+        // 矢印は横スクロールの補助。JSがなくてもスワイプ・トラックパッド・キーボードで送れるので、矢印は最初は隠しておく
+        const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+            const track = root.querySelector<HTMLElement>('[data-carousel-track]')!;
+            const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
+            const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
+
+            // 1回で見えている枚数ぶん進む
+            const move = (dir: number) => {
+                const [a, b] = track.children as HTMLCollectionOf<HTMLElement>;
+                const step = b ? b.offsetLeft - a.offsetLeft : track.clientWidth;
+                const gap = b ? step - a.offsetWidth : 0;
+                const visible = Math.max(1, Math.round((track.clientWidth + gap) / step));
+                track.scrollBy({ left: dir * visible * step, behavior: smooth ? 'smooth' : 'auto' });
+            };
+            const update = () => {
+                const overflow = track.scrollWidth > track.clientWidth + 1;
+                prev.hidden = next.hidden = !overflow;
+                prev.disabled = track.scrollLeft <= 1;
+                next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+            };
+            prev.addEventListener('click', () => move(-1));
+            next.addEventListener('click', () => move(1));
+            track.addEventListener('scroll', update, { passive: true });
+            new ResizeObserver(update).observe(track);
+            update();
+        });
+    </script>
 </Base>
