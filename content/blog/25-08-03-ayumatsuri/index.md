@@ -3,7 +3,7 @@ title: "あゆまつりのお手伝いに行ってきました!"
 date: 2025-08-03
 author: "及川"
 description: "厚木JCが開催する「あつぎ鮎まつり DREAMフェスタ2025」のお手伝いに行ってきました！"
-tags: ["学内イベント"]
+tags: ["学外イベント"]
 thumbnail: ./25-08-03-tourouage.webp
 ---
 
