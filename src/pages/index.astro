@@ -43,6 +43,7 @@ const news = (await getPosts()).slice(0, 5);
                 神奈川工科大学（KAIT）の学生が、小・中・高校生にロボット工作やプログラミングを教えている学生団体です。教材づくりから授業の企画・運営まで、すべて学生が自分たちで行っています。
             </p>
             <EdtcLetters />
+            <p class="cta">活動を見てみる</p>
             <div class="actions">
                 <a href="/blog/" class="btn">ブログを見る</a>
                 <a href="/works/" class="btn btn--sub">制作物を見る</a>
@@ -90,8 +91,14 @@ const news = (await getPosts()).slice(0, 5);
         font-size: clamp(16px, 2.2vw, 19px);
         line-height: 1.9;
     }
-    .actions {
+    .cta {
         margin-top: 56px;
+        font-size: clamp(20px, 3vw, 28px);
+        font-weight: 900;
+        color: #222;
+    }
+    .actions {
+        margin-top: 16px;
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
