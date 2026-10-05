@@ -8,6 +8,13 @@ export async function getPosts(): Promise<BlogEntry[]> {
     return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
+/** 記事に付いているタグ（使われている数の多い順、同数は名前順） */
+export function getTags(posts: BlogEntry[]): string[] {
+    const counts = new Map<string, number>();
+    for (const tag of posts.flatMap((p) => p.data.tags)) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    return [...counts.keys()].sort((a, b) => counts.get(b)! - counts.get(a)! || a.localeCompare(b, 'ja'));
+}
+
 /** 日付は JST の暦日として扱う（date: 2026-10-17 は UTC 0時にパースされるため UTC で整形すればずれない） */
 export function formatDate(date: Date): string {
     const y = date.getUTCFullYear();
