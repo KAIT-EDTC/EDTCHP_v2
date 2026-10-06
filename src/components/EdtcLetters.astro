@@ -124,6 +124,7 @@ const letters = [
     @media screen and (max-width: 599px) {
         .letters {
             padding-right: 36px;
+            isolation: isolate; /* カードの z-index をここで完結させ、固定ヘッダーより前に出さない */
             touch-action: pan-y;
             cursor: pointer;
             user-select: none;
