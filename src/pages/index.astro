@@ -24,7 +24,7 @@ const news = (await getPosts()).slice(0, 5);
             {
                 slides.map((s, i) => (
                     <div>
-                        <Image src={s.src} alt={s.alt} width={640} height={360} loading={i === 0 ? 'eager' : 'lazy'} />
+                        <Image src={s.src} alt={s.alt} width={1200} height={675} loading={i === 0 ? 'eager' : 'lazy'} />
                     </div>
                 ))
             }
