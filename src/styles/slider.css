@@ -11,9 +11,10 @@ li {
 
 /* ↓ スライドの外枠 */
 .slide-wrapper {
-    /* aspect-ratio:16/9; */
     width: 100%;
-    height: 50%; /*丸島先輩に相談 */
+    /* 固定ヘッダー(body の margin-top: 70px)を除いて画面いっぱい。svh でモバイルのアドレスバーを考慮 */
+    height: calc(100vh - 70px);
+    height: calc(100svh - 70px);
     position: relative;
     overflow: hidden;
     /* はみ出したスライドを隠す */
@@ -22,7 +23,10 @@ li {
     position: absolute;
         top:50%;
         left:50%;
-        font-size:5vh;
+        font-size: min(8vw, 7vh); /* 縦長のスマホは幅、横長のPCは高さで頭打ち */
+        width: max-content;
+        max-width: 90%;
+        text-align: center;
         font-weight: bold;
         color: white;
         padding:0;
@@ -56,10 +60,7 @@ li {
 .slide img{
 
     width: 100%;
-    /* height: auto; */
-    /* add */
-    height: 70vh; /*スライド高さいっぱい*/
-    aspect-ratio: 16 / 9;
+    height: 100%;
     object-fit: cover;/*縮尺そのまま切り抜き*/
 
     }
@@ -150,29 +151,11 @@ li {
 }
 
 @media (max-width: 768px) {
-    .slide-wrapper {
-        height: 40vh;
-    }
-
     .slide img {
-        height: 40vh;
+        object-position: 60% center; /* 縦長で左右が切れるぶん、画像を左へずらして右側を見せる */
     }
 
-    .slide-wrapper p {
-        font-size: 3.8vh;
-    }
-}
-
-@media (max-width: 480px) {
-    .slide-wrapper {
-        height: 30vh;
-    }
-
-    .slide img {
-        height: 30vh;
-    }
-
-    .slide-wrapper p {
-        font-size: 3.2vh;
+    .slide div:nth-of-type(2) img {
+        object-position: 50% center; /* 2枚目はずらしすぎるので中央のまま */
     }
 }
