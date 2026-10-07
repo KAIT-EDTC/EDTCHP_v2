@@ -24,7 +24,6 @@ const letters = [
         ))
     }
 </ul>
-<p class="hint">タップかスワイプでカードをめくれます</p>
 
 <script>
     // スマホ幅のときだけ、先頭のカードを後ろに回す（C の次は E に戻る）
@@ -53,6 +52,7 @@ const letters = [
         };
 
         list.addEventListener('pointerdown', (e) => {
+            list.classList.add('touched'); // 一度触れたら誘導アニメーションは止める
             startX = e.clientX;
             startY = e.clientY;
         });
@@ -117,12 +117,10 @@ const letters = [
             word-break: auto-phrase;
         }
     }
-    .hint {
-        display: none;
-    }
     /* スマホ: 4枚を右に少しずつずらして重ね、先頭をめくる */
     @media screen and (max-width: 599px) {
         .letters {
+            position: relative;
             padding-right: 36px;
             isolation: isolate; /* カードの z-index をここで完結させ、固定ヘッダーより前に出さない */
             touch-action: pan-y;
@@ -141,17 +139,60 @@ const letters = [
             transform: translateX(-110%) rotate(-8deg);
             opacity: 0;
         }
-        .hint {
-            display: block;
-            margin-top: 8px;
-            font-size: 13px;
-            color: #555;
-            text-align: center;
+        /* 指の代わりの丸がカード上でタップし、「めくれる」ことを動きで伝える */
+        .letters:not(.touched)::after {
+            content: '';
+            position: absolute;
+            top: 55%;
+            left: 55%;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            background: rgb(34 34 34 / 0.4);
+            box-shadow:
+                0 2px 8px rgb(0 0 0 / 0.3),
+                0 0 0 0 rgb(34 34 34 / 0.35);
+            pointer-events: none;
+            opacity: 0;
+            animation: tap 2.5s 1s ease-out infinite;
+        }
+    }
+    @keyframes tap {
+        0% {
+            opacity: 0;
+            transform: scale(1.3);
+        }
+        12% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        24% {
+            transform: scale(0.8); /* 押し込む */
+        }
+        36% {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow:
+                0 2px 8px rgb(0 0 0 / 0.3),
+                0 0 0 0 rgb(34 34 34 / 0.35);
+        }
+        60%,
+        100% {
+            opacity: 0;
+            transform: scale(1);
+            box-shadow:
+                0 2px 8px rgb(0 0 0 / 0.3),
+                0 0 0 28px rgb(34 34 34 / 0); /* 波紋が広がって消える */
         }
     }
     @media (prefers-reduced-motion: reduce) {
         li {
             transition: none;
+        }
+        .letters::after {
+            animation: none !important;
         }
     }
     @media screen and (min-width: 600px) {
