@@ -1,7 +1,8 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getWorks } from '../../lib/works';
 import fallback from '../../assets/img/EDTC-icon.webp';
 import '../../styles/detail.css';
@@ -24,7 +25,6 @@ interface Props {
 const { work, others } = Astro.props;
 const { title, description, headline, maker, age, capacity, duration, thumbnail, images } = work.data;
 const { Content } = await render(work);
-const ogImage = thumbnail ? (await getImage({ src: thumbnail, width: 1200, format: 'jpeg' })).src : undefined;
 
 const slides = [thumbnail ?? fallback, ...images];
 
@@ -36,13 +36,9 @@ const specs = [
 ].filter(([, v]) => v);
 ---
 
-<Base title={title} description={description} image={ogImage}>
+<Base title={title} description={description} image={thumbnail}>
     <div class="detail">
-        <nav aria-label="パンくずリスト" class="breadcrumbs">
-            <a href="/">ホーム</a><span aria-hidden="true">›</span>
-            <a href="/works/">制作物</a><span aria-hidden="true">›</span>
-            <span aria-current="page">{title}</span>
-        </nav>
+        <Breadcrumbs items={[{ label: '制作物', href: '/works/' }, { label: title }]} />
 
         <section class="work card">
             <div class="work__media">

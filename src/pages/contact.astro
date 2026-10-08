@@ -1,8 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 ---
 
 <Base title="お問い合わせ" description="神奈川工科大学EDTCへのお問い合わせフォームです。出張授業やイベントのご依頼はこちらから。">
+    <div class="page-breadcrumbs">
+        <Breadcrumbs items={[{ label: 'お問い合わせ' }]} />
+    </div>
     <div class="contact-area">
         <iframe
             src="https://docs.google.com/forms/d/e/1FAIpQLSdZ31zzlqOqCevn0sD0Fti0XwjZTHCDsz3Hja8r1q6oKgxyPw/viewform?embedded=true"
@@ -18,7 +22,6 @@ import Base from '../layouts/Base.astro';
         display: flex;
         justify-content: center;
         padding: 20px 0;
-        background-color: #85a7cc;
     }
     iframe {
         max-width: 100%;

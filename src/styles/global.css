@@ -106,3 +106,10 @@ select:focus-visible,
     color: var(--main-color);
     border: 2px solid var(--main-color);
 }
+
+/* ヒーローの下に置くパンくずの外枠。一覧ページの本文と幅をそろえる */
+.page-breadcrumbs {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+}

@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getWorks } from '../../lib/works';
 import hero from '../../assets/img/EDTC-teaching-machine.webp';
 import fallback from '../../assets/img/EDTC-icon.webp';
@@ -17,6 +18,10 @@ const works = await getWorks();
             <p class="works-hero__desc">EDTCが開発した教材・ロボットなどの制作物をご紹介します。</p>
         </div>
     </section>
+
+    <div class="page-breadcrumbs">
+        <Breadcrumbs items={[{ label: '制作物' }]} />
+    </div>
 
     <div class="works-area">
         <ul class="works-container">

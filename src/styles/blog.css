@@ -49,7 +49,7 @@ body {
 /* ===== 活動の種類（ページ内リンク） ===== */
 .blog-nav {
     max-width: 1200px;
-    margin: 2rem auto 0;
+    margin: 0 auto; /* 上の余白はパンくずが持つ */
     padding: 0 5%;
 }
 
@@ -156,15 +156,7 @@ body {
 .blog-tag-page__head {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 5% 0; /* margin だと body の margin-top と相殺される */
-}
-
-.blog-tag-page__crumbs {
-    display: flex;
-    gap: 0.5em;
-    margin-bottom: 1.2rem;
-    font-size: 0.9rem;
-    color: #666;
+    padding: 0 5%; /* 上の余白はパンくずが持つ */
 }
 
 .blog-tag-page__year {

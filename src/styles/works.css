@@ -51,7 +51,7 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     max-width: 1200px;
-    margin: 2.5rem auto 4rem;
+    margin: 0 auto 4rem; /* 上の余白はパンくずが持つ */
     padding: 0 5%;
     gap: 24px;
     list-style: none;
