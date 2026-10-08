@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getWorks } from '../../lib/works';
 import hero from '../../assets/img/EDTC-teaching-machine.webp';
-import fallback from '../../assets/img/EDTC-icon.webp';
+import { thumbnailOf } from '../../lib/thumbnail';
 import '../../styles/works.css';
 
 const works = await getWorks();
@@ -26,15 +26,15 @@ const works = await getWorks();
     <div class="works-area">
         <ul class="works-container">
             {
-                works.map(({ id, data }) => (
+                works.map((work) => (
                     <li class="works-card">
-                        <a href={`/works/${id}/`}>
+                        <a href={`/works/${work.id}/`}>
                             <div class="works-card__img-wrap">
-                                <Image class="works-card__img" src={data.thumbnail ?? fallback} alt={data.title} width={640} height={360} fit="cover" />
+                                <Image class="works-card__img" src={thumbnailOf(work)} alt={work.data.title} width={640} height={360} fit="cover" />
                             </div>
                             <div class="works-card__body">
-                                <h2 class="works-card__title">{data.title}</h2>
-                                <p class="works-card__caption">{data.description}</p>
+                                <h2 class="works-card__title">{work.data.title}</h2>
+                                <p class="works-card__caption">{work.data.description}</p>
                             </div>
                         </a>
                     </li>
