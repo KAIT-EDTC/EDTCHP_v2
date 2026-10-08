@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import BlogCard from '../../../components/BlogCard.astro';
 import { fiscalYear, getPosts, getSections, type BlogSection } from '../../../lib/blog';
 import '../../../styles/blog.css';
@@ -16,11 +17,7 @@ const years = [...new Set(posts.map((p) => fiscalYear(p.data.date)))];
 
 <Base title={`${tag}の記事`} description={intro ?? `神奈川工科大学EDTCのブログから「${tag}」の記事一覧です。`}>
     <div class="blog-tag-page__head">
-        <nav class="blog-tag-page__crumbs" aria-label="パンくずリスト">
-            <a href="/blog/">ブログ</a>
-            <span aria-hidden="true">›</span>
-            <span aria-current="page">{tag}</span>
-        </nav>
+        <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label: tag }]} />
         <h1 class="blog-section__title">
             {tag}
             <span class="blog-section__count">{posts.length}件</span>

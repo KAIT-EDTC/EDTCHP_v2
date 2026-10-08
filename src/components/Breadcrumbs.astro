@@ -1,0 +1,48 @@
+---
+interface Props {
+    /** ホームより下の並び。最後の要素が現在のページ（href なし） */
+    items: { label: string; href?: string }[];
+}
+const { items } = Astro.props;
+---
+
+<nav aria-label="パンくずリスト" class="breadcrumbs">
+    {
+        [{ label: 'ホーム', href: '/' }, ...items].map(({ label, href }, i) => (
+            <>
+                {i > 0 && <span aria-hidden="true">›</span>}
+                {href ? <a href={href}>{label}</a> : <span aria-current="page">{label}</span>}
+            </>
+        ))
+    }
+</nav>
+
+<style>
+    .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        padding: 20px 0;
+        font-size: 0.85rem;
+        color: #888;
+        white-space: nowrap;
+    }
+    .breadcrumbs a {
+        color: #555;
+        text-decoration: none;
+    }
+    .breadcrumbs a:hover {
+        color: var(--main-color);
+        text-decoration: underline;
+    }
+    .breadcrumbs [aria-current] {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    @media (max-width: 900px) {
+        .breadcrumbs {
+            padding: 14px 0;
+        }
+    }
+</style>

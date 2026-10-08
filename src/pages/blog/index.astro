@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import BlogCard from '../../components/BlogCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getPosts, getSections } from '../../lib/blog';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
 import '../../styles/blog.css';
@@ -22,6 +23,10 @@ const sections = getSections(await getPosts());
             <p class="blog-hero__desc">EDTCの活動や日々の取り組みをお届けします。</p>
         </div>
     </section>
+
+    <div class="page-breadcrumbs">
+        <Breadcrumbs items={[{ label: 'ブログ' }]} />
+    </div>
 
     <nav class="blog-nav" aria-label="活動の種類">
         <ul class="blog-nav__list">

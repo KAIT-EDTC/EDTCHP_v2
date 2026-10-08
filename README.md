@@ -34,7 +34,7 @@ src/
     blog/[id].astro        # /blog/<記事ID>/
     works/…                # /works/, /works/<ID>/（旧 /products/ は _redirects で転送）
     contact.astro          # /contact/             Googleフォーム
-  components/ layouts/     # ヘッダー・フッター・共通の <head>
+  components/ layouts/     # ヘッダー・フッター・共通の <head>。OGP画像の変換は layouts/Base.astro、パンくずは components/Breadcrumbs.astro
   scripts/                 # クライアントJS（トップのスライダー）。ブログ一覧のカルーセルは pages/blog/index.astro 内
   styles/                  # 旧サイトのCSSを引き継いだもの
   assets/                  # サイトで使う画像（ビルド時に最適化される）

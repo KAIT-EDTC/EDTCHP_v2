@@ -1,7 +1,8 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { formatDate, getPosts, relatedPosts, type BlogEntry } from '../../lib/blog';
 import { BLOG_SERIES } from '../../lib/tags';
 import fallback from '../../assets/img/EDTC-icon.webp';
@@ -22,7 +23,6 @@ interface Props {
 const { post, related } = Astro.props;
 const { title, date, author, description, series, pickup, thumbnail } = post.data;
 const { Content } = await render(post);
-const ogImage = thumbnail ? (await getImage({ src: thumbnail, width: 1200, format: 'jpeg' })).src : undefined;
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
 const shares = [
@@ -33,13 +33,9 @@ const fill = (tpl: string, url: string) => tpl.replace('{url}', encodeURICompone
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
-<Base title={title} description={description} image={ogImage} type="article">
+<Base title={title} description={description} image={thumbnail} type="article">
     <div class="detail">
-        <nav aria-label="パンくずリスト" class="breadcrumbs">
-            <a href="/">ホーム</a><span aria-hidden="true">›</span>
-            <a href="/blog/">ブログ</a><span aria-hidden="true">›</span>
-            <span aria-current="page">{title}</span>
-        </nav>
+        <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label: title }]} />
 
         <div class="post">
             <article class="post__main card">
@@ -291,9 +287,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         }
         .post__side {
             position: static;
-        }
-        .breadcrumbs {
-            padding: 14px 0;
         }
     }
 </style>
