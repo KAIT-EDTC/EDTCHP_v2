@@ -104,7 +104,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         });
 
         const status = document.querySelector<HTMLElement>('.share__status')!;
-        let timer: number | undefined;
+        let timer: ReturnType<typeof setTimeout> | undefined;
         document.querySelector('.share__btn--copy')?.addEventListener('click', async () => {
             try {
                 await navigator.clipboard.writeText(location.origin + location.pathname);
