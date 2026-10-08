@@ -2,19 +2,19 @@
 import { Image } from 'astro:assets';
 import type { BlogEntry } from '../lib/blog';
 import { formatDate } from '../lib/blog';
-import fallback from '../assets/img/EDTC-icon.webp';
+import { thumbnailOf } from '../lib/thumbnail';
 
 interface Props {
     post: BlogEntry;
 }
 const { post } = Astro.props;
-const { title, date, description, thumbnail } = post.data;
+const { title, date, description } = post.data;
 ---
 
 <li class="blog-card">
     <a href={`/blog/${post.id}/`}>
         <div class="blog-card__img-wrap">
-            <Image class="blog-card__img" src={thumbnail ?? fallback} alt={title} width={640} height={360} fit="cover" />
+            <Image class="blog-card__img" src={thumbnailOf(post)} alt={title} width={640} height={360} fit="cover" />
         </div>
         <div class="blog-card__body">
             <span class="blog-card__date">{formatDate(date)}</span>
