@@ -11,7 +11,8 @@ Node.js 22 以上（`.nvmrc`）。
 ```sh
 npm install
 npm run dev        # http://localhost:4321
-npm run build      # 型・コンテンツのチェック（astro check）+ dist/ に出力
+npm test           # src/**/*.test.mjs（node --test）
+npm run build      # 型・コンテンツのチェック（astro check）+ テスト + dist/ に出力
 npm run preview    # dist/ を確認
 npx wrangler dev   # 本番と同じ Cloudflare の配信（リダイレクト・404）で dist/ を確認
 ```
@@ -19,13 +20,15 @@ npx wrangler dev   # 本番と同じ Cloudflare の配信（リダイレクト�
 ## 構成
 
 ```
+GLOSSARY.md                # 用語集（記事・種別・ピックアップ・セクション・年度・制作物）
 content/
   blog/<記事ID>/index.md   # ブログ記事（dashboard がPRで追加する）＋画像
   works/<ID>/index.md      # 制作物（教材・ロボット）＋画像
 src/
   content.config.ts        # 記事・制作物のスキーマ（frontmatter の検証）
-  lib/tags.ts              # ブログの種別 BLOG_SERIES（URL・並び順・説明文。dashboard と同期する）
-  lib/blog.ts              # 記事の取得、一覧のセクション分け、年度の計算
+  lib/series.ts            # ブログの種別 BLOG_SERIES（URL・並び順・説明文。dashboard と同期する）
+  lib/sections.ts          # セクション（ピックアップ＋種別）：並び、記事の所属、URL、年度分け
+  lib/blog.ts              # 記事の取得、日付の整形、関連記事
   pages/                   # 1ファイル = 1URL
     index.astro            # /
     about.astro            # /about/
@@ -75,7 +78,7 @@ thumbnail: ./img-k3x9a0qz.webp
   | `play` | レク | 親睦会・レクリエーション |
 
 - `pickup: true` の記事は、`/blog/` の「ピックアップ」セクションにも載る
-- **種別を増やす・変えるときは、`src/lib/tags.ts` の `BLOG_SERIES` と、dashboard の `shared/src/blog.ts` の `BLOG_SERIES` の両方を直す**（管理画面はない）。`series` は `BLOG_SERIES` の id で検証するので、片方だけだとビルドが落ちる
+- **種別を増やす・変えるときは、`src/lib/series.ts` の `BLOG_SERIES` と、dashboard の `shared/src/blog.ts` の `BLOG_SERIES` の両方を直す**（管理画面はない）。`series` は `BLOG_SERIES` の id で検証するので、片方だけだとビルドが落ちる
 - 旧ルールの記事ID（`26-05-16-yugyou01` のような `YY-MM-DD-slug`）もそのまま使える。`series` はフォルダ名と別に frontmatter に持つ
 - ブログ一覧は `/blog/` で種別ごとのセクションに分け、新しい順に最大12件を横に送れるカルーセルで見せる。全記事は「年度別に見る」の `/blog/tag/<種別>/` で、年度（4月〜翌年3月）ごとの見出しで並ぶ。URL のスラッグは種別の id（ピックアップは `pickup`）
 - 記事の正は dashboard。PR上で直接直しても、再提出で上書きされる

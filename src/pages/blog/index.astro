@@ -3,7 +3,8 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { getPosts, getSections } from '../../lib/blog';
+import { getPosts } from '../../lib/blog';
+import { getSections } from '../../lib/sections';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
 import '../../styles/blog.css';
 
@@ -31,10 +32,10 @@ const sections = getSections(await getPosts());
     <nav class="blog-nav" aria-label="活動の種類">
         <ul class="blog-nav__list">
             {
-                sections.map(({ tag, slug, posts }) => (
+                sections.map(({ id, label, posts }) => (
                     <li>
-                        <a class="blog-nav__link" href={`#${slug}`}>
-                            {tag}
+                        <a class="blog-nav__link" href={`#${id}`}>
+                            {label}
                             <span class="blog-nav__count">{posts.length}</span>
                         </a>
                     </li>
@@ -44,29 +45,29 @@ const sections = getSections(await getPosts());
     </nav>
 
     {
-        sections.map(({ tag, slug, intro, posts }) => (
-            <section class="blog-section" id={slug} aria-labelledby={`${slug}-title`}>
+        sections.map(({ id, label, intro, href, posts }) => (
+            <section class="blog-section" id={id} aria-labelledby={`${id}-title`}>
                 <div class="blog-section__head">
-                    <h2 class="blog-section__title" id={`${slug}-title`}>
-                        <a href={`/blog/tag/${slug}/`}>{tag}</a>
+                    <h2 class="blog-section__title" id={`${id}-title`}>
+                        <a href={href}>{label}</a>
                         <span class="blog-section__count">{posts.length}件</span>
                     </h2>
-                    {intro && <p class="blog-section__intro">{intro}</p>}
+                    <p class="blog-section__intro">{intro}</p>
                 </div>
                 <div class="blog-carousel" data-carousel>
-                    <button type="button" class="blog-carousel__btn blog-carousel__btn--prev" data-carousel-prev aria-label={`${tag}の前の記事`} hidden>
+                    <button type="button" class="blog-carousel__btn blog-carousel__btn--prev" data-carousel-prev aria-label={`${label}の前の記事`} hidden>
                         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
                     </button>
-                    <ul class="blog-carousel__track" data-carousel-track tabindex="0" aria-label={`${tag}の記事`}>
+                    <ul class="blog-carousel__track" data-carousel-track tabindex="0" aria-label={`${label}の記事`}>
                         {posts.slice(0, CAROUSEL_MAX).map((post) => <BlogCard post={post} />)}
                     </ul>
-                    <button type="button" class="blog-carousel__btn blog-carousel__btn--next" data-carousel-next aria-label={`${tag}の次の記事`} hidden>
+                    <button type="button" class="blog-carousel__btn blog-carousel__btn--next" data-carousel-next aria-label={`${label}の次の記事`} hidden>
                         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
                 {posts.length > MORE_FROM && (
-                    <a class="blog-section__more" href={`/blog/tag/${slug}/`}>
-                        {tag}を年度別に見る（{posts.length}件）→
+                    <a class="blog-section__more" href={href}>
+                        {label}を年度別に見る（{posts.length}件）→
                     </a>
                 )}
             </section>

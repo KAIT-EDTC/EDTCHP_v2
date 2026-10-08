@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { BLOG_SERIES_IDS } from './lib/tags';
+import { BLOG_SERIES_IDS } from './lib/series';
 
 /**
  * ブログ記事。ダッシュボードが PR で送る content/blog/<YY-MM-DD-slug>/index.md をそのまま受け入れる。
