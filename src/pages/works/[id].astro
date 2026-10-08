@@ -1,20 +1,18 @@
 ---
 import { Image } from 'astro:assets';
-import { render, type CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { getWorks } from '../../lib/works';
+import { getWorks, type Work } from '../../lib/works';
+import { otherWorks } from '../../lib/works-order';
 import fallback from '../../assets/img/EDTC-icon.webp';
 import '../../styles/detail.css';
 
-type Work = CollectionEntry<'works'>;
-
 export async function getStaticPaths() {
     const works = await getWorks();
-    return works.map((work, i) => ({
+    return works.map((work) => ({
         params: { id: work.id },
-        // 一覧で次に並ぶものから順に
-        props: { work, others: [...works.slice(i + 1), ...works.slice(0, i)].slice(0, 3) },
+        props: { work, others: otherWorks(work, works) },
     }));
 }
 

@@ -1,10 +1,10 @@
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { sortWorks } from './works-order.ts';
 
-/** 一覧の並び順は従来どおり（新しいものが上）。ここに無いIDは末尾にID順 */
-const ORDER = ['LineTracer', 'SumoRobot', 'buruburu', 'buzzer', 'ArtoRo', 'LogicLineTracerV2', 'MazeLineTracer'];
+export type Work = CollectionEntry<'works'>;
 
-export async function getWorks() {
+/** 全制作物を一覧の並び順で取得 */
+export async function getWorks(): Promise<Work[]> {
     const list = await getCollection('works');
-    const rank = (id: string) => (ORDER.includes(id) ? ORDER.indexOf(id) : ORDER.length);
-    return list.sort((a, b) => rank(a.id) - rank(b.id) || a.id.localeCompare(b.id));
+    return sortWorks(list);
 }
