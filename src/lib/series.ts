@@ -1,5 +1,5 @@
 /**
- * ブログの種別（記事ごとに1つ。記事IDの末尾と /blog/tag/<id>/ のURLになる）。並び順がそのまま一覧の表示順。
+ * ブログの種別（記事ごとに1つ。記事IDの末尾と /blog/tag/<id>/ のURLになる）。並び順がそのまま一覧の表示順（ピックアップの次から。sections.ts）。
  * dashboard の shared/src/blog.ts の BLOG_SERIES と必ず同じにする（増やすときは両方のリポジトリを直す）。
  */
 export const BLOG_SERIES = [

@@ -4,7 +4,7 @@ import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { formatDate, getPosts, relatedPosts, type BlogEntry } from '../../lib/blog';
-import { BLOG_SERIES } from '../../lib/tags';
+import { sectionsOf } from '../../lib/sections';
 import fallback from '../../assets/img/EDTC-icon.webp';
 import '../../styles/detail.css';
 
@@ -21,7 +21,7 @@ interface Props {
     related: BlogEntry[];
 }
 const { post, related } = Astro.props;
-const { title, date, author, description, series, pickup, thumbnail } = post.data;
+const { title, date, author, description, thumbnail } = post.data;
 const { Content } = await render(post);
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -40,12 +40,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         <div class="post">
             <article class="post__main card">
                 <header class="post__header">
-                    {
-                        <div class="chips">
-                            <a class="chip" href={`/blog/tag/${series}/`}>{BLOG_SERIES.find((s) => s.id === series)?.label}</a>
-                            {pickup && <a class="chip" href="/blog/tag/pickup/">ピックアップ</a>}
-                        </div>
-                    }
+                    <div class="chips">
+                        {sectionsOf(post).map((s) => <a class="chip" href={s.href}>{s.label}</a>)}
+                    </div>
                     <h1 class="post__title">{title}</h1>
                     <p class="post__meta">
                         <span>イベント実施日 <time datetime={iso(date)}>{formatDate(date)}</time></span>

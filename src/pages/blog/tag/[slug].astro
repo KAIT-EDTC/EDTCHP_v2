@@ -2,41 +2,39 @@
 import Base from '../../../layouts/Base.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import BlogCard from '../../../components/BlogCard.astro';
-import { fiscalYear, getPosts, getSections, type BlogSection } from '../../../lib/blog';
+import { getPosts } from '../../../lib/blog';
+import { byFiscalYear, getSections, type SectionWithPosts } from '../../../lib/sections';
 import '../../../styles/blog.css';
 
-/** タグ（活動）ごとの全記事を、年度ごとの見出しで並べる */
+/** セクション（種別・ピックアップ）ごとの全記事を、年度ごとの見出しで並べる */
 export async function getStaticPaths() {
-    return getSections(await getPosts()).map((section) => ({ params: { slug: section.slug }, props: section }));
+    return getSections(await getPosts()).map((section) => ({ params: { slug: section.id }, props: section }));
 }
 
-type Props = BlogSection;
-const { tag, intro, posts } = Astro.props;
-const years = [...new Set(posts.map((p) => fiscalYear(p.data.date)))];
+type Props = SectionWithPosts;
+const { label, intro, posts } = Astro.props;
 ---
 
-<Base title={`${tag}の記事`} description={intro ?? `神奈川工科大学EDTCのブログから「${tag}」の記事一覧です。`}>
+<Base title={`${label}の記事`} description={intro}>
     <div class="blog-tag-page__head">
-        <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label: tag }]} />
+        <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label }]} />
         <h1 class="blog-section__title">
-            {tag}
+            {label}
             <span class="blog-section__count">{posts.length}件</span>
         </h1>
-        {intro && <p class="blog-section__intro">{intro}</p>}
+        <p class="blog-section__intro">{intro}</p>
     </div>
 
     {
-        years.map((year) => (
-            <section class="blog-tag-page__year" aria-labelledby={`fy${year}`}>
-                <h2 class="blog-tag-page__year-title" id={`fy${year}`}>
-                    {year}年度
+        byFiscalYear(posts).map((group) => (
+            <section class="blog-tag-page__year" aria-labelledby={`fy${group.year}`}>
+                <h2 class="blog-tag-page__year-title" id={`fy${group.year}`}>
+                    {group.year}年度
                 </h2>
                 <ul class="blog-container">
-                    {posts
-                        .filter((p) => fiscalYear(p.data.date) === year)
-                        .map((post) => (
-                            <BlogCard post={post} />
-                        ))}
+                    {group.posts.map((post) => (
+                        <BlogCard post={post} />
+                    ))}
                 </ul>
             </section>
         ))
