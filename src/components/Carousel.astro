@@ -1,0 +1,157 @@
+---
+interface Props {
+    /** セクション名など。矢印と帯のラベルは「〈label〉の前の〈item〉」になる */
+    label?: string;
+    /** 並べているものの呼び名（記事・画像など） */
+    item: string;
+    /** 現在位置のドットを出す */
+    dots?: boolean;
+    /** 中身を <li> で渡す（帯を <ul> にする） */
+    list?: boolean;
+    class?: string;
+}
+const { label = '', item, dots = false, list = false, class: className } = Astro.props;
+const Track = list ? 'ul' : 'div';
+const name = (s: string) => `${label}${label ? 'の' : ''}${s}`;
+---
+
+<div class:list={['carousel', className]} data-carousel>
+    <button type="button" class="carousel__btn carousel__btn--prev" data-carousel-prev aria-label={name(`前の${item}`)} hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <Track class="carousel__track" data-carousel-track tabindex="0" aria-label={name(item)}>
+        <slot />
+    </Track>
+    <button type="button" class="carousel__btn carousel__btn--next" data-carousel-next aria-label={name(`次の${item}`)} hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
+    </button>
+    {dots && <div class="carousel__dots" data-carousel-dots hidden></div>}
+</div>
+
+<script>
+    // 矢印は横スクロールの補助。JSがなくてもスワイプ・トラックパッド・キーボードで送れるので、矢印とドットは最初は隠しておく
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+        const track = root.querySelector<HTMLElement>('[data-carousel-track]')!;
+        const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
+        const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
+        const dotsEl = root.querySelector<HTMLElement>('[data-carousel-dots]');
+        const behavior = smooth ? 'smooth' : 'auto';
+
+        // 1つぶんの送り幅（要素の間隔）と、1回で見えている個数
+        const metrics = () => {
+            const [a, b] = track.children as HTMLCollectionOf<HTMLElement>;
+            const step = b ? b.offsetLeft - a.offsetLeft : track.clientWidth;
+            const gap = b ? step - a.offsetWidth : 0;
+            return { step, visible: Math.max(1, Math.round((track.clientWidth + gap) / step)) };
+        };
+        const move = (dir: number) => {
+            const { step, visible } = metrics();
+            track.scrollBy({ left: dir * visible * step, behavior });
+        };
+        const dots = dotsEl
+            ? Array.from(track.children, (_, i) => {
+                  const d = document.createElement('button');
+                  d.type = 'button';
+                  d.setAttribute('aria-label', `${i + 1}枚目`);
+                  d.addEventListener('click', () => track.scrollTo({ left: i * metrics().step, behavior }));
+                  dotsEl.append(d);
+                  return d;
+              })
+            : [];
+        const update = () => {
+            const overflow = track.scrollWidth > track.clientWidth + 1;
+            prev.hidden = next.hidden = !overflow;
+            if (dotsEl) dotsEl.hidden = !overflow;
+            prev.disabled = track.scrollLeft <= 1;
+            next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+            const current = Math.round(track.scrollLeft / metrics().step);
+            dots.forEach((d, i) => d.setAttribute('aria-current', String(i === current)));
+        };
+        prev.addEventListener('click', () => move(-1));
+        next.addEventListener('click', () => move(1));
+        track.addEventListener('scroll', update, { passive: true });
+        new ResizeObserver(update).observe(track);
+        update();
+    });
+</script>
+
+<style is:global>
+    .carousel {
+        position: relative;
+        height: 100%;
+    }
+    .carousel__track {
+        display: flex;
+        height: 100%;
+        list-style: none;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+    .carousel__track::-webkit-scrollbar {
+        display: none;
+    }
+    .carousel__btn {
+        position: absolute;
+        top: 50%;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: #fff;
+        color: var(--main-color);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+        transform: translateY(-50%);
+        transition: background 0.2s, color 0.2s, opacity 0.2s;
+    }
+    .carousel__btn svg {
+        width: 22px;
+        height: 22px;
+    }
+    .carousel__btn--prev {
+        left: 16px;
+    }
+    .carousel__btn--next {
+        right: 16px;
+    }
+    .carousel__btn:hover:not(:disabled) {
+        background: var(--main-color);
+        color: #fff;
+    }
+    .carousel__btn:disabled {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .carousel__btn[hidden],
+    .carousel__dots[hidden] {
+        display: none;
+    }
+    .carousel__dots {
+        position: absolute;
+        bottom: 12px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    .carousel__dots button {
+        width: 10px;
+        height: 10px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+    }
+    .carousel__dots button[aria-current='true'] {
+        background: var(--main-color);
+    }
+</style>

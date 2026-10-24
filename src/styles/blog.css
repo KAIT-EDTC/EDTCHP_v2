@@ -185,73 +185,21 @@ body {
     margin: 1.5rem 0 0;
 }
 
-.blog-carousel__track {
-    display: flex;
+.blog-carousel .carousel__track {
     gap: 24px;
-    list-style: none;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
     /* overflow で影が切れないように、上下に余白を取って打ち消す */
     padding: 4px var(--gutter) 28px;
     scroll-padding-inline: var(--gutter);
     margin-bottom: -16px;
 }
 
-.blog-carousel__track::-webkit-scrollbar {
-    display: none;
-}
-
-.blog-carousel__track > .blog-card {
+.blog-carousel .carousel__track > .blog-card {
     flex: 0 0 calc((var(--content) - 48px) / 3);
     scroll-snap-align: start;
 }
 
-.blog-carousel__btn {
-    position: absolute;
+.blog-carousel .carousel__btn {
     top: 45%;
-    z-index: 1;
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: none;
-    border-radius: 50%;
-    background: #fff;
-    color: var(--main-color);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-    cursor: pointer;
-    transform: translateY(-50%);
-    transition: background 0.2s, color 0.2s, opacity 0.2s;
-}
-
-.blog-carousel__btn svg {
-    width: 22px;
-    height: 22px;
-}
-
-.blog-carousel__btn--prev {
-    left: 16px;
-}
-
-.blog-carousel__btn--next {
-    right: 16px;
-}
-
-.blog-carousel__btn:hover:not(:disabled) {
-    background: var(--main-color);
-    color: #fff;
-}
-
-.blog-carousel__btn:disabled {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.blog-carousel__btn[hidden] {
-    display: none;
 }
 
 /* ===== カード一覧 ===== */
@@ -337,7 +285,7 @@ body {
     .blog-container {
         grid-template-columns: repeat(2, 1fr);
     }
-    .blog-carousel__track > .blog-card {
+    .blog-carousel .carousel__track > .blog-card {
         flex-basis: calc((var(--content) - 24px) / 2);
     }
     .blog-hero {
@@ -349,17 +297,17 @@ body {
     .blog-container {
         grid-template-columns: 1fr;
     }
-    .blog-carousel__track > .blog-card {
+    .blog-carousel .carousel__track > .blog-card {
         flex-basis: calc(var(--content) * 0.85); /* 次の記事を少しのぞかせて、横に続くことを示す */
     }
-    .blog-carousel__btn {
+    .blog-carousel .carousel__btn {
         width: 36px;
         height: 36px;
     }
-    .blog-carousel__btn--prev {
+    .blog-carousel .carousel__btn--prev {
         left: 8px;
     }
-    .blog-carousel__btn--next {
+    .blog-carousel .carousel__btn--next {
         right: 8px;
     }
     .blog-hero {
