@@ -5,7 +5,7 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { formatDate, getPosts, relatedPosts, type BlogEntry } from '../../lib/blog';
 import { sectionsOf } from '../../lib/sections';
-import fallback from '../../assets/img/EDTC-icon.webp';
+import { thumbnailOf } from '../../lib/thumbnail';
 import '../../styles/detail.css';
 
 export async function getStaticPaths() {
@@ -79,7 +79,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
                             related.map((p) => (
                                 <li>
                                     <a class="related__item" href={`/blog/${p.id}/`}>
-                                        <Image class="related__img" src={p.data.thumbnail ?? fallback} alt="" width={176} height={120} fit="cover" />
+                                        <Image class="related__img" src={thumbnailOf(p)} alt="" width={176} height={120} fit="cover" />
                                         <span class="related__body">
                                             <time class="related__date" datetime={iso(p.data.date)}>{formatDate(p.data.date)}</time>
                                             <span class="related__title">{p.data.title}</span>

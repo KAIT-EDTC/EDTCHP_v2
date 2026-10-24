@@ -4,7 +4,7 @@ import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getWorks } from '../../lib/works';
-import fallback from '../../assets/img/EDTC-icon.webp';
+import { thumbnailOf } from '../../lib/thumbnail';
 import '../../styles/detail.css';
 
 type Work = CollectionEntry<'works'>;
@@ -26,7 +26,7 @@ const { work, others } = Astro.props;
 const { title, description, headline, maker, age, capacity, duration, thumbnail, images } = work.data;
 const { Content } = await render(work);
 
-const slides = [thumbnail ?? fallback, ...images];
+const slides = [thumbnailOf(work), ...images];
 
 const specs = [
     ['対象年齢', age],
@@ -95,7 +95,7 @@ const specs = [
                         {others.map((w) => (
                             <li>
                                 <a class="others__item card" href={`/works/${w.id}/`}>
-                                    <Image class="others__img" src={w.data.thumbnail ?? fallback} alt="" width={480} height={300} fit="cover" />
+                                    <Image class="others__img" src={thumbnailOf(w)} alt="" width={480} height={300} fit="cover" />
                                     <span class="others__body">
                                         <span class="others__title">{w.data.title}</span>
                                         <span class="others__desc">{w.data.description}</span>
