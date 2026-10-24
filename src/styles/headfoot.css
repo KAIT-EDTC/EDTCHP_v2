@@ -143,6 +143,42 @@
     text-align: center;
 }
 
+/* ハンバーガーメニュー内のSNSボタン(暗い背景用に白色) */
+.gnav-sns {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 10px;
+}
+
+.gnav-sns .sns_button {
+    float: none;
+    box-shadow: inset 0 0 0 2px #fff;
+}
+
+.gnav-sns .sns_button a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.gnav-sns .sns_button svg {
+    display: block;
+}
+
+.gnav-sns .sns_button+.sns_button {
+    margin: 0;
+}
+
+.gnav-sns .sns_button:hover {
+    box-shadow: inset 0 0 0 22px #fff;
+}
+
+.gnav-sns .sns_button:hover a {
+    color: #333;
+}
+
 /* PCのメニュー */
 
 .gnav-sec span{
