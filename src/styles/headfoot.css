@@ -157,7 +157,14 @@
 }
 
 .gnav-sns .sns_button a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #fff;
+}
+
+.gnav-sns .sns_button svg {
+    display: block;
 }
 
 .gnav-sns .sns_button+.sns_button {
