@@ -1,115 +1,273 @@
-/* Noto Sans JPのインポート */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
-* {
-    font-family: "Noto Sans JP", sans-serif;
-}
-
-a {
-    color: #4b4b4b;
-}
-
-body {
-    line-height: normal;
-    margin-top: 70px;
-}
+/* サイト全体で使う CSS。Base.astro だけが import する。
+   コンポーネント固有の見た目は各 .astro の scoped <style> に書く */
 
 :root {
-    --main-color: #0a8cd8;
-    --bg-color: #e6e6e6;
-    --bg-color-2: #F8F7F3;
-    --item-color: #F8F7F3;
-    --breadcrumbs-hover-color: #cfcecb;
+    /* 色 */
+    --color-main: #0a8cd8;
+    --color-main-tint: #e5f3fc;
+    --color-text: #333;
+    --color-text-muted: #666;
+    --color-border: #ddd;
+    --color-bg: #fff;
+    --color-bg-gray: #e6e6e6; /* 一覧ページ */
+    --color-bg-cream: #f8f7f3; /* 詳細ページ */
+    --color-card: #f8f7f3; /* 一覧カード */
+    --color-panel: #fff; /* 詳細ページの白い箱 */
+
+    /* 角丸 */
+    --radius-card: 10px;
+    --radius-panel: 16px;
+    --radius-pill: 999px;
+
+    /* 影 */
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-card-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
+    --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
+
+    /* レイアウト */
+    --layout-header-height: 70px;
+    --layout-content-width: 1200px;
+    --layout-gutter: 5%;
 }
 
-/* フォーカス可視化（アクセシビリティ） */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-[tabindex]:focus-visible {
-    outline: 2px solid var(--main-color);
-    outline-offset: 2px;
+/* ===== リセット ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-.anim-fadein {
-  animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote {
+    margin: 0;
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+ul,
+ol {
+    padding: 0;
+    list-style: none;
 }
 
-/* トースト通知のスタイル (共通) */
-.toast {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background-color: #333;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 4px;
-    z-index: 100000;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-size: 14px;
-    pointer-events: none; /* クリックを透過させる */
+/* 見出しの大きさはブラウザ既定ではなく、使う側が決める */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 100%;
 }
 
-.toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
+img {
+    max-width: 100%;
+    height: auto;
 }
 
-.toast.success {
-    background-color: #4CAF50; /* 緑 */
+iframe {
+    border: 0;
 }
 
-.toast.error {
-    background-color: #f44336; /* 赤 */
-}
-
-.toast.info {
-    background-color: #2196F3; /* 青 */
+button,
+input,
+select,
+textarea {
+    font: inherit;
 }
 
 [hidden] {
     display: none !important;
 }
 
-/* ボタン (共通) */
-.btn {
+/* ===== 基本 ===== */
+body {
+    /* 固定ヘッダーの下から本文を始める */
+    margin-top: var(--layout-header-height);
+    font-family: 'Noto Sans JP', sans-serif;
+    line-height: normal;
+    color: var(--color-text);
+    /* ページごとの背景は Base の background prop が --page-bg に入れる */
+    background-color: var(--page-bg, var(--color-bg));
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-main);
+    outline-offset: 2px;
+}
+
+/* ===== 共通クラス ===== */
+
+/* 本文幅。見出しやグリッドの左右をそろえる */
+.container {
+    max-width: var(--layout-content-width);
+    margin-inline: auto;
+    padding-inline: var(--layout-gutter);
+}
+
+.button {
     display: inline-block;
     padding: 14px 32px;
-    border-radius: 999px;
-    background: var(--main-color);
+    border: 2px solid var(--color-main);
+    border-radius: var(--radius-pill);
+    background: var(--color-main);
     color: #fff;
     font-weight: 700;
-    text-decoration: none;
+    text-align: center;
     transition: opacity 0.2s;
 }
 
-.btn:hover {
+.button:hover {
     opacity: 0.85;
 }
 
-.btn--sub {
+.button--outline {
     background: #fff;
-    color: var(--main-color);
-    border: 2px solid var(--main-color);
+    color: var(--color-main);
 }
 
-/* ヒーローの下に置くパンくずの外枠。一覧ページの本文と幅をそろえる */
-.page-breadcrumbs {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 5%;
+/* 詳細ページの白い箱 */
+.panel {
+    background: var(--color-panel);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-panel);
+}
+
+/* タグ */
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip {
+    display: inline-block;
+    padding: 0.25em 0.9em;
+    border-radius: var(--radius-pill);
+    background: var(--color-main-tint);
+    color: var(--color-main);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+a.chip:hover {
+    background: var(--color-main);
+    color: #fff;
+}
+
+/* 一覧カードの3列グリッド。幅は .container と組み合わせる */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Markdown 本文。ダッシュボードのプレビューと大きくずれないよう素直なスタイルにする */
+.prose {
+    line-height: 1.9;
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+}
+
+.prose p {
+    margin: 0 0 1.2em;
+}
+
+.prose h2 {
+    font-size: 1.4em;
+    margin: 1.8em 0 0.6em;
+    padding-left: 10px;
+    border-left: 4px solid var(--color-main);
+}
+
+.prose h3 {
+    font-size: 1.2em;
+    margin: 1.4em 0 0.5em;
+}
+
+.prose img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 80vh;
+    height: auto;
+    margin: 1.5em auto;
+    border-radius: var(--radius-card);
+}
+
+.prose ul,
+.prose ol {
+    margin: 0 0 1.2em 1.5em;
+}
+
+.prose ul {
+    list-style: disc;
+}
+
+.prose ol {
+    list-style: decimal;
+}
+
+.prose a {
+    color: var(--color-main);
+    text-decoration: underline;
+}
+
+.prose blockquote {
+    margin: 0 0 1.2em;
+    padding: 0.8em 1.2em;
+    border-left: 4px solid #f0b400;
+    border-radius: 0 8px 8px 0;
+    background: #fff8e1;
+    color: #5c4a00;
+}
+
+.prose blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.prose table {
+    border-collapse: collapse;
+    margin: 0 0 1.2em;
+}
+
+.prose th,
+.prose td {
+    border: 1px solid var(--color-border);
+    padding: 4px 10px;
+}
+
+.prose > :first-child {
+    margin-top: 0;
+}
+
+.prose > :last-child {
+    margin-bottom: 0;
 }

@@ -1,10 +1,7 @@
 ---
-import '../styles/reset.css';
-import '../styles/headfoot.css';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-// CSS の import より前に置くと、ページ側のスタイルより後ろに Base の CSS が出力されてしまう
 import { getImage } from 'astro:assets';
 
 interface Props {
@@ -13,7 +10,11 @@ interface Props {
     /** OGP画像。1200px幅のJPEGに変換する。省略時はロゴ */
     image?: ImageMetadata;
     type?: 'website' | 'article';
+    /** ページ全体の背景色。white: 白（既定） / gray: 一覧ページ / cream: 詳細ページ */
+    background?: 'white' | 'gray' | 'cream';
 }
+
+const BACKGROUNDS = { white: '--color-bg', gray: '--color-bg-gray', cream: '--color-bg-cream' };
 
 const SITE_NAME = '神奈川工科大学EDTC';
 const {
@@ -21,6 +22,7 @@ const {
     description = '神奈川工科大学EDTCの公式サイト。工学教育を通じて子どもたちにモノづくりの楽しさを届ける学生団体です。',
     image,
     type = 'website',
+    background = 'white',
 } = Astro.props;
 const fullTitle = title ? `${title}|${SITE_NAME}` : SITE_NAME;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -49,9 +51,12 @@ const ogImage = new URL(image ? (await getImage({ src: image, width: 1200, forma
         <meta name="twitter:title" content={fullTitle} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet" />
         <slot name="head" />
     </head>
-    <body>
+    <body style={`--page-bg: var(${BACKGROUNDS[background]})`}>
         <Header />
         <main><slot /></main>
         <Footer />

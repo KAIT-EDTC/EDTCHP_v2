@@ -1,0 +1,102 @@
+---
+import { Image } from 'astro:assets';
+import { formatDate } from '../lib/blog';
+
+interface Props {
+    /** カード全体のリンク先 */
+    href: string;
+    /** タイトル（2行で省略される） */
+    title: string;
+    /** 説明文（2行で省略される） */
+    description: string;
+    /** サムネイル。3:2 に切り抜いて出す */
+    image: ImageMetadata;
+    /** 日付。渡したときだけタイトルの上に出す */
+    date?: Date;
+    /** タイトルの見出しレベル。直前の見出しが h2 のセクション内なら 3 にする（既定 2） */
+    headingLevel?: 2 | 3;
+}
+const { href, title, description, image, date, headingLevel = 2 } = Astro.props;
+const Heading = `h${headingLevel}` as const;
+---
+
+<li class="card">
+    <a class="card__link" href={href}>
+        <div class="card__img-wrap">
+            <Image class="card__img" src={image} alt="" width={640} height={360} fit="cover" />
+        </div>
+        <div class="card__body">
+            {date && <time class="card__date" datetime={date.toISOString()}>{formatDate(date)}</time>}
+            <Heading class="card__title">{title}</Heading>
+            <p class="card__description">{description}</p>
+        </div>
+    </a>
+</li>
+
+<style>
+    .card {
+        overflow: hidden;
+        border-radius: var(--radius-card);
+        background: var(--color-card);
+        box-shadow: var(--shadow-card);
+        transition: box-shadow 0.3s;
+    }
+    .card:hover {
+        box-shadow: var(--shadow-card-hover);
+    }
+    .card__link {
+        display: block;
+        height: 100%;
+    }
+    .card__img-wrap {
+        overflow: hidden;
+    }
+    .card__img {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 3 / 2;
+        object-fit: cover;
+        transition: transform 0.4s;
+    }
+    .card:hover .card__img {
+        transform: scale(1.05);
+    }
+    .card__body {
+        padding: 0.8rem 1rem 1rem;
+    }
+    .card__date {
+        display: block;
+        font-size: 0.78rem;
+        color: var(--color-text-muted);
+    }
+    .card__title,
+    .card__description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .card__title {
+        margin-bottom: 0.4rem;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+    .card__date + .card__title {
+        margin-top: 0.3rem;
+    }
+    .card__description {
+        font-size: 0.82rem;
+        color: var(--color-text-muted);
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .card,
+        .card__img {
+            transition: none;
+        }
+        .card:hover .card__img {
+            transform: none;
+        }
+    }
+</style>

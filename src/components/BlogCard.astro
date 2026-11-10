@@ -1,25 +1,16 @@
 ---
-import { Image } from 'astro:assets';
 import type { BlogEntry } from '../lib/blog';
-import { formatDate } from '../lib/blog';
+import Card from './Card.astro';
 import fallback from '../assets/img/EDTC-icon.webp';
 
 interface Props {
+    /** ブログ記事（getPosts() の要素） */
     post: BlogEntry;
+    /** タイトルの見出しレベル（Card と同じ） */
+    headingLevel?: 2 | 3;
 }
-const { post } = Astro.props;
+const { post, headingLevel } = Astro.props;
 const { title, date, description, thumbnail } = post.data;
 ---
 
-<li class="blog-card">
-    <a href={`/blog/${post.id}/`}>
-        <div class="blog-card__img-wrap">
-            <Image class="blog-card__img" src={thumbnail ?? fallback} alt={title} width={640} height={360} fit="cover" />
-        </div>
-        <div class="blog-card__body">
-            <span class="blog-card__date">{formatDate(date)}</span>
-            <h2 class="blog-card__title">{title}</h2>
-            <p class="blog-card__caption">{description}</p>
-        </div>
-    </a>
-</li>
+<Card href={`/blog/${post.id}/`} title={title} description={description} image={thumbnail ?? fallback} date={date} headingLevel={headingLevel} />
