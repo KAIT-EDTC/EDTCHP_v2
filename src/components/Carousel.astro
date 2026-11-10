@@ -70,6 +70,45 @@ const name = (s: string) => `${label}${label ? 'の' : ''}${s}`;
         };
         prev.addEventListener('click', () => move(-1));
         next.addEventListener('click', () => move(1));
+
+        // マウスでもつかんで横に送れるようにする（指やトラックパッドはブラウザが元から横スクロールする）
+        let drag: { x: number; left: number; moved: boolean } | null = null;
+        let justDragged = false;
+        track.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse' && e.button === 0) drag = { x: e.clientX, left: track.scrollLeft, moved: false };
+        });
+        track.addEventListener('pointermove', (e) => {
+            if (!drag) return;
+            const dx = e.clientX - drag.x;
+            if (!drag.moved) {
+                if (Math.abs(dx) < 5) return; // 少しのぶれはクリックとして扱う
+                drag.moved = true;
+                track.setPointerCapture(e.pointerId);
+                track.classList.add('dragging');
+                getSelection()?.removeAllRanges();
+            }
+            track.scrollLeft = drag.left - dx;
+        });
+        const release = () => {
+            if (!drag?.moved) return void (drag = null);
+            const forward = track.scrollLeft > drag.left;
+            drag = null;
+            justDragged = true;
+            setTimeout(() => (justDragged = false)); // 離した直後の click だけ止める
+            // 引いた向きへ 1 割以上動かしていたら、その向きの次の位置まで送る
+            const { step } = metrics();
+            const i = track.scrollLeft / step;
+            track.scrollTo({ left: (forward ? Math.ceil(i - 0.1) : Math.floor(i + 0.1)) * step, behavior });
+            // 送り終えてからスナップを戻す（先に戻すと、その場で一番近い位置へ跳んでしまう）
+            const settle = () => drag?.moved || track.classList.remove('dragging');
+            track.addEventListener('scrollend', settle, { once: true });
+            setTimeout(settle, 800); // scrollend がないブラウザや、動かなかったとき用
+        };
+        track.addEventListener('pointerup', release);
+        track.addEventListener('pointercancel', release);
+        // ドラッグを終えたときにリンクへ飛ばない。画像やリンクのドラッグ＆ドロップも始めない
+        track.addEventListener('click', (e) => justDragged && (e.preventDefault(), e.stopPropagation()), true);
+        track.addEventListener('dragstart', (e) => e.preventDefault());
         track.addEventListener('scroll', update, { passive: true });
         new ResizeObserver(update).observe(track);
         update();
@@ -92,6 +131,15 @@ const name = (s: string) => `${label}${label ? 'の' : ''}${s}`;
     }
     .carousel__track::-webkit-scrollbar {
         display: none;
+    }
+    /* ドラッグ中はスナップを切って指に追従させ、離したときに JS で位置を合わせる */
+    .carousel__track.dragging {
+        scroll-snap-type: none;
+        cursor: grabbing;
+        user-select: none;
+    }
+    .carousel__track.dragging * {
+        cursor: grabbing;
     }
     .carousel__btn {
         position: absolute;
