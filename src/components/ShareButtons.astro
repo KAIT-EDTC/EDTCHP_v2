@@ -1,0 +1,122 @@
+---
+interface Props {
+    /** シェアするときに使う記事タイトル */
+    title: string;
+}
+const { title } = Astro.props;
+
+const shares = [
+    {
+        name: 'X',
+        cls: 'x',
+        url: 'https://x.com/intent/tweet?url={url}&text={text}',
+        path: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z',
+    },
+    {
+        name: 'Facebook',
+        cls: 'fb',
+        url: 'https://www.facebook.com/sharer/sharer.php?u={url}',
+        path: 'M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z',
+    },
+];
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const fill = (tpl: string, url: string) => tpl.replace('{url}', encodeURIComponent(url)).replace('{text}', encodeURIComponent(title));
+---
+
+<div class="share-buttons">
+    {
+        shares.map((s) => (
+            <a
+                class={`share-buttons__button share-buttons__button--${s.cls}`}
+                href={fill(s.url, canonical)}
+                data-share={s.url}
+                data-share-title={title}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${s.name}でシェア`}
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d={s.path} />
+                </svg>
+            </a>
+        ))
+    }
+    <button class="share-buttons__button share-buttons__button--copy" type="button" aria-label="リンクをコピー" data-share-copy>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+    </button>
+    <p class="share-buttons__status" role="status" data-share-status></p>
+</div>
+
+<script>
+    // ponytail: kaitedtc.com への移行前は workers.dev で公開しているため、共有URLは実行時のURLで組み立て直す。移行後は不要
+    const url = encodeURIComponent(location.origin + location.pathname);
+    const title = document.querySelector<HTMLElement>('[data-share-title]')?.dataset.shareTitle ?? document.title;
+    const text = encodeURIComponent(title);
+    document.querySelectorAll<HTMLAnchorElement>('[data-share]').forEach((a) => {
+        a.href = a.dataset.share!.replace('{url}', url).replace('{text}', text);
+    });
+
+    const status = document.querySelector<HTMLElement>('[data-share-status]')!;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    document.querySelector('[data-share-copy]')?.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(location.origin + location.pathname);
+            status.textContent = 'リンクをコピーしました';
+        } catch {
+            status.textContent = 'コピーできませんでした';
+        }
+        clearTimeout(timer);
+        timer = setTimeout(() => (status.textContent = ''), 2000);
+    });
+</script>
+
+<style>
+    .share-buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    .share-buttons__button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        cursor: pointer;
+        transition: transform 0.15s, opacity 0.15s;
+    }
+    .share-buttons__button:hover {
+        opacity: 0.85;
+        transform: translateY(-2px);
+    }
+    .share-buttons__button svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+    .share-buttons__button--copy svg {
+        fill: none;
+    }
+    .share-buttons__button--x {
+        background: #000;
+    }
+    .share-buttons__button--fb {
+        background: #1877f2;
+    }
+    .share-buttons__button--copy {
+        background: var(--color-bg-gray);
+        color: var(--color-text);
+    }
+    .share-buttons__status {
+        grid-column: 1 / -1;
+        min-height: 1.5em;
+        font-size: 0.8rem;
+        color: var(--color-main);
+        text-align: center;
+    }
+</style>

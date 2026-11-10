@@ -8,17 +8,17 @@ const letters = [
 ];
 ---
 
-<ul class="letters">
+<ul class="edtc-letters" data-edtc-letters>
     {
         letters.map((l, i) => (
-            <li style={`--c: ${l.color}; --p: ${i};`}>
-                <div class="band">
-                    <span class="letter" aria-hidden="true">{l.letter}</span>
-                    <p class="word" lang="en">{l.word}</p>
+            <li class="edtc-letters__item" style={`--c: ${l.color}; --p: ${i};`}>
+                <div class="edtc-letters__band">
+                    <span class="edtc-letters__letter" aria-hidden="true">{l.letter}</span>
+                    <p class="edtc-letters__word" lang="en">{l.word}</p>
                 </div>
-                <div class="text">
-                    <h3>{l.head}</h3>
-                    <p class="body">{l.body}</p>
+                <div class="edtc-letters__text">
+                    <h3 class="edtc-letters__head">{l.head}</h3>
+                    <p class="edtc-letters__body">{l.body}</p>
                 </div>
             </li>
         ))
@@ -27,7 +27,7 @@ const letters = [
 
 <script>
     // スマホ幅のときだけ、先頭のカードを後ろに回す（C の次は E に戻る）
-    const list = document.querySelector<HTMLElement>('.letters');
+    const list = document.querySelector<HTMLElement>('[data-edtc-letters]');
     if (list) {
         const order = [...list.children] as HTMLElement[];
         const isMobile = () => matchMedia('(max-width: 599px)').matches;
@@ -39,12 +39,12 @@ const letters = [
             if (busy) return;
             busy = true;
             const top = order[0];
-            top.classList.add('out');
+            top.classList.add('is-out');
             setTimeout(() => {
                 top.style.transition = 'none';
                 order.push(order.shift()!);
                 order.forEach((li, i) => li.style.setProperty('--p', String(i)));
-                top.classList.remove('out');
+                top.classList.remove('is-out');
                 top.offsetWidth; // 戻る動きを見せないよう、再描画を挟んでから transition を戻す
                 top.style.transition = '';
                 busy = false;
@@ -52,7 +52,7 @@ const letters = [
         };
 
         list.addEventListener('pointerdown', (e) => {
-            list.classList.add('touched'); // 一度触れたら誘導アニメーションは止める
+            list.classList.add('is-touched'); // 一度触れたら誘導アニメーションは止める
             startX = e.clientX;
             startY = e.clientY;
         });
@@ -65,7 +65,7 @@ const letters = [
 </script>
 
 <style>
-    .letters {
+    .edtc-letters {
         display: grid;
         max-width: 1100px;
         margin: 0 auto;
@@ -73,7 +73,7 @@ const letters = [
         gap: 16px;
         text-align: left;
     }
-    li {
+    .edtc-letters__item {
         list-style: none;
         background: #fff;
         border: 2px solid var(--c);
@@ -83,43 +83,43 @@ const letters = [
         font-feature-settings: 'palt' 1;
     }
     /* 色を付けるのは枠と見出しだけ */
-    .band {
+    .edtc-letters__band {
         padding: 24px 22px 0;
     }
-    .text {
+    .edtc-letters__text {
         padding: 4px 22px 28px;
     }
-    .letter {
+    .edtc-letters__letter {
         display: block;
         font-size: 88px;
         font-weight: 900;
         line-height: 1;
     }
-    .word {
+    .edtc-letters__word {
         margin-top: 4px;
         font-size: 16px;
         font-weight: 700;
         letter-spacing: 0.02em;
         color: #555;
     }
-    h3 {
+    .edtc-letters__head {
         margin: 20px 0 8px;
         font-size: 20px;
         font-weight: 700;
         color: var(--c);
     }
-    .body {
+    .edtc-letters__body {
         font-size: 16px;
         line-height: 1.8;
     }
     @supports (word-break: auto-phrase) {
-        h3 {
+        .edtc-letters__head {
             word-break: auto-phrase;
         }
     }
     /* スマホ: 4枚を右に少しずつずらして重ね、先頭をめくる */
     @media screen and (max-width: 599px) {
-        .letters {
+        .edtc-letters {
             position: relative;
             padding-right: 36px;
             isolation: isolate; /* カードの z-index をここで完結させ、固定ヘッダーより前に出さない */
@@ -127,7 +127,7 @@ const letters = [
             cursor: pointer;
             user-select: none;
         }
-        li {
+        .edtc-letters__item {
             grid-area: 1 / 1;
             z-index: calc(4 - var(--p));
             transform: translateX(calc(var(--p) * 12px));
@@ -135,12 +135,12 @@ const letters = [
                 transform 0.3s,
                 opacity 0.3s;
         }
-        li.out {
+        .edtc-letters__item.is-out {
             transform: translateX(-110%) rotate(-8deg);
             opacity: 0;
         }
         /* 指の代わりの丸がカード上でタップし、「めくれる」ことを動きで伝える */
-        .letters:not(.touched)::after {
+        .edtc-letters:not(.is-touched)::after {
             content: '';
             position: absolute;
             top: 55%;
@@ -188,23 +188,23 @@ const letters = [
         }
     }
     @media (prefers-reduced-motion: reduce) {
-        li {
+        .edtc-letters__item {
             transition: none;
         }
-        .letters::after {
+        .edtc-letters::after {
             animation: none !important;
         }
     }
     @media screen and (min-width: 600px) {
-        .letters {
+        .edtc-letters {
             grid-template-columns: repeat(2, 1fr);
         }
     }
     @media screen and (min-width: 1024px) {
-        .letters {
+        .edtc-letters {
             grid-template-columns: repeat(4, 1fr);
         }
-        .letter {
+        .edtc-letters__letter {
             font-size: 120px;
         }
     }

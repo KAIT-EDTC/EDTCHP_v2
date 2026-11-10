@@ -1,0 +1,56 @@
+---
+interface Props {
+    /** セクション名 */
+    title: string;
+    /** 件数 */
+    count: number;
+    /** セクションの説明 */
+    intro: string;
+    /** 渡すとタイトルがリンクになる */
+    href?: string;
+    /** aria-labelledby 用の接頭辞。`${id}-title` になる */
+    id?: string;
+    /** 見出しレベル。タグページでは 1、一覧では 2 */
+    level?: 1 | 2;
+}
+const { title, count, intro, href, id, level = 2 } = Astro.props;
+const Heading = `h${level}` as const;
+---
+
+<div class="section-heading">
+    <Heading class="section-heading__title" id={id ? `${id}-title` : undefined}>
+        {href ? <a href={href}>{title}</a> : title}
+        <span class="section-heading__count">{count}件</span>
+    </Heading>
+    <p class="section-heading__intro">{intro}</p>
+</div>
+
+<style>
+    .section-heading__title {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        padding-left: 0.7rem;
+        border-left: 5px solid var(--color-main);
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+    .section-heading__count {
+        font-size: 0.85rem;
+        font-weight: 400;
+        color: var(--color-text-muted);
+    }
+    .section-heading__intro {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+        line-height: 1.7;
+    }
+    .section-heading__title a {
+        color: inherit;
+        text-decoration: none;
+    }
+    .section-heading__title a:hover {
+        text-decoration: underline;
+    }
+</style>
