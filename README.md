@@ -31,15 +31,20 @@ src/
   lib/blog.ts              # 記事の取得、日付の整形、関連記事
   pages/                   # 1ファイル = 1URL
     index.astro            # /
-    about.astro            # /about/
     blog/index.astro       # /blog/                種別ごとのセクション（横に送れるカルーセル）
     blog/tag/[slug].astro  # /blog/tag/<種別>/     種別（とピックアップ）の全記事を年度別に
     blog/[id].astro        # /blog/<記事ID>/
     works/…                # /works/, /works/<ID>/（旧 /products/ は _redirects で転送）
     contact.astro          # /contact/             Googleフォーム
-  components/ layouts/     # ヘッダー・フッター・共通の <head>。OGP画像の変換は layouts/Base.astro、パンくずは components/Breadcrumbs.astro
-  scripts/                 # クライアントJS（トップのスライダー）。ブログ一覧のカルーセルは pages/blog/index.astro 内
-  styles/                  # 旧サイトのCSSを引き継いだもの
+  layouts/Base.astro       # 共通の <head>、ヘッダー・フッター、OGP画像の変換、ページの背景色
+  components/              # 1ファイル = マークアップ + scoped <style> + <script>
+    Header / Footer / SnsLinks / Breadcrumbs
+    PageHero               # 一覧ページ上部の見出し帯
+    Card / BlogCard        # 一覧のカード（global.css の .card-grid に並べる）
+    Slider                 # 1枚ずつ送る画像スライダー（トップ、制作物詳細）
+    Carousel               # カードを横に送るカルーセル（ブログ一覧）
+    SectionHeading / ShareButtons / EdtcLetters / ArrowButton
+  styles/global.css        # グローバルCSSはこの1枚だけ（リセット、トークン、共通クラス）。Base.astro だけが import する
   assets/                  # サイトで使う画像（ビルド時に最適化される）
 public/                    # そのまま配信するファイル（favicon, _redirects, 旧URLの転送ページ）
 ```
@@ -84,7 +89,7 @@ thumbnail: ./img-k3x9a0qz.webp
 - 記事の正は dashboard。PR上で直接直しても、再提出で上書きされる
 - 手で記事を書く場合も同じ形式でよい
 
-旧サイトの JSON 記事は `scripts/migrate-legacy-blog.mjs` でこの形式に変換済み。
+旧サイトの JSON 記事はこの形式に変換済み。
 
 ## 制作物
 
