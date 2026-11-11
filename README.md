@@ -6,7 +6,7 @@
 
 ## 開発
 
-Node.js 22 以上（`.nvmrc`）。
+Node.js 22 以上（`.nvmrc`）。コードの書き方は [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ```sh
 npm install
