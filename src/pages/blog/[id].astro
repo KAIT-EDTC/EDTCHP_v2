@@ -31,8 +31,8 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label: title }]} />
 
         <div class="post">
-            <article class="post__main panel">
-                <header class="post__header">
+            <article class="post-main panel">
+                <header class="post-header">
                     <div class="chips">
                         {sectionsOf(post).map((s) => (
                             <a class="chip" href={s.href}>
@@ -40,8 +40,8 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
                             </a>
                         ))}
                     </div>
-                    <h1 class="post__title">{title}</h1>
-                    <p class="post__meta">
+                    <h1 class="post-title">{title}</h1>
+                    <p class="post-meta">
                         <span>
                             イベント実施日 <time datetime={iso(date)}>{formatDate(date)}</time>
                         </span>
@@ -53,39 +53,39 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
                 </div>
             </article>
 
-            <aside class="post__side">
+            <aside class="post-side">
                 <section class="side-card panel" aria-labelledby="share-heading">
-                    <h2 class="side-card__title" id="share-heading">この記事をシェア</h2>
+                    <h2 class="side-card-title" id="share-heading">この記事をシェア</h2>
                     <ShareButtons title={title} />
                 </section>
 
                 <section class="side-card panel" aria-labelledby="related-heading">
-                    <h2 class="side-card__title" id="related-heading">関連記事</h2>
+                    <h2 class="side-card-title" id="related-heading">関連記事</h2>
                     <ul class="related-posts">
                         {
                             related.map((p) => (
                                 <li>
-                                    <a class="related-posts__link" href={`/blog/${p.id}/`}>
+                                    <a class="related-posts-link" href={`/blog/${p.id}/`}>
                                         <Image
-                                            class="related-posts__img"
+                                            class="related-posts-img"
                                             src={p.data.thumbnail ?? fallback}
                                             alt=""
                                             width={176}
                                             height={120}
                                             fit="cover"
                                         />
-                                        <span class="related-posts__body">
-                                            <time class="related-posts__date" datetime={iso(p.data.date)}>
+                                        <span class="related-posts-body">
+                                            <time class="related-posts-date" datetime={iso(p.data.date)}>
                                                 {formatDate(p.data.date)}
                                             </time>
-                                            <span class="related-posts__title">{p.data.title}</span>
+                                            <span class="related-posts-title">{p.data.title}</span>
                                         </span>
                                     </a>
                                 </li>
                             ))
                         }
                     </ul>
-                    <a class="side-card__more" href="/blog/">
+                    <a class="side-card-more" href="/blog/">
                         ブログ一覧へ <span aria-hidden="true">→</span>
                     </a>
                 </section>
@@ -104,22 +104,22 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         gap: 32px;
         align-items: start;
     }
-    .post__main {
+    .post-main {
         padding: clamp(20px, 4vw, 48px);
     }
-    .post__header {
+    .post-header {
         margin-bottom: 32px;
         padding-bottom: 24px;
         border-bottom: 1px solid var(--color-border);
     }
-    .post__title {
+    .post-title {
         margin: 12px 0 10px;
         font-size: clamp(1.4rem, 3vw, 2rem);
         line-height: 1.45;
         font-weight: 700;
         color: var(--color-text);
     }
-    .post__meta {
+    .post-meta {
         display: flex;
         flex-wrap: wrap;
         gap: 4px 20px;
@@ -127,7 +127,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         color: var(--color-text-muted);
     }
 
-    .post__side {
+    .post-side {
         position: sticky;
         top: 90px;
         display: flex;
@@ -137,13 +137,13 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
     .side-card {
         padding: 20px;
     }
-    .side-card__title {
+    .side-card-title {
         margin-bottom: 14px;
         font-size: 0.95rem;
         font-weight: 700;
         color: var(--color-text);
     }
-    .side-card__more {
+    .side-card-more {
         display: block;
         margin-top: 14px;
         padding-top: 12px;
@@ -154,7 +154,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         text-align: right;
         text-decoration: none;
     }
-    .side-card__more:hover {
+    .side-card-more:hover {
         text-decoration: underline;
     }
 
@@ -164,7 +164,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         flex-direction: column;
         gap: 4px;
     }
-    .related-posts__link {
+    .related-posts-link {
         display: flex;
         gap: 12px;
         align-items: center;
@@ -175,10 +175,10 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         text-decoration: none;
         transition: background 0.15s;
     }
-    .related-posts__link:hover {
+    .related-posts-link:hover {
         background: var(--color-main-tint);
     }
-    .related-posts__img {
+    .related-posts-img {
         flex-shrink: 0;
         width: 88px;
         height: 60px;
@@ -186,17 +186,17 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         border-radius: 8px;
         background: var(--color-bg-gray);
     }
-    .related-posts__body {
+    .related-posts-body {
         display: flex;
         flex-direction: column;
         gap: 2px;
         min-width: 0;
     }
-    .related-posts__date {
+    .related-posts-date {
         font-size: 0.75rem;
         color: var(--color-text-muted);
     }
-    .related-posts__title {
+    .related-posts-title {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -205,7 +205,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         font-weight: 600;
         line-height: 1.5;
     }
-    .related-posts__link:hover .related-posts__title {
+    .related-posts-link:hover .related-posts-title {
         color: var(--color-main);
     }
 
@@ -213,7 +213,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
         .post {
             grid-template-columns: 1fr;
         }
-        .post__side {
+        .post-side {
             position: static;
         }
     }

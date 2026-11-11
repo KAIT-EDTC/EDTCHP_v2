@@ -11,14 +11,14 @@ const letters = [
 <ul class="edtc-letters" data-edtc-letters>
     {
         letters.map((l, i) => (
-            <li class="edtc-letters__item" style={`--c: ${l.color}; --p: ${i};`}>
-                <div class="edtc-letters__band">
-                    <span class="edtc-letters__letter" aria-hidden="true">{l.letter}</span>
-                    <p class="edtc-letters__word" lang="en">{l.word}</p>
+            <li class="edtc-letters-item" style={`--c: ${l.color}; --p: ${i};`}>
+                <div class="edtc-letters-band">
+                    <span class="edtc-letters-letter" aria-hidden="true">{l.letter}</span>
+                    <p class="edtc-letters-word" lang="en">{l.word}</p>
                 </div>
-                <div class="edtc-letters__text">
-                    <h3 class="edtc-letters__head">{l.head}</h3>
-                    <p class="edtc-letters__body">{l.body}</p>
+                <div class="edtc-letters-text">
+                    <h3 class="edtc-letters-head">{l.head}</h3>
+                    <p class="edtc-letters-body">{l.body}</p>
                 </div>
             </li>
         ))
@@ -73,7 +73,7 @@ const letters = [
         gap: 16px;
         text-align: left;
     }
-    .edtc-letters__item {
+    .edtc-letters-item {
         list-style: none;
         background: #fff;
         border: 2px solid var(--c);
@@ -83,37 +83,37 @@ const letters = [
         font-feature-settings: 'palt' 1;
     }
     /* 色を付けるのは枠と見出しだけ */
-    .edtc-letters__band {
+    .edtc-letters-band {
         padding: 24px 22px 0;
     }
-    .edtc-letters__text {
+    .edtc-letters-text {
         padding: 4px 22px 28px;
     }
-    .edtc-letters__letter {
+    .edtc-letters-letter {
         display: block;
         font-size: 88px;
         font-weight: 900;
         line-height: 1;
     }
-    .edtc-letters__word {
+    .edtc-letters-word {
         margin-top: 4px;
         font-size: 16px;
         font-weight: 700;
         letter-spacing: 0.02em;
         color: #555;
     }
-    .edtc-letters__head {
+    .edtc-letters-head {
         margin: 20px 0 8px;
         font-size: 20px;
         font-weight: 700;
         color: var(--c);
     }
-    .edtc-letters__body {
+    .edtc-letters-body {
         font-size: 16px;
         line-height: 1.8;
     }
     @supports (word-break: auto-phrase) {
-        .edtc-letters__head {
+        .edtc-letters-head {
             word-break: auto-phrase;
         }
     }
@@ -127,7 +127,7 @@ const letters = [
             cursor: pointer;
             user-select: none;
         }
-        .edtc-letters__item {
+        .edtc-letters-item {
             grid-area: 1 / 1;
             z-index: calc(4 - var(--p));
             transform: translateX(calc(var(--p) * 12px));
@@ -135,7 +135,7 @@ const letters = [
                 transform 0.3s,
                 opacity 0.3s;
         }
-        .edtc-letters__item.is-out {
+        .edtc-letters-item.is-out {
             transform: translateX(-110%) rotate(-8deg);
             opacity: 0;
         }
@@ -188,7 +188,7 @@ const letters = [
         }
     }
     @media (prefers-reduced-motion: reduce) {
-        .edtc-letters__item {
+        .edtc-letters-item {
             transition: none;
         }
         .edtc-letters::after {
@@ -204,7 +204,7 @@ const letters = [
         .edtc-letters {
             grid-template-columns: repeat(4, 1fr);
         }
-        .edtc-letters__letter {
+        .edtc-letters-letter {
             font-size: 120px;
         }
     }

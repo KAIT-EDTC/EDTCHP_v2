@@ -136,7 +136,7 @@ a {
     opacity: 0.85;
 }
 
-.button--outline {
+.button-outline {
     background: #fff;
     color: var(--color-main);
 }

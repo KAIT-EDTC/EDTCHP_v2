@@ -16,20 +16,20 @@ const { label, intro, posts } = Astro.props;
 ---
 
 <Base title={`${label}の記事`} description={intro} background="gray">
-    <div class="container tag-page__head">
+    <div class="container tag-page-head">
         <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label }]} />
         <SectionHeading level={1} title={label} count={posts.length} intro={intro} />
     </div>
 
     {
         byFiscalYear(posts).map((group) => (
-            <section class="tag-page__year" aria-labelledby={`fy${group.year}`}>
+            <section class="tag-page-year" aria-labelledby={`fy${group.year}`}>
                 <div class="container">
-                    <h2 class="tag-page__year-title" id={`fy${group.year}`}>
+                    <h2 class="tag-page-year-title" id={`fy${group.year}`}>
                         {group.year}年度
                     </h2>
                 </div>
-                <ul class="container card-grid tag-page__grid">
+                <ul class="container card-grid tag-page-grid">
                     {group.posts.map((post) => (
                         <BlogCard post={post} headingLevel={3} />
                     ))}
@@ -40,16 +40,16 @@ const { label, intro, posts } = Astro.props;
 </Base>
 
 <style>
-    .tag-page__year {
+    .tag-page-year {
         margin-top: 2.5rem;
     }
-    .tag-page__year:last-of-type {
+    .tag-page-year:last-of-type {
         margin-bottom: 4rem;
     }
-    .tag-page__grid {
+    .tag-page-grid {
         margin-top: 1.5rem;
     }
-    .tag-page__year-title {
+    .tag-page-year-title {
         font-size: 1.15rem;
         font-weight: 700;
         color: var(--color-text);

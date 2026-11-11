@@ -27,7 +27,7 @@ const fill = (tpl: string, url: string) => tpl.replace('{url}', encodeURICompone
     {
         shares.map((s) => (
             <a
-                class={`share-buttons__button share-buttons__button--${s.cls}`}
+                class={`share-buttons-button share-buttons-button-${s.cls}`}
                 href={fill(s.url, canonical)}
                 data-share={s.url}
                 data-share-title={title}
@@ -41,13 +41,13 @@ const fill = (tpl: string, url: string) => tpl.replace('{url}', encodeURICompone
             </a>
         ))
     }
-    <button class="share-buttons__button share-buttons__button--copy" type="button" aria-label="リンクをコピー" data-share-copy>
+    <button class="share-buttons-button share-buttons-button-copy" type="button" aria-label="リンクをコピー" data-share-copy>
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
         </svg>
     </button>
-    <p class="share-buttons__status" role="status" data-share-status></p>
+    <p class="share-buttons-status" role="status" data-share-status></p>
 </div>
 
 <script>
@@ -79,7 +79,7 @@ const fill = (tpl: string, url: string) => tpl.replace('{url}', encodeURICompone
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
     }
-    .share-buttons__button {
+    .share-buttons-button {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -90,29 +90,29 @@ const fill = (tpl: string, url: string) => tpl.replace('{url}', encodeURICompone
         cursor: pointer;
         transition: transform 0.15s, opacity 0.15s;
     }
-    .share-buttons__button:hover {
+    .share-buttons-button:hover {
         opacity: 0.85;
         transform: translateY(-2px);
     }
-    .share-buttons__button svg {
+    .share-buttons-button svg {
         width: 20px;
         height: 20px;
         fill: currentColor;
     }
-    .share-buttons__button--copy svg {
+    .share-buttons-button-copy svg {
         fill: none;
     }
-    .share-buttons__button--x {
+    .share-buttons-button-x {
         background: #000;
     }
-    .share-buttons__button--fb {
+    .share-buttons-button-fb {
         background: #1877f2;
     }
-    .share-buttons__button--copy {
+    .share-buttons-button-copy {
         background: var(--color-bg-gray);
         color: var(--color-text);
     }
-    .share-buttons__status {
+    .share-buttons-status {
         grid-column: 1 / -1;
         min-height: 1.5em;
         font-size: 0.8rem;

@@ -16,7 +16,7 @@ const { label, item } = Astro.props;
 -->
 <div class="carousel" data-carousel>
     <ArrowButton direction="prev" label={`${label}の前の${item}`} />
-    <ul class="carousel__track" data-carousel-track tabindex="0" aria-label={`${label}の${item}`}>
+    <ul class="carousel-track" data-carousel-track tabindex="0" aria-label={`${label}の${item}`}>
         <slot />
     </ul>
     <ArrowButton direction="next" label={`${label}の次の${item}`} />
@@ -61,7 +61,7 @@ const { label, item } = Astro.props;
         position: relative;
         margin-top: 1.5rem;
     }
-    .carousel__track {
+    .carousel-track {
         display: flex;
         gap: 24px;
         overflow-x: auto;
@@ -73,21 +73,21 @@ const { label, item } = Astro.props;
         scroll-padding-inline: var(--gutter);
         margin-bottom: -16px;
     }
-    .carousel__track::-webkit-scrollbar {
+    .carousel-track::-webkit-scrollbar {
         display: none;
     }
     /* 本文幅に3枚並べたときと同じ大きさ */
-    .carousel__track > :global(*) {
+    .carousel-track > :global(*) {
         flex: 0 0 calc((var(--content) - 48px) / 3);
         scroll-snap-align: start;
     }
     @media (max-width: 900px) {
-        .carousel__track > :global(*) {
+        .carousel-track > :global(*) {
             flex-basis: calc((var(--content) - 24px) / 2);
         }
     }
     @media (max-width: 600px) {
-        .carousel__track > :global(*) {
+        .carousel-track > :global(*) {
             flex-basis: calc(var(--content) * 0.85); /* 次の記事を少しのぞかせて、横に続くことを示す */
         }
     }

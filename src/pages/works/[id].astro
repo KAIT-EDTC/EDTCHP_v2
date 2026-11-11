@@ -42,36 +42,36 @@ const specs = [
         <Breadcrumbs items={[{ label: '制作物', href: '/works/' }, { label: title }]} />
 
         <section class="work panel">
-            <div class="work__media">
+            <div class="work-media">
                 <Slider label={`${title}の画像`}>
                     {slides.map((src, i) => (
                         <Image src={src} alt={slides.length > 1 ? `${title} ${i + 1}/${slides.length}` : title} widths={[480, 960]} sizes="(max-width: 900px) 100vw, 560px" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
                     ))}
                 </Slider>
             </div>
-            <div class="work__info">
-                <h1 class="work__title">{title}</h1>
-                {headline && <p class="work__headline">{headline}</p>}
+            <div class="work-info">
+                <h1 class="work-title">{title}</h1>
+                {headline && <p class="work-headline">{headline}</p>}
                 {
                     specs.length > 0 && (
-                        <dl class="work__specs">
+                        <dl class="work-specs">
                             {specs.map(([k, v]) => (
-                                <div class="work__spec">
-                                    <dt class="work__spec-label">{k}</dt>
-                                    <dd class="work__spec-value">{v}</dd>
+                                <div class="work-spec">
+                                    <dt class="work-spec-label">{k}</dt>
+                                    <dd class="work-spec-value">{v}</dd>
                                 </div>
                             ))}
                         </dl>
                     )
                 }
-                <a href="/contact/" class="button work__cta">
+                <a href="/contact/" class="button work-cta">
                     授業・出張のご相談はこちら
                     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
                 </a>
             </div>
         </section>
 
-        <section class="work__body panel" aria-label="詳細">
+        <section class="work-body panel" aria-label="詳細">
             <div class="prose">
                 <Content />
             </div>
@@ -80,13 +80,13 @@ const specs = [
         {
             others.length > 0 && (
                 <section class="other-works" aria-labelledby="other-works-heading">
-                    <h2 class="other-works__heading" id="other-works-heading">ほかの制作物</h2>
+                    <h2 class="other-works-heading" id="other-works-heading">ほかの制作物</h2>
                     <ul class="card-grid">
                         {others.map((w) => (
                             <Card href={`/works/${w.id}/`} title={w.data.title} description={w.data.description} image={w.data.thumbnail ?? fallback} headingLevel={3} />
                         ))}
                     </ul>
-                    <a class="other-works__more" href="/works/">制作物一覧へ <span aria-hidden="true">→</span></a>
+                    <a class="other-works-more" href="/works/">制作物一覧へ <span aria-hidden="true">→</span></a>
                 </section>
             )
         }
@@ -99,28 +99,28 @@ const specs = [
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         overflow: hidden;
     }
-    .work__info {
+    .work-info {
         display: flex;
         flex-direction: column;
         gap: 16px;
         padding: clamp(24px, 4vw, 48px);
     }
-    .work__title {
+    .work-title {
         font-size: clamp(1.6rem, 3.5vw, 2.4rem);
         font-weight: 700;
         line-height: 1.3;
         color: var(--color-text);
     }
-    .work__headline {
+    .work-headline {
         font-size: 1.05rem;
         line-height: 1.7;
         color: var(--color-text-muted);
     }
-    .work__specs {
+    .work-specs {
         display: grid;
         border-top: 1px solid var(--color-border);
     }
-    .work__spec {
+    .work-spec {
         display: grid;
         grid-template-columns: 6em 1fr;
         gap: 12px;
@@ -129,12 +129,12 @@ const specs = [
         font-size: 0.9rem;
         line-height: 1.6;
     }
-    .work__spec-label {
+    .work-spec-label {
         font-weight: 700;
         color: var(--color-text-muted);
     }
     /* .button を土台に、矢印アイコンと配置の分だけ差分を足す（.button 単体より詳細度を上げて確実に上書きする） */
-    .work__info .work__cta {
+    .work-info .work-cta {
         display: inline-flex;
         align-items: center;
         gap: 10px;
@@ -144,38 +144,38 @@ const specs = [
         box-shadow: 0 4px 12px rgba(10, 140, 216, 0.3);
         transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
     }
-    .work__info .work__cta:hover {
+    .work-info .work-cta:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(10, 140, 216, 0.4);
     }
-    .work__cta svg {
+    .work-cta svg {
         width: 18px;
         height: 18px;
         transition: transform 0.15s;
     }
-    .work__cta:hover svg {
+    .work-cta:hover svg {
         transform: translateX(3px);
     }
 
-    .work__body {
+    .work-body {
         margin-top: 32px;
         padding: clamp(20px, 4vw, 48px);
     }
     /* 本文の画像を大きくしすぎない */
-    .work__body :global(.prose img) {
+    .work-body :global(.prose img) {
         max-height: 420px;
     }
 
     .other-works {
         margin-top: 56px;
     }
-    .other-works__heading {
+    .other-works-heading {
         margin-bottom: 20px;
         font-size: 1.3rem;
         font-weight: 700;
         color: var(--color-text);
     }
-    .other-works__more {
+    .other-works-more {
         display: block;
         width: fit-content;
         margin: 24px 0 0 auto;
@@ -183,7 +183,7 @@ const specs = [
         color: var(--color-main);
         text-decoration: none;
     }
-    .other-works__more:hover {
+    .other-works-more:hover {
         text-decoration: underline;
     }
 
@@ -195,7 +195,7 @@ const specs = [
         .work {
             grid-template-columns: 1fr;
         }
-        .work__info .work__cta {
+        .work-info .work-cta {
             align-self: stretch;
             justify-content: center;
         }

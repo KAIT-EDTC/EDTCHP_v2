@@ -25,13 +25,13 @@ const sections = getSections(await getPosts());
     </div>
 
     <nav class="blog-nav" aria-label="活動の種類">
-        <ul class="blog-nav__list container">
+        <ul class="blog-nav-list container">
             {
                 sections.map(({ id, label, posts }) => (
                     <li>
-                        <a class="blog-nav__link" href={`#${id}`}>
+                        <a class="blog-nav-link" href={`#${id}`}>
                             {label}
-                            <span class="blog-nav__count">{posts.length}</span>
+                            <span class="blog-nav-count">{posts.length}</span>
                         </a>
                     </li>
                 ))
@@ -52,7 +52,7 @@ const sections = getSections(await getPosts());
                 </Carousel>
                 {posts.length > MORE_FROM && (
                     <div class="container">
-                        <a class="blog-section__more" href={href}>
+                        <a class="blog-section-more" href={href}>
                             {label}を年度別に見る（{posts.length}件）→
                         </a>
                     </div>
@@ -63,12 +63,12 @@ const sections = getSections(await getPosts());
 </Base>
 
 <style>
-    .blog-nav__list {
+    .blog-nav-list {
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
     }
-    .blog-nav__link {
+    .blog-nav-link {
         display: inline-flex;
         align-items: center;
         gap: 0.4em;
@@ -81,11 +81,11 @@ const sections = getSections(await getPosts());
         text-decoration: none;
         transition: background 0.2s, color 0.2s;
     }
-    .blog-nav__link:hover {
+    .blog-nav-link:hover {
         background: var(--color-main);
         color: #fff;
     }
-    .blog-nav__count {
+    .blog-nav-count {
         font-size: 0.75rem;
         font-weight: 400;
         opacity: 0.8;
@@ -98,7 +98,7 @@ const sections = getSections(await getPosts());
     .blog-section:last-of-type {
         margin-bottom: 4rem;
     }
-    .blog-section__more {
+    .blog-section-more {
         display: block;
         width: fit-content;
         margin: 1.2rem auto 0;
@@ -111,7 +111,7 @@ const sections = getSections(await getPosts());
         text-decoration: none;
         transition: background 0.2s, color 0.2s;
     }
-    .blog-section__more:hover {
+    .blog-section-more:hover {
         background: var(--color-main);
         color: #fff;
     }

@@ -4,9 +4,9 @@ import Base from '../layouts/Base.astro';
 
 <Base title="ページが見つかりません">
     <div class="not-found">
-        <p class="not-found__code">404</p>
-        <p class="not-found__message">お探しのページが見つかりませんでした。</p>
-        <a class="not-found__link" href="/">ホームに戻る</a>
+        <p class="not-found-code">404</p>
+        <p class="not-found-message">お探しのページが見つかりませんでした。</p>
+        <a class="not-found-link" href="/">ホームに戻る</a>
     </div>
 </Base>
 
@@ -15,16 +15,16 @@ import Base from '../layouts/Base.astro';
         padding: 80px 20px;
         text-align: center;
     }
-    .not-found__code {
+    .not-found-code {
         margin-bottom: 16px;
         font-size: 2em;
         color: #ccc;
     }
-    .not-found__message {
+    .not-found-message {
         font-size: 1.1em;
         color: var(--color-text-muted);
     }
-    .not-found__link {
+    .not-found-link {
         display: block;
         width: fit-content;
         margin: 24px auto 0;

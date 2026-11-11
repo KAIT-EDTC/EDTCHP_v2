@@ -12,26 +12,26 @@ const nav = [
 ---
 
 <header class="header">
-    <a class="header__logo" href="/"><Image src={icon} alt="EDTC" width={60} height={60} /></a>
-    <a class="header__title" href="/">EDTC</a>
+    <a class="header-logo" href="/"><Image src={icon} alt="EDTC" width={60} height={60} /></a>
+    <a class="header-title" href="/">EDTC</a>
     <!-- 900px 以下はドロワー、それより広いと横並び。開閉は JS なしでチェックボックスが持つ -->
-    <nav class="header__nav" aria-label="メインメニュー">
-        <input id="header-toggle" class="header__toggle" type="checkbox" aria-label="メニュー切り替え" />
-        <label class="header__burger" for="header-toggle"><span class="header__burger-line"></span></label>
-        <label class="header__backdrop" for="header-toggle"></label>
-        <div class="header__drawer">
-            <ul class="header__list">
+    <nav class="header-nav" aria-label="メインメニュー">
+        <input id="header-toggle" class="header-toggle" type="checkbox" aria-label="メニュー切り替え" />
+        <label class="header-burger" for="header-toggle"><span class="header-burger-line"></span></label>
+        <label class="header-backdrop" for="header-toggle"></label>
+        <div class="header-drawer">
+            <ul class="header-list">
                 {
                     nav.map((n) => (
                         <li>
-                            <a class="header__link" href={n.href}>
-                                <span class="header__en">{n.en}</span>
-                                <span class="header__ja">{n.ja}</span>
+                            <a class="header-link" href={n.href}>
+                                <span class="header-en">{n.en}</span>
+                                <span class="header-ja">{n.ja}</span>
                             </a>
                         </li>
                     ))
                 }
-                <li class="header__sns"><SnsLinks /></li>
+                <li class="header-sns"><SnsLinks /></li>
             </ul>
         </div>
     </nav>
@@ -49,65 +49,65 @@ const nav = [
         padding: 0 4%;
         background-color: #fff;
     }
-    .header__logo {
+    .header-logo {
         display: block;
     }
-    .header__logo :global(img) {
+    .header-logo :global(img) {
         display: block;
     }
-    .header__title {
+    .header-title {
         font-size: 25px;
         font-weight: bold;
     }
-    .header__nav {
+    .header-nav {
         margin: 0 1% 0 auto;
     }
 
     /* ---- スマホ: ハンバーガー + ドロワー ---- */
     /* display: none だとキーボードで開けないので、見えないだけにする */
-    .header__toggle {
+    .header-toggle {
         position: absolute;
         width: 1px;
         height: 1px;
         opacity: 0;
     }
-    .header__burger {
+    .header-burger {
         display: grid;
         place-items: center;
         width: 44px;
         height: 44px;
         cursor: pointer;
     }
-    .header__toggle:focus-visible ~ .header__burger {
+    .header-toggle:focus-visible ~ .header-burger {
         outline: 2px solid var(--color-main);
         outline-offset: 2px;
     }
-    .header__burger-line,
-    .header__burger-line::before,
-    .header__burger-line::after {
+    .header-burger-line,
+    .header-burger-line::before,
+    .header-burger-line::after {
         display: block;
         width: 25px;
         height: 3px;
         border-radius: 3px;
         background: #555;
     }
-    .header__burger-line {
+    .header-burger-line {
         position: relative;
     }
-    .header__burger-line::before,
-    .header__burger-line::after {
+    .header-burger-line::before,
+    .header-burger-line::after {
         content: '';
         position: absolute;
         left: 0;
     }
-    .header__burger-line::before {
+    .header-burger-line::before {
         top: -8px;
     }
-    .header__burger-line::after {
+    .header-burger-line::after {
         top: 8px;
     }
     /* 閉じる用の薄黒い背景 */
-    .header__backdrop {
+    .header-backdrop {
         position: fixed;
         inset: 0;
         z-index: 1;
@@ -116,11 +116,11 @@ const nav = [
         pointer-events: none;
         transition: opacity 0.3s ease-in-out;
     }
-    .header__toggle:checked ~ .header__backdrop {
+    .header-toggle:checked ~ .header-backdrop {
         opacity: 0.5;
         pointer-events: auto;
     }
-    .header__drawer {
+    .header-drawer {
         position: fixed;
         top: 0;
         left: 0;
@@ -139,49 +139,49 @@ const nav = [
         --sns-ring: #fff;
         --sns-hover-color: var(--color-text);
     }
-    .header__toggle:checked ~ .header__drawer {
+    .header-toggle:checked ~ .header-drawer {
         visibility: visible;
         transform: translateX(0);
         box-shadow: 6px 0 25px rgba(0, 0, 0, 0.15);
         transition-delay: 0s;
     }
-    .header__list {
+    .header-list {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 30px;
         padding-top: 60px;
     }
-    .header__link {
+    .header-link {
         display: block;
         width: 200px;
         color: #fff;
         text-align: center;
     }
-    .header__link:hover {
+    .header-link:hover {
         color: #85a7cc;
     }
-    .header__en,
-    .header__ja {
+    .header-en,
+    .header-ja {
         display: block;
     }
-    .header__en {
+    .header-en {
         font-size: 16px;
         font-weight: bold;
         text-transform: uppercase;
     }
-    .header__ja {
+    .header-ja {
         font-size: 12px;
     }
 
     /* ---- PC: 横並び ---- */
     @media (min-width: 901px) {
-        .header__toggle,
-        .header__burger,
-        .header__backdrop {
+        .header-toggle,
+        .header-burger,
+        .header-backdrop {
             display: none;
         }
-        .header__drawer {
+        .header-drawer {
             position: static;
             width: auto;
             max-width: none;
@@ -195,27 +195,27 @@ const nav = [
             --sns-ring: initial;
             --sns-hover-color: initial;
         }
-        .header__list {
+        .header-list {
             flex-direction: row;
             gap: 15px;
             padding-top: 0;
         }
-        .header__link {
+        .header-link {
             width: auto;
             color: inherit;
         }
-        .header__link:hover {
+        .header-link:hover {
             color: inherit;
         }
-        .header__en {
+        .header-en {
             font-size: 17px;
             text-transform: none;
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .header__backdrop,
-        .header__drawer {
+        .header-backdrop,
+        .header-drawer {
             transition: none;
         }
     }

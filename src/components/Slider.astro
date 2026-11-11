@@ -20,20 +20,20 @@ const { label, variant = 'inline', autoplay = false } = Astro.props;
     画像の位置は --slide-position（スマホは --slide-position-sp）で変えられる。
     名前付き slot "overlay" に入れたものは画像の上に載る（タップは下の矢印に通る）
 -->
-<div class={`slider slider--${variant}`} data-slider data-autoplay={autoplay ? '' : undefined} role="group" aria-roledescription="carousel" aria-label={label}>
-    <div class="slider__track" data-slider-track tabindex="0">
+<div class={`slider slider-${variant}`} data-slider data-autoplay={autoplay ? '' : undefined} role="group" aria-roledescription="carousel" aria-label={label}>
+    <div class="slider-track" data-slider-track tabindex="0">
         <slot />
     </div>
     {
         Astro.slots.has('overlay') && (
-            <div class="slider__overlay">
+            <div class="slider-overlay">
                 <slot name="overlay" />
             </div>
         )
     }
     <ArrowButton direction="prev" label="前の画像" />
     <ArrowButton direction="next" label="次の画像" />
-    <div class="slider__dots" data-slider-dots hidden></div>
+    <div class="slider-dots" data-slider-dots hidden></div>
 </div>
 
 <script>
@@ -88,16 +88,16 @@ const { label, variant = 'inline', autoplay = false } = Astro.props;
     .slider {
         position: relative;
     }
-    .slider--hero {
+    .slider-hero {
         /* 固定ヘッダーを除いて画面いっぱい。svh でモバイルのアドレスバーを考慮 */
         height: calc(100vh - var(--layout-header-height));
         height: calc(100svh - var(--layout-header-height));
     }
-    .slider--inline {
+    .slider-inline {
         height: 100%;
         background: #f2f4f6;
     }
-    .slider__track {
+    .slider-track {
         display: flex;
         height: 100%;
         overflow-x: auto;
@@ -105,24 +105,24 @@ const { label, variant = 'inline', autoplay = false } = Astro.props;
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
     }
-    .slider__track::-webkit-scrollbar {
+    .slider-track::-webkit-scrollbar {
         display: none;
     }
-    .slider__track > :global(*) {
+    .slider-track > :global(*) {
         flex: none;
         width: 100%;
         scroll-snap-align: center;
         object-position: var(--slide-position, center);
     }
-    .slider--hero .slider__track > :global(*) {
+    .slider-hero .slider-track > :global(*) {
         height: 100%;
         object-fit: cover;
     }
-    .slider--inline .slider__track > :global(*) {
+    .slider-inline .slider-track > :global(*) {
         max-height: 560px;
         object-fit: contain;
     }
-    .slider__overlay {
+    .slider-overlay {
         position: absolute;
         inset: 0;
         z-index: 1;
@@ -131,7 +131,7 @@ const { label, variant = 'inline', autoplay = false } = Astro.props;
         /* 矢印のタップを邪魔しない */
         pointer-events: none;
     }
-    .slider__dots {
+    .slider-dots {
         position: absolute;
         right: 0;
         bottom: 16px;
@@ -141,7 +141,7 @@ const { label, variant = 'inline', autoplay = false } = Astro.props;
         justify-content: center;
         gap: 14px;
     }
-    .slider__dots :global(button) {
+    .slider-dots :global(button) {
         position: relative;
         width: 10px;
         height: 10px;
@@ -153,19 +153,19 @@ const { label, variant = 'inline', autoplay = false } = Astro.props;
         cursor: pointer;
     }
     /* 小さい点でも押しやすいように当たり判定を広げる */
-    .slider__dots :global(button)::before {
+    .slider-dots :global(button)::before {
         content: '';
         position: absolute;
         inset: -10px;
     }
-    .slider__dots :global(button[aria-current='true']) {
+    .slider-dots :global(button[aria-current='true']) {
         background: var(--color-main);
     }
     @media (max-width: 600px) {
-        .slider--inline .slider__track > :global(*) {
+        .slider-inline .slider-track > :global(*) {
             max-height: 360px;
         }
-        .slider__track > :global(*) {
+        .slider-track > :global(*) {
             object-position: var(--slide-position-sp, var(--slide-position, center));
         }
     }

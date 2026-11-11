@@ -9,7 +9,7 @@ const { direction, label } = Astro.props;
 ---
 
 <!-- Slider / Carousel の矢印。JS が表示・無効化を切り替えるので、最初は hidden -->
-<button type="button" class={`arrow-button arrow-button--${direction}`} data-arrow={direction} aria-label={label} hidden>
+<button type="button" class={`arrow-button arrow-button-${direction}`} data-arrow={direction} aria-label={label} hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d={direction === 'prev' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'}></path>
     </svg>
@@ -39,10 +39,10 @@ const { direction, label } = Astro.props;
         width: 22px;
         height: 22px;
     }
-    .arrow-button--prev {
+    .arrow-button-prev {
         left: 16px;
     }
-    .arrow-button--next {
+    .arrow-button-next {
         right: 16px;
     }
     .arrow-button:hover:not(:disabled) {
@@ -54,10 +54,10 @@ const { direction, label } = Astro.props;
         pointer-events: none;
     }
     @media (max-width: 600px) {
-        .arrow-button--prev {
+        .arrow-button-prev {
             left: 8px;
         }
-        .arrow-button--next {
+        .arrow-button-next {
             right: 8px;
         }
     }

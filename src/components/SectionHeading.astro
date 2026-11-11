@@ -18,15 +18,15 @@ const Heading = `h${level}` as const;
 ---
 
 <div class="section-heading">
-    <Heading class="section-heading__title" id={id ? `${id}-title` : undefined}>
+    <Heading class="section-heading-title" id={id ? `${id}-title` : undefined}>
         {href ? <a href={href}>{title}</a> : title}
-        <span class="section-heading__count">{count}件</span>
+        <span class="section-heading-count">{count}件</span>
     </Heading>
-    <p class="section-heading__intro">{intro}</p>
+    <p class="section-heading-intro">{intro}</p>
 </div>
 
 <style>
-    .section-heading__title {
+    .section-heading-title {
         display: flex;
         align-items: baseline;
         gap: 0.6rem;
@@ -35,22 +35,22 @@ const Heading = `h${level}` as const;
         font-size: 1.4rem;
         font-weight: 700;
     }
-    .section-heading__count {
+    .section-heading-count {
         font-size: 0.85rem;
         font-weight: 400;
         color: var(--color-text-muted);
     }
-    .section-heading__intro {
+    .section-heading-intro {
         margin-top: 0.5rem;
         font-size: 0.9rem;
         color: var(--color-text-muted);
         line-height: 1.7;
     }
-    .section-heading__title a {
+    .section-heading-title a {
         color: inherit;
         text-decoration: none;
     }
-    .section-heading__title a:hover {
+    .section-heading-title a:hover {
         text-decoration: underline;
     }
 </style>

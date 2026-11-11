@@ -13,10 +13,10 @@ const { title, description, image } = Astro.props;
 ---
 
 <section class="page-hero">
-    <Image src={image} alt="" class="page-hero__bg" width={1280} height={720} loading="eager" fetchpriority="high" />
-    <div class="page-hero__overlay">
-        <h1 class="page-hero__title">{title}</h1>
-        <p class="page-hero__desc">{description}</p>
+    <Image src={image} alt="" class="page-hero-bg" width={1280} height={720} loading="eager" fetchpriority="high" />
+    <div class="page-hero-overlay">
+        <h1 class="page-hero-title">{title}</h1>
+        <p class="page-hero-desc">{description}</p>
     </div>
 </section>
 
@@ -26,7 +26,7 @@ const { title, description, image } = Astro.props;
         height: 35vh;
         overflow: hidden;
     }
-    .page-hero__bg {
+    .page-hero-bg {
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -35,7 +35,7 @@ const { title, description, image } = Astro.props;
         transform: scale(1.05); /* ぼかしの端の隙間を隠す */
         pointer-events: none;
     }
-    .page-hero__overlay {
+    .page-hero-overlay {
         position: absolute;
         inset: 0;
         display: flex;
@@ -44,13 +44,13 @@ const { title, description, image } = Astro.props;
         justify-content: center;
         padding: 1rem;
     }
-    .page-hero__title {
+    .page-hero-title {
         color: #fff;
         font-size: clamp(3rem, 12vw, 8rem);
         font-weight: 700;
         letter-spacing: 0.05em;
     }
-    .page-hero__desc {
+    .page-hero-desc {
         margin-top: 0.8rem;
         padding: 0.5em 1.2em;
         border-radius: 6px;
@@ -69,7 +69,7 @@ const { title, description, image } = Astro.props;
         }
     }
     @media (prefers-reduced-motion: reduce) {
-        .page-hero__bg {
+        .page-hero-bg {
             filter: brightness(0.55);
             transform: none;
         }
