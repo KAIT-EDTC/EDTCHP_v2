@@ -2,9 +2,9 @@
 import Base from '../../../layouts/Base.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import BlogCard from '../../../components/BlogCard.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
 import { getPosts } from '../../../lib/blog';
 import { byFiscalYear, getSections, type SectionWithPosts } from '../../../lib/sections';
-import '../../../styles/blog.css';
 
 /** セクション（種別・ピックアップ）ごとの全記事を、年度ごとの見出しで並べる */
 export async function getStaticPaths() {
@@ -15,28 +15,43 @@ type Props = SectionWithPosts;
 const { label, intro, posts } = Astro.props;
 ---
 
-<Base title={`${label}の記事`} description={intro}>
-    <div class="blog-tag-page__head">
+<Base title={`${label}の記事`} description={intro} background="gray">
+    <div class="container tag-page-head">
         <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label }]} />
-        <h1 class="blog-section__title">
-            {label}
-            <span class="blog-section__count">{posts.length}件</span>
-        </h1>
-        <p class="blog-section__intro">{intro}</p>
+        <SectionHeading level={1} title={label} count={posts.length} intro={intro} />
     </div>
 
     {
         byFiscalYear(posts).map((group) => (
-            <section class="blog-tag-page__year" aria-labelledby={`fy${group.year}`}>
-                <h2 class="blog-tag-page__year-title" id={`fy${group.year}`}>
-                    {group.year}年度
-                </h2>
-                <ul class="blog-container">
+            <section class="tag-page-year" aria-labelledby={`fy${group.year}`}>
+                <div class="container">
+                    <h2 class="tag-page-year-title" id={`fy${group.year}`}>
+                        {group.year}年度
+                    </h2>
+                </div>
+                <ul class="container card-grid tag-page-grid">
                     {group.posts.map((post) => (
-                        <BlogCard post={post} />
+                        <BlogCard post={post} headingLevel={3} />
                     ))}
                 </ul>
             </section>
         ))
     }
 </Base>
+
+<style>
+    .tag-page-year {
+        margin-top: 2.5rem;
+    }
+    .tag-page-year:last-of-type {
+        margin-bottom: 4rem;
+    }
+    .tag-page-grid {
+        margin-top: 1.5rem;
+    }
+    .tag-page-year-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--color-text);
+    }
+</style>

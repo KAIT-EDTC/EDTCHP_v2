@@ -1,113 +1,167 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import Slider from '../components/Slider.astro';
 import EdtcLetters from '../components/EdtcLetters.astro';
 import { formatDate, getPosts } from '../lib/blog';
-import '../styles/base.css';
-import '../styles/slider.css';
 import slide1 from '../assets/img/EDTC-smile-sasaki.webp';
 import slide2 from '../assets/img/EDTC-nemote-teach.webp';
 import slide3 from '../assets/img/sakura-fix.webp';
 
-const slides = [
-    { src: slide1, alt: 'EDTC佐々木の笑顔' },
-    { src: slide2, alt: 'EDTC根本の指導の様子' },
-    { src: slide3, alt: 'メンバーが生徒に教えている画像' },
-];
 const news = (await getPosts()).slice(0, 5);
 ---
 
 <Base>
-    <div class="slide-wrapper">
-        <p>学ぶ側、<span>教える側、</span><span>どちらも学べる</span><br /><span>環境作りを</span></p>
-        <div id="slide" class="slide">
-            {
-                slides.map((s, i) => (
-                    <div>
-                        <Image src={s.src} alt={s.alt} width={1200} height={675} loading={i === 0 ? 'eager' : 'lazy'} />
-                    </div>
-                ))
-            }
-        </div>
-        <span id="prev" class="prev"></span>
-        <span id="next" class="next"></span>
-        <ul class="indicator" id="indicator">
-            {slides.map(() => <li class="list" />)}
-        </ul>
-    </div>
+    <Slider label="トップの写真" variant="hero" autoplay>
+        <Image
+            src={slide1}
+            alt="EDTC佐々木の笑顔"
+            width={1200}
+            height={675}
+            loading="eager"
+            style="--slide-position-sp: 60% center;"
+        />
+        <Image
+            src={slide2}
+            alt="EDTC根本の指導の様子"
+            width={1200}
+            height={675}
+            loading="lazy"
+            style="--slide-position-sp: 50% center;"
+        />
+        <Image
+            src={slide3}
+            alt="メンバーが生徒に教えている画像"
+            width={1200}
+            height={675}
+            loading="lazy"
+            style="--slide-position-sp: 60% center;"
+        />
+        <p slot="overlay" class="home-hero-catch">
+            学ぶ側、<span>教える側、</span><span>どちらも学べる</span><br /><span>環境作りを</span>
+        </p>
+    </Slider>
 
     <section class="home-about">
-        <div class="inner">
-            <h1>EDTCってどんな団体？</h1>
-            <p class="lead">
+        <div class="home-about-inner">
+            <h1 class="home-about-title">EDTCってどんな団体？</h1>
+            <p class="home-about-lead">
                 神奈川工科大学（KAIT）の学生が、小・中・高校生にロボット工作やプログラミングを教えている学生団体です。教材づくりから授業の企画・運営まで、すべて学生が自分たちで行っています。
             </p>
             <EdtcLetters />
-            <p class="cta">活動の様子はこちら</p>
-            <div class="actions">
-                <a href="/blog/" class="btn">ブログを見る</a>
-                <a href="/works/" class="btn btn--sub">制作物を見る</a>
+            <p class="home-about-cta">活動の様子はこちら</p>
+            <div class="home-about-actions">
+                <a href="/blog/" class="button">ブログを見る</a>
+                <a href="/works/" class="button button-outline">制作物を見る</a>
             </div>
         </div>
     </section>
 
     <iframe
-        class="pv"
+        class="home-video"
         src="https://www.youtube.com/embed/lps98VbLZMQ?autoplay=1&mute=1&loop=1&playlist=lps98VbLZMQ&playsinline=1"
         title="EDTC PV"
         allow="autoplay; encrypted-media; picture-in-picture"
         allowfullscreen></iframe>
 
     <div class="news">
-        <h2>NEWS</h2>
-        <ul>
-            {news.map((p) => <li><a href={`/blog/${p.id}/`}>{formatDate(p.data.date)} {p.data.title}</a></li>)}
+        <h2 class="news-title">NEWS</h2>
+        <ul class="news-list">
+            {
+                news.map((p) => (
+                    <li class="news-item">
+                        <a href={`/blog/${p.id}/`}>
+                            <time datetime={p.data.date.toISOString()}>{formatDate(p.data.date)}</time>
+                            {' '}
+                            {p.data.title}
+                        </a>
+                    </li>
+                ))
+            }
         </ul>
-        <div class="itiran"><a href="/blog/">記事一覧へ</a></div>
+        <div class="news-more"><a href="/blog/">記事一覧へ</a></div>
     </div>
-
-    <script>
-        import '../scripts/slider.js';
-    </script>
 </Base>
 
 <style>
+    .home-hero-catch {
+        margin: 0;
+        max-width: 90%;
+        font-size: min(8vw, 7vh);
+        font-weight: 700;
+        color: #fff;
+        text-align: center;
+    }
+    .home-hero-catch span {
+        white-space: nowrap;
+    }
+
     .home-about {
         background: #eef0f3;
         padding: 72px 16px;
     }
-    .inner {
+    .home-about-inner {
         max-width: 1100px;
         margin: 0 auto;
     }
-    h1 {
+    .home-about-title {
         font-size: clamp(30px, 5vw, 48px);
         font-weight: 900;
+        text-align: center;
         color: #222;
         margin-bottom: 20px;
     }
-    .lead {
+    .home-about-lead {
         margin-bottom: 64px;
         font-size: clamp(16px, 2.2vw, 19px);
         line-height: 1.9;
     }
-    .cta {
+    .home-about-cta {
         margin-top: 56px;
         font-size: clamp(20px, 3vw, 28px);
         font-weight: 900;
         color: #222;
     }
-    .actions {
+    .home-about-actions {
         margin-top: 16px;
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
     }
-    .pv {
+
+    .home-video {
         display: block;
         width: 90%;
         aspect-ratio: 16 / 9;
         border: 0;
         margin: 40px auto;
+    }
+
+    .news {
+        background-color: var(--color-bg-cream);
+    }
+    .news-title {
+        padding-top: 30px;
+        margin-left: 30px;
+        font-size: 50px;
+        -webkit-text-stroke: 1px rgb(121, 139, 146);
+    }
+    .news-list {
+        display: contents;
+    }
+    .news-item {
+        margin: 10px 40px 0;
+        font-size: 20px;
+        border-bottom: 1px solid #515050;
+    }
+    .news-item a {
+        display: block;
+        padding: 4px 0;
+    }
+    .news-more {
+        text-align: right;
+        font-size: 20px;
+        font-weight: 300;
+        margin: 10px 4% 0 0;
     }
 </style>

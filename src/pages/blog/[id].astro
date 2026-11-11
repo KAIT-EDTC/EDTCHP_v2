@@ -3,10 +3,10 @@ import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { formatDate, getPosts, relatedPosts, type BlogEntry } from '../../lib/blog';
 import { sectionsOf } from '../../lib/sections';
 import fallback from '../../assets/img/EDTC-icon.webp';
-import '../../styles/detail.css';
 
 export async function getStaticPaths() {
     const posts = await getPosts();
@@ -24,28 +24,27 @@ const { post, related } = Astro.props;
 const { title, date, author, description, thumbnail } = post.data;
 const { Content } = await render(post);
 const iso = (d: Date) => d.toISOString().slice(0, 10);
-
-const shares = [
-    { name: 'X', cls: 'x', url: 'https://x.com/intent/tweet?url={url}&text={text}', path: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z' },
-    { name: 'Facebook', cls: 'fb', url: 'https://www.facebook.com/sharer/sharer.php?u={url}', path: 'M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z' },
-];
-const fill = (tpl: string, url: string) => tpl.replace('{url}', encodeURIComponent(url)).replace('{text}', encodeURIComponent(title));
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
-<Base title={title} description={description} image={thumbnail} type="article">
-    <div class="detail">
+<Base title={title} description={description} image={thumbnail} type="article" background="cream">
+    <div class="container post-page">
         <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label: title }]} />
 
         <div class="post">
-            <article class="post__main card">
-                <header class="post__header">
+            <article class="post-main panel">
+                <header class="post-header">
                     <div class="chips">
-                        {sectionsOf(post).map((s) => <a class="chip" href={s.href}>{s.label}</a>)}
+                        {sectionsOf(post).map((s) => (
+                            <a class="chip" href={s.href}>
+                                {s.label}
+                            </a>
+                        ))}
                     </div>
-                    <h1 class="post__title">{title}</h1>
-                    <p class="post__meta">
-                        <span>イベント実施日 <time datetime={iso(date)}>{formatDate(date)}</time></span>
+                    <h1 class="post-title">{title}</h1>
+                    <p class="post-meta">
+                        <span>
+                            イベント実施日 <time datetime={iso(date)}>{formatDate(date)}</time>
+                        </span>
                         {author && <span>執筆者：{author}</span>}
                     </p>
                 </header>
@@ -54,101 +53,81 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
                 </div>
             </article>
 
-            <aside class="post__side">
-                <section class="side-card card" aria-labelledby="share-heading">
-                    <h2 class="side-card__title" id="share-heading">この記事をシェア</h2>
-                    <div class="share">
-                        {
-                            shares.map((s) => (
-                                <a class={`share__btn share__btn--${s.cls}`} href={fill(s.url, canonical)} data-share={s.url} target="_blank" rel="noopener noreferrer" aria-label={`${s.name}でシェア`}>
-                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d={s.path} /></svg>
-                                </a>
-                            ))
-                        }
-                        <button class="share__btn share__btn--copy" type="button" aria-label="リンクをコピー">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                        </button>
-                    </div>
-                    <p class="share__status" role="status"></p>
+            <aside class="post-side">
+                <section class="side-card panel" aria-labelledby="share-heading">
+                    <h2 class="side-card-title" id="share-heading">この記事をシェア</h2>
+                    <ShareButtons title={title} />
                 </section>
 
-                <section class="side-card card" aria-labelledby="related-heading">
-                    <h2 class="side-card__title" id="related-heading">関連記事</h2>
-                    <ul class="related">
+                <section class="side-card panel" aria-labelledby="related-heading">
+                    <h2 class="side-card-title" id="related-heading">関連記事</h2>
+                    <ul class="related-posts">
                         {
                             related.map((p) => (
                                 <li>
-                                    <a class="related__item" href={`/blog/${p.id}/`}>
-                                        <Image class="related__img" src={p.data.thumbnail ?? fallback} alt="" width={176} height={120} fit="cover" />
-                                        <span class="related__body">
-                                            <time class="related__date" datetime={iso(p.data.date)}>{formatDate(p.data.date)}</time>
-                                            <span class="related__title">{p.data.title}</span>
+                                    <a class="related-posts-link" href={`/blog/${p.id}/`}>
+                                        <Image
+                                            class="related-posts-img"
+                                            src={p.data.thumbnail ?? fallback}
+                                            alt=""
+                                            width={176}
+                                            height={120}
+                                            fit="cover"
+                                        />
+                                        <span class="related-posts-body">
+                                            <time class="related-posts-date" datetime={iso(p.data.date)}>
+                                                {formatDate(p.data.date)}
+                                            </time>
+                                            <span class="related-posts-title">{p.data.title}</span>
                                         </span>
                                     </a>
                                 </li>
                             ))
                         }
                     </ul>
-                    <a class="side-card__more" href="/blog/">ブログ一覧へ <span aria-hidden="true">→</span></a>
+                    <a class="side-card-more" href="/blog/">
+                        ブログ一覧へ <span aria-hidden="true">→</span>
+                    </a>
                 </section>
             </aside>
         </div>
     </div>
-
-    <script>
-        // ponytail: kaitedtc.com への移行前は workers.dev で公開しているため、共有URLは実行時のURLで組み立て直す。移行後は不要
-        const url = encodeURIComponent(location.origin + location.pathname);
-        const text = encodeURIComponent(document.querySelector('.post__title')?.textContent ?? document.title);
-        document.querySelectorAll<HTMLAnchorElement>('[data-share]').forEach((a) => {
-            a.href = a.dataset.share!.replace('{url}', url).replace('{text}', text);
-        });
-
-        const status = document.querySelector<HTMLElement>('.share__status')!;
-        let timer: ReturnType<typeof setTimeout> | undefined;
-        document.querySelector('.share__btn--copy')?.addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(location.origin + location.pathname);
-                status.textContent = 'リンクをコピーしました';
-            } catch {
-                status.textContent = 'コピーできませんでした';
-            }
-            clearTimeout(timer);
-            timer = setTimeout(() => (status.textContent = ''), 2000);
-        });
-    </script>
 </Base>
 
 <style>
+    .post-page {
+        padding-bottom: 64px;
+    }
     .post {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 300px;
         gap: 32px;
         align-items: start;
     }
-    .post__main {
+    .post-main {
         padding: clamp(20px, 4vw, 48px);
     }
-    .post__header {
+    .post-header {
         margin-bottom: 32px;
         padding-bottom: 24px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--color-border);
     }
-    .post__title {
+    .post-title {
         margin: 12px 0 10px;
         font-size: clamp(1.4rem, 3vw, 2rem);
         line-height: 1.45;
         font-weight: 700;
-        color: #222;
+        color: var(--color-text);
     }
-    .post__meta {
+    .post-meta {
         display: flex;
         flex-wrap: wrap;
         gap: 4px 20px;
         font-size: 0.875rem;
-        color: #777;
+        color: var(--color-text-muted);
     }
 
-    .post__side {
+    .post-side {
         position: sticky;
         top: 90px;
         display: flex;
@@ -158,82 +137,34 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     .side-card {
         padding: 20px;
     }
-    .side-card__title {
+    .side-card-title {
         margin-bottom: 14px;
         font-size: 0.95rem;
         font-weight: 700;
-        color: #222;
+        color: var(--color-text);
     }
-    .side-card__more {
+    .side-card-more {
         display: block;
         margin-top: 14px;
         padding-top: 12px;
-        border-top: 1px solid #eee;
+        border-top: 1px solid var(--color-border);
         font-size: 0.875rem;
         font-weight: 600;
-        color: var(--main-color);
+        color: var(--color-main);
         text-align: right;
         text-decoration: none;
     }
-    .side-card__more:hover {
+    .side-card-more:hover {
         text-decoration: underline;
     }
 
-    /* シェア */
-    .share {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-    }
-    .share__btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 44px;
-        border: none;
-        border-radius: 10px;
-        color: #fff;
-        cursor: pointer;
-        transition: transform 0.15s, opacity 0.15s;
-    }
-    .share__btn:hover {
-        opacity: 0.85;
-        transform: translateY(-2px);
-    }
-    .share__btn svg {
-        width: 20px;
-        height: 20px;
-        fill: currentColor;
-    }
-    .share__btn--copy svg {
-        fill: none;
-    }
-    .share__btn--x {
-        background: #000;
-    }
-    .share__btn--fb {
-        background: #1877f2;
-    }
-    .share__btn--copy {
-        background: #eef1f4;
-        color: #333;
-    }
-    .share__status {
-        min-height: 1.5em;
-        margin-top: 8px;
-        font-size: 0.8rem;
-        color: var(--main-color);
-        text-align: center;
-    }
-
     /* 関連記事 */
-    .related {
-        list-style: none;
+    .related-posts {
         display: flex;
         flex-direction: column;
         gap: 4px;
     }
-    .related__item {
+    .related-posts-link {
         display: flex;
         gap: 12px;
         align-items: center;
@@ -244,28 +175,28 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         text-decoration: none;
         transition: background 0.15s;
     }
-    .related__item:hover {
-        background: #f3f7fa;
+    .related-posts-link:hover {
+        background: var(--color-main-tint);
     }
-    .related__img {
+    .related-posts-img {
         flex-shrink: 0;
         width: 88px;
         height: 60px;
         object-fit: cover;
         border-radius: 8px;
-        background: #eee;
+        background: var(--color-bg-gray);
     }
-    .related__body {
+    .related-posts-body {
         display: flex;
         flex-direction: column;
         gap: 2px;
         min-width: 0;
     }
-    .related__date {
+    .related-posts-date {
         font-size: 0.75rem;
-        color: #888;
+        color: var(--color-text-muted);
     }
-    .related__title {
+    .related-posts-title {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -274,15 +205,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         font-weight: 600;
         line-height: 1.5;
     }
-    .related__item:hover .related__title {
-        color: var(--main-color);
+    .related-posts-link:hover .related-posts-title {
+        color: var(--color-main);
     }
 
     @media (max-width: 900px) {
         .post {
             grid-template-columns: 1fr;
         }
-        .post__side {
+        .post-side {
             position: static;
         }
     }

@@ -1,0 +1,172 @@
+---
+import ArrowButton from './ArrowButton.astro';
+
+interface Props {
+    /** スライダーの名前（スクリーンリーダー用）。例: "トップの写真" */
+    label: string;
+    /**
+     * hero: 画面いっぱいの高さ（固定ヘッダーを除く）に画像を切り抜いて敷く
+     * inline: 本文中に置く。画像は切り抜かず全体を見せる（既定）
+     */
+    variant?: 'hero' | 'inline';
+    /** 3秒ごとに次へ送る。キーボードでフォーカスしている間と prefers-reduced-motion のときは止まる */
+    autoplay?: boolean;
+}
+const { label, variant = 'inline', autoplay = false } = Astro.props;
+---
+
+<!--
+    中身（default slot）は <Image> などをそのまま並べる。1つが1枚のスライドになる。
+    画像の位置は --slide-position（スマホは --slide-position-sp）で変えられる。
+    名前付き slot "overlay" に入れたものは画像の上に載る（タップは下の矢印に通る）
+-->
+<div class={`slider slider-${variant}`} data-slider data-autoplay={autoplay ? '' : undefined} role="group" aria-roledescription="carousel" aria-label={label}>
+    <div class="slider-track" data-slider-track tabindex="0">
+        <slot />
+    </div>
+    {
+        Astro.slots.has('overlay') && (
+            <div class="slider-overlay">
+                <slot name="overlay" />
+            </div>
+        )
+    }
+    <ArrowButton direction="prev" label="前の画像" />
+    <ArrowButton direction="next" label="次の画像" />
+    <div class="slider-dots" data-slider-dots hidden></div>
+</div>
+
+<script>
+    const AUTOPLAY_MS = 3000;
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const behavior = reduceMotion ? 'auto' : 'smooth';
+
+    document.querySelectorAll<HTMLElement>('[data-slider]').forEach((root) => {
+        const track = root.querySelector<HTMLElement>('[data-slider-track]')!;
+        const dotsEl = root.querySelector<HTMLElement>('[data-slider-dots]')!;
+        const arrows = root.querySelectorAll<HTMLButtonElement>('[data-arrow]');
+        const count = track.children.length;
+        // 1枚だけなら矢印もドットも出さない（hidden のまま）
+        if (count < 2) return;
+
+        const index = () => Math.round(track.scrollLeft / track.clientWidth);
+        // 端から先は反対側の端へ回す
+        const go = (i: number) => track.scrollTo({ left: ((i + count) % count) * track.clientWidth, behavior });
+
+        const dots = Array.from(track.children, (_, i) => {
+            const d = document.createElement('button');
+            d.type = 'button';
+            d.setAttribute('aria-label', `${i + 1}枚目`);
+            d.addEventListener('click', () => go(i));
+            dotsEl.append(d);
+            return d;
+        });
+        track.addEventListener(
+            'scroll',
+            () => dots.forEach((d, i) => d.setAttribute('aria-current', String(i === index()))),
+            { passive: true },
+        );
+        dots[0].setAttribute('aria-current', 'true');
+        arrows.forEach((a) => a.addEventListener('click', () => go(index() + (a.dataset.arrow === 'next' ? 1 : -1))));
+        arrows.forEach((a) => (a.hidden = false));
+        dotsEl.hidden = false;
+
+        if (root.hasAttribute('data-autoplay') && !reduceMotion) {
+            let timer = 0;
+            // 操作のたびに数え直す。キーボードで操作している間は止める
+            const restart = () => {
+                clearInterval(timer);
+                if (!root.querySelector(':focus-visible')) timer = window.setInterval(() => go(index() + 1), AUTOPLAY_MS);
+            };
+            ['click', 'touchend', 'focusin', 'focusout'].forEach((e) => root.addEventListener(e, restart));
+            restart();
+        }
+    });
+</script>
+
+<style>
+    .slider {
+        position: relative;
+    }
+    .slider-hero {
+        /* 固定ヘッダーを除いて画面いっぱい。svh でモバイルのアドレスバーを考慮 */
+        height: calc(100vh - var(--layout-header-height));
+        height: calc(100svh - var(--layout-header-height));
+    }
+    .slider-inline {
+        height: 100%;
+        background: #f2f4f6;
+    }
+    .slider-track {
+        display: flex;
+        height: 100%;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+    .slider-track::-webkit-scrollbar {
+        display: none;
+    }
+    .slider-track > :global(*) {
+        flex: none;
+        width: 100%;
+        scroll-snap-align: center;
+        object-position: var(--slide-position, center);
+    }
+    .slider-hero .slider-track > :global(*) {
+        height: 100%;
+        object-fit: cover;
+    }
+    .slider-inline .slider-track > :global(*) {
+        max-height: 560px;
+        object-fit: contain;
+    }
+    .slider-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        /* 矢印のタップを邪魔しない */
+        pointer-events: none;
+    }
+    .slider-dots {
+        position: absolute;
+        right: 0;
+        bottom: 16px;
+        left: 0;
+        z-index: 2;
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+    }
+    .slider-dots :global(button) {
+        position: relative;
+        width: 10px;
+        height: 10px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+    }
+    /* 小さい点でも押しやすいように当たり判定を広げる */
+    .slider-dots :global(button)::before {
+        content: '';
+        position: absolute;
+        inset: -10px;
+    }
+    .slider-dots :global(button[aria-current='true']) {
+        background: var(--color-main);
+    }
+    @media (max-width: 600px) {
+        .slider-inline .slider-track > :global(*) {
+            max-height: 360px;
+        }
+        .slider-track > :global(*) {
+            object-position: var(--slide-position-sp, var(--slide-position, center));
+        }
+    }
+</style>

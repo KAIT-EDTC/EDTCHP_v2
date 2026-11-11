@@ -3,9 +3,10 @@ import { Image } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import Slider from '../../components/Slider.astro';
 import { getWorks } from '../../lib/works';
 import fallback from '../../assets/img/EDTC-icon.webp';
-import '../../styles/detail.css';
 
 type Work = CollectionEntry<'works'>;
 
@@ -36,52 +37,41 @@ const specs = [
 ].filter(([, v]) => v);
 ---
 
-<Base title={title} description={description} image={thumbnail}>
-    <div class="detail">
+<Base title={title} description={description} image={thumbnail} background="cream">
+    <div class="container work-page">
         <Breadcrumbs items={[{ label: '制作物', href: '/works/' }, { label: title }]} />
 
-        <section class="work card">
-            <div class="work__media">
-                <div class="slider__track">
+        <section class="work panel">
+            <div class="work-media">
+                <Slider label={`${title}の画像`}>
                     {slides.map((src, i) => (
                         <Image src={src} alt={slides.length > 1 ? `${title} ${i + 1}/${slides.length}` : title} widths={[480, 960]} sizes="(max-width: 900px) 100vw, 560px" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
                     ))}
-                </div>
-                {
-                    slides.length > 1 && (
-                        <>
-                            <button type="button" class="slider__btn slider__btn--prev" aria-label="前の画像">‹</button>
-                            <button type="button" class="slider__btn slider__btn--next" aria-label="次の画像">›</button>
-                            <div class="slider__dots">
-                                {slides.map((_, i) => <button type="button" aria-label={`${i + 1}枚目`} aria-current={i === 0}></button>)}
-                            </div>
-                        </>
-                    )
-                }
+                </Slider>
             </div>
-            <div class="work__info">
-                <h1 class="work__title">{title}</h1>
-                {headline && <p class="work__headline">{headline}</p>}
+            <div class="work-info">
+                <h1 class="work-title">{title}</h1>
+                {headline && <p class="work-headline">{headline}</p>}
                 {
                     specs.length > 0 && (
-                        <dl class="work__specs">
+                        <dl class="work-specs">
                             {specs.map(([k, v]) => (
-                                <div>
-                                    <dt>{k}</dt>
-                                    <dd>{v}</dd>
+                                <div class="work-spec">
+                                    <dt class="work-spec-label">{k}</dt>
+                                    <dd class="work-spec-value">{v}</dd>
                                 </div>
                             ))}
                         </dl>
                     )
                 }
-                <a href="/contact/" class="work__cta">
+                <a href="/contact/" class="button work-cta">
                     授業・出張のご相談はこちら
                     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
                 </a>
             </div>
         </section>
 
-        <section class="work-body card" aria-label="詳細">
+        <section class="work-body panel" aria-label="詳細">
             <div class="prose">
                 <Content />
             </div>
@@ -89,41 +79,19 @@ const specs = [
 
         {
             others.length > 0 && (
-                <section class="others" aria-labelledby="others-heading">
-                    <h2 class="others__heading" id="others-heading">ほかの制作物</h2>
-                    <ul class="others__list">
+                <section class="other-works" aria-labelledby="other-works-heading">
+                    <h2 class="other-works-heading" id="other-works-heading">ほかの制作物</h2>
+                    <ul class="card-grid">
                         {others.map((w) => (
-                            <li>
-                                <a class="others__item card" href={`/works/${w.id}/`}>
-                                    <Image class="others__img" src={w.data.thumbnail ?? fallback} alt="" width={480} height={300} fit="cover" />
-                                    <span class="others__body">
-                                        <span class="others__title">{w.data.title}</span>
-                                        <span class="others__desc">{w.data.description}</span>
-                                    </span>
-                                </a>
-                            </li>
+                            <Card href={`/works/${w.id}/`} title={w.data.title} description={w.data.description} image={w.data.thumbnail ?? fallback} headingLevel={3} />
                         ))}
                     </ul>
-                    <a class="others__more" href="/works/">制作物一覧へ <span aria-hidden="true">→</span></a>
+                    <a class="other-works-more" href="/works/">制作物一覧へ <span aria-hidden="true">→</span></a>
                 </section>
             )
         }
     </div>
 </Base>
-
-<script>
-    const media = document.querySelector<HTMLElement>('.work__media');
-    const track = media?.querySelector<HTMLElement>('.slider__track');
-    const dots = media?.querySelectorAll<HTMLElement>('.slider__dots button');
-    if (media && track && dots?.length) {
-        const go = (i: number) => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
-        const index = () => Math.round(track.scrollLeft / track.clientWidth);
-        media.querySelector('.slider__btn--prev')!.addEventListener('click', () => go(Math.max(index() - 1, 0)));
-        media.querySelector('.slider__btn--next')!.addEventListener('click', () => go(Math.min(index() + 1, dots.length - 1)));
-        dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
-        track.addEventListener('scroll', () => dots.forEach((d, i) => d.setAttribute('aria-current', String(i === index()))), { passive: true });
-    }
-</script>
 
 <style>
     .work {
@@ -131,130 +99,61 @@ const specs = [
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         overflow: hidden;
     }
-    .work__media {
-        position: relative;
-        background: #f2f4f6;
-    }
-    .slider__track {
-        display: flex;
-        height: 100%;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-    }
-    .slider__track::-webkit-scrollbar {
-        display: none;
-    }
-    .slider__track img {
-        flex: none;
-        width: 100%;
-        max-height: 560px;
-        object-fit: contain;
-        scroll-snap-align: center;
-    }
-    .slider__btn {
-        position: absolute;
-        top: 50%;
-        width: 40px;
-        height: 40px;
-        transform: translateY(-50%);
-        border: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.85);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        font-size: 1.6rem;
-        line-height: 1;
-        cursor: pointer;
-    }
-    .slider__btn:hover {
-        background: #fff;
-    }
-    .slider__btn--prev {
-        left: 12px;
-    }
-    .slider__btn--next {
-        right: 12px;
-    }
-    .slider__dots {
-        position: absolute;
-        bottom: 12px;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-    }
-    .slider__dots button {
-        width: 10px;
-        height: 10px;
-        padding: 0;
-        border: 0;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.25);
-        cursor: pointer;
-    }
-    .slider__dots button[aria-current='true'] {
-        background: var(--main-color);
-    }
-    .work__info {
+    .work-info {
         display: flex;
         flex-direction: column;
         gap: 16px;
         padding: clamp(24px, 4vw, 48px);
     }
-    .work__title {
+    .work-title {
         font-size: clamp(1.6rem, 3.5vw, 2.4rem);
         font-weight: 700;
         line-height: 1.3;
-        color: #222;
+        color: var(--color-text);
     }
-    .work__headline {
+    .work-headline {
         font-size: 1.05rem;
         line-height: 1.7;
-        color: #555;
+        color: var(--color-text-muted);
     }
-    .work__specs {
+    .work-specs {
         display: grid;
-        border-top: 1px solid #eee;
+        border-top: 1px solid var(--color-border);
     }
-    .work__specs div {
+    .work-spec {
         display: grid;
         grid-template-columns: 6em 1fr;
         gap: 12px;
         padding: 10px 0;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--color-border);
         font-size: 0.9rem;
         line-height: 1.6;
     }
-    .work__specs dt {
+    .work-spec-label {
         font-weight: 700;
-        color: #888;
+        color: var(--color-text-muted);
     }
-    .work__cta {
+    /* .button を土台に、矢印アイコンと配置の分だけ差分を足す（.button 単体より詳細度を上げて確実に上書きする） */
+    .work-info .work-cta {
         display: inline-flex;
         align-items: center;
         gap: 10px;
         align-self: flex-start;
         margin-top: 8px;
         padding: 14px 28px;
-        border-radius: 999px;
-        background: var(--main-color);
-        color: #fff;
-        font-weight: 700;
-        text-decoration: none;
         box-shadow: 0 4px 12px rgba(10, 140, 216, 0.3);
-        transition: transform 0.15s, box-shadow 0.15s;
+        transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
     }
-    .work__cta:hover {
+    .work-info .work-cta:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(10, 140, 216, 0.4);
     }
-    .work__cta svg {
+    .work-cta svg {
         width: 18px;
         height: 18px;
         transition: transform 0.15s;
     }
-    .work__cta:hover svg {
+    .work-cta:hover svg {
         transform: translateX(3px);
     }
 
@@ -262,81 +161,41 @@ const specs = [
         margin-top: 32px;
         padding: clamp(20px, 4vw, 48px);
     }
-    .work-body :global(img) {
+    /* 本文の画像を大きくしすぎない */
+    .work-body :global(.prose img) {
         max-height: 420px;
     }
 
-    .others {
+    .other-works {
         margin-top: 56px;
     }
-    .others__heading {
+    .other-works-heading {
         margin-bottom: 20px;
         font-size: 1.3rem;
         font-weight: 700;
-        color: #222;
+        color: var(--color-text);
     }
-    .others__list {
-        list-style: none;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 20px;
-    }
-    .others__item {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        overflow: hidden;
-        color: inherit;
-        text-decoration: none;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .others__item:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
-    }
-    .others__img {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 8 / 5;
-        object-fit: cover;
-    }
-    .others__body {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        padding: 16px 18px 20px;
-    }
-    .others__title {
-        font-weight: 700;
-    }
-    .others__item:hover .others__title {
-        color: var(--main-color);
-    }
-    .others__desc {
-        font-size: 0.85rem;
-        line-height: 1.6;
-        color: #666;
-    }
-    .others__more {
+    .other-works-more {
         display: block;
         width: fit-content;
         margin: 24px 0 0 auto;
         font-weight: 600;
-        color: var(--main-color);
+        color: var(--color-main);
         text-decoration: none;
     }
-    .others__more:hover {
+    .other-works-more:hover {
         text-decoration: underline;
+    }
+
+    .work-page {
+        padding-bottom: 64px;
     }
 
     @media (max-width: 900px) {
         .work {
             grid-template-columns: 1fr;
         }
-        .slider__track img {
-            max-height: 360px;
-        }
-        .work__cta {
+        .work-info .work-cta {
             align-self: stretch;
             justify-content: center;
         }

@@ -1,12 +1,13 @@
 ---
-import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Carousel from '../../components/Carousel.astro';
 import { getPosts } from '../../lib/blog';
 import { getSections } from '../../lib/sections';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
-import '../../styles/blog.css';
 
 /** カルーセルに並べる件数（新しい順。全件はタグごとの一覧ページへ） */
 const CAROUSEL_MAX = 12;
@@ -16,27 +17,21 @@ const MORE_FROM = 3;
 const sections = getSections(await getPosts());
 ---
 
-<Base title="ブログ" description="神奈川工科大学EDTCのブログ記事一覧。活動報告やイベント情報をお届けします。">
-    <section class="blog-hero" aria-label="ブログヒーロー">
-        <Image src={hero} alt="" class="blog-hero__bg" width={1280} height={720} loading="eager" fetchpriority="high" />
-        <div class="blog-hero__overlay">
-            <h1 class="blog-hero__title">Blog</h1>
-            <p class="blog-hero__desc">EDTCの活動や日々の取り組みをお届けします。</p>
-        </div>
-    </section>
+<Base title="ブログ" description="神奈川工科大学EDTCのブログ記事一覧。活動報告やイベント情報をお届けします。" background="gray">
+    <PageHero title="Blog" description="EDTCの活動や日々の取り組みをお届けします。" image={hero} />
 
-    <div class="page-breadcrumbs">
+    <div class="container">
         <Breadcrumbs items={[{ label: 'ブログ' }]} />
     </div>
 
     <nav class="blog-nav" aria-label="活動の種類">
-        <ul class="blog-nav__list">
+        <ul class="blog-nav-list container">
             {
                 sections.map(({ id, label, posts }) => (
                     <li>
-                        <a class="blog-nav__link" href={`#${id}`}>
+                        <a class="blog-nav-link" href={`#${id}`}>
                             {label}
-                            <span class="blog-nav__count">{posts.length}</span>
+                            <span class="blog-nav-count">{posts.length}</span>
                         </a>
                     </li>
                 ))
@@ -47,60 +42,77 @@ const sections = getSections(await getPosts());
     {
         sections.map(({ id, label, intro, href, posts }) => (
             <section class="blog-section" id={id} aria-labelledby={`${id}-title`}>
-                <div class="blog-section__head">
-                    <h2 class="blog-section__title" id={`${id}-title`}>
-                        <a href={href}>{label}</a>
-                        <span class="blog-section__count">{posts.length}件</span>
-                    </h2>
-                    <p class="blog-section__intro">{intro}</p>
+                <div class="container">
+                    <SectionHeading title={label} count={posts.length} intro={intro} href={href} id={id} level={2} />
                 </div>
-                <div class="blog-carousel" data-carousel>
-                    <button type="button" class="blog-carousel__btn blog-carousel__btn--prev" data-carousel-prev aria-label={`${label}の前の記事`} hidden>
-                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
-                    </button>
-                    <ul class="blog-carousel__track" data-carousel-track tabindex="0" aria-label={`${label}の記事`}>
-                        {posts.slice(0, CAROUSEL_MAX).map((post) => <BlogCard post={post} />)}
-                    </ul>
-                    <button type="button" class="blog-carousel__btn blog-carousel__btn--next" data-carousel-next aria-label={`${label}の次の記事`} hidden>
-                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
+                <Carousel label={label} item="記事">
+                    {posts.slice(0, CAROUSEL_MAX).map((post) => (
+                        <BlogCard post={post} headingLevel={3} />
+                    ))}
+                </Carousel>
                 {posts.length > MORE_FROM && (
-                    <a class="blog-section__more" href={href}>
-                        {label}を年度別に見る（{posts.length}件）→
-                    </a>
+                    <div class="container">
+                        <a class="blog-section-more" href={href}>
+                            {label}を年度別に見る（{posts.length}件）→
+                        </a>
+                    </div>
                 )}
             </section>
         ))
     }
-
-    <script>
-        // 矢印は横スクロールの補助。JSがなくてもスワイプ・トラックパッド・キーボードで送れるので、矢印は最初は隠しておく
-        const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-        document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
-            const track = root.querySelector<HTMLElement>('[data-carousel-track]')!;
-            const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
-            const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
-
-            // 1回で見えている枚数ぶん進む
-            const move = (dir: number) => {
-                const [a, b] = track.children as HTMLCollectionOf<HTMLElement>;
-                const step = b ? b.offsetLeft - a.offsetLeft : track.clientWidth;
-                const gap = b ? step - a.offsetWidth : 0;
-                const visible = Math.max(1, Math.round((track.clientWidth + gap) / step));
-                track.scrollBy({ left: dir * visible * step, behavior: smooth ? 'smooth' : 'auto' });
-            };
-            const update = () => {
-                const overflow = track.scrollWidth > track.clientWidth + 1;
-                prev.hidden = next.hidden = !overflow;
-                prev.disabled = track.scrollLeft <= 1;
-                next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
-            };
-            prev.addEventListener('click', () => move(-1));
-            next.addEventListener('click', () => move(1));
-            track.addEventListener('scroll', update, { passive: true });
-            new ResizeObserver(update).observe(track);
-            update();
-        });
-    </script>
 </Base>
+
+<style>
+    .blog-nav-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .blog-nav-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4em;
+        padding: 0.35em 0.9em;
+        border: 1.5px solid var(--color-main);
+        border-radius: var(--radius-pill);
+        color: var(--color-main);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s;
+    }
+    .blog-nav-link:hover {
+        background: var(--color-main);
+        color: #fff;
+    }
+    .blog-nav-count {
+        font-size: 0.75rem;
+        font-weight: 400;
+        opacity: 0.8;
+    }
+
+    .blog-section {
+        margin-top: 3rem;
+        scroll-margin-top: 80px; /* 固定ヘッダーの下に見出しが来るように */
+    }
+    .blog-section:last-of-type {
+        margin-bottom: 4rem;
+    }
+    .blog-section-more {
+        display: block;
+        width: fit-content;
+        margin: 1.2rem auto 0;
+        padding: 0.5em 1.4em;
+        border: 1.5px solid var(--color-main);
+        border-radius: var(--radius-pill);
+        color: var(--color-main);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s;
+    }
+    .blog-section-more:hover {
+        background: var(--color-main);
+        color: #fff;
+    }
+</style>

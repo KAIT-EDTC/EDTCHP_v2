@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import icon from '../assets/img/EDTC-icon.webp';
+import SnsLinks from './SnsLinks.astro';
 
 const nav = [
     { href: '/', en: 'Home', ja: 'ホーム' },
@@ -11,57 +12,211 @@ const nav = [
 ---
 
 <header class="header">
-    <a href="/"><Image src={icon} alt="EDTC" width={60} height={60} style="display: block;" /></a>
-    <a href="/" class="title">EDTC</a>
-    <!--==========モバイルのみ表示==========-->
-    <nav class="sp-only header__nav">
-        <div class="gnav-toggle">
-            <input id="gnav-input" type="checkbox" class="gnav-hidden" aria-label="メニュー切り替え" />
-            <label id="gnav-open" for="gnav-input"><span></span></label>
-            <label id="gnav-close" for="gnav-input"></label>
-            <div id="gnav-content">
-                <ul class="gnav-menu">
-                    {nav.map((n) => <li class="gnav-item"><a href={n.href}>{n.en}<br />{n.ja}</a></li>)}
-                    <li class="gnav-sns">
-                        <div class="sns_button twitter">
-                            <a href="https://x.com/kait_edtc" title="X" rel="noopener noreferrer" target="_blank">
-                                <svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"></path></svg>
+    <a class="header-logo" href="/"><Image src={icon} alt="EDTC" width={60} height={60} /></a>
+    <a class="header-title" href="/">EDTC</a>
+    <!-- 900px 以下はドロワー、それより広いと横並び。開閉は JS なしでチェックボックスが持つ -->
+    <nav class="header-nav" aria-label="メインメニュー">
+        <input id="header-toggle" class="header-toggle" type="checkbox" aria-label="メニュー切り替え" />
+        <label class="header-burger" for="header-toggle"><span class="header-burger-line"></span></label>
+        <label class="header-backdrop" for="header-toggle"></label>
+        <div class="header-drawer">
+            <ul class="header-list">
+                {
+                    nav.map((n) => (
+                        <li>
+                            <a class="header-link" href={n.href}>
+                                <span class="header-en">{n.en}</span>
+                                <span class="header-ja">{n.ja}</span>
                             </a>
-                        </div>
-                        <div class="sns_button instagram">
-                            <a href="https://www.instagram.com/kait.edtc/" title="Instagram" rel="noopener noreferrer" target="_blank">
-                                <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.3 0-74.7-33.4-74.7-74.7s33.4-74.7 74.7-74.7 74.7 33.4 74.7 74.7-33.4 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.9-26.9 26.9-14.9 0-26.9-12-26.9-26.9 0-14.9 12-26.9 26.9-26.9 14.9 0 26.9 12 26.9 26.9zm76.1 27.3c-1.7-35.3-9.8-66.7-35.7-92.5S354.7 37 319.4 35.3c-35.5-2-141.9-2-177.4 0-35.2 1.7-66.6 9.8-92.5 35.7S11.9 128.7 10.2 164c-2 35.5-2 141.9 0 177.4 1.7 35.3 9.8 66.7 35.7 92.5s57.3 34 92.5 35.7c35.5 2 141.9 2 177.4 0 35.3-1.7 66.7-9.8 92.5-35.7s34-57.2 35.7-92.5c2-35.5 2-141.8 0-177.4zM398.8 388c-7.7 19.4-22.7 34.4-42.1 42.1-29.1 11.5-98.2 8.9-132.6 8.9s-103.7 2.7-132.6-8.9c-19.4-7.7-34.4-22.7-42.1-42.1-11.5-29.1-8.9-98.2-8.9-132.6s-2.7-103.7 8.9-132.6c7.7-19.4 22.7-34.4 42.1-42.1 29.1-11.5 98.2-8.9 132.6-8.9s103.7-2.7 132.6 8.9c19.4 7.7 34.4 22.7 42.1 42.1 11.5 29.1 8.9 98.2 8.9 132.6s2.7 103.7-8.9 132.6z"></path></svg>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+                        </li>
+                    ))
+                }
+                <li class="header-sns"><SnsLinks /></li>
+            </ul>
         </div>
     </nav>
-    <!--==========PCのみ表示==========-->
-    <nav class="pc-only header__nav">
-        <ul class="header__nav-list">
-            {
-                nav.map((n) => (
-                    <li class="gnav-sec header__nav-item">
-                        <a href={n.href}><span>{n.en}</span><br />{n.ja}</a>
-                    </li>
-                ))
-            }
-            <li class="header__nav-item">
-                <div class="sns_button twitter">
-                    <a href="https://x.com/kait_edtc" title="X" rel="noopener noreferrer" target="_blank">
-                        <svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"></path></svg>
-                    </a>
-                </div>
-            </li>
-            <li class="header__nav-item">
-                <div class="sns_button instagram">
-                    <a href="https://www.instagram.com/kait.edtc/" title="Instagram" rel="noopener noreferrer" target="_blank">
-                        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.3 0-74.7-33.4-74.7-74.7s33.4-74.7 74.7-74.7 74.7 33.4 74.7 74.7-33.4 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.9-26.9 26.9-14.9 0-26.9-12-26.9-26.9 0-14.9 12-26.9 26.9-26.9 14.9 0 26.9 12 26.9 26.9zm76.1 27.3c-1.7-35.3-9.8-66.7-35.7-92.5S354.7 37 319.4 35.3c-35.5-2-141.9-2-177.4 0-35.2 1.7-66.6 9.8-92.5 35.7S11.9 128.7 10.2 164c-2 35.5-2 141.9 0 177.4 1.7 35.3 9.8 66.7 35.7 92.5s57.3 34 92.5 35.7c35.5 2 141.9 2 177.4 0 35.3-1.7 66.7-9.8 92.5-35.7s34-57.2 35.7-92.5c2-35.5 2-141.8 0-177.4zM398.8 388c-7.7 19.4-22.7 34.4-42.1 42.1-29.1 11.5-98.2 8.9-132.6 8.9s-103.7 2.7-132.6-8.9c-19.4-7.7-34.4-22.7-42.1-42.1-11.5-29.1-8.9-98.2-8.9-132.6s-2.7-103.7 8.9-132.6c7.7-19.4 22.7-34.4 42.1-42.1 29.1-11.5 98.2-8.9 132.6-8.9s103.7-2.7 132.6 8.9c19.4 7.7 34.4 22.7 42.1 42.1 11.5 29.1 8.9 98.2 8.9 132.6s2.7 103.7-8.9 132.6z"></path></svg>
-                    </a>
-                </div>
-            </li>
-        </ul>
-    </nav>
 </header>
+
+<style>
+    .header {
+        position: fixed;
+        top: 0;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: var(--layout-header-height);
+        padding: 0 4%;
+        background-color: #fff;
+    }
+    .header-logo {
+        display: block;
+    }
+    .header-logo :global(img) {
+        display: block;
+    }
+    .header-title {
+        font-size: 25px;
+        font-weight: bold;
+    }
+    .header-nav {
+        margin: 0 1% 0 auto;
+    }
+
+    /* ---- スマホ: ハンバーガー + ドロワー ---- */
+    /* display: none だとキーボードで開けないので、見えないだけにする */
+    .header-toggle {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+    .header-burger {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+    }
+    .header-toggle:focus-visible ~ .header-burger {
+        outline: 2px solid var(--color-main);
+        outline-offset: 2px;
+    }
+    .header-burger-line,
+    .header-burger-line::before,
+    .header-burger-line::after {
+        display: block;
+        width: 25px;
+        height: 3px;
+        border-radius: 3px;
+        background: #555;
+    }
+    .header-burger-line {
+        position: relative;
+    }
+    .header-burger-line::before,
+    .header-burger-line::after {
+        content: '';
+        position: absolute;
+        left: 0;
+    }
+    .header-burger-line::before {
+        top: -8px;
+    }
+    .header-burger-line::after {
+        top: 8px;
+    }
+    /* 閉じる用の薄黒い背景 */
+    .header-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        background: #000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .header-toggle:checked ~ .header-backdrop {
+        opacity: 0.5;
+        pointer-events: auto;
+    }
+    .header-drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        width: 70%;
+        max-width: 300px;
+        height: 100%;
+        overflow: auto;
+        background: rgba(0, 0, 0, 0.8);
+        /* 閉じている間は中のリンクにフォーカスが入らないようにする */
+        visibility: hidden;
+        transform: translateX(-105%);
+        transition: transform 0.3s ease-in-out, visibility 0s 0.3s;
+        /* ドロワーは暗い背景なので SNS アイコンは白にする */
+        --sns-color: #fff;
+        --sns-ring: #fff;
+        --sns-hover-color: var(--color-text);
+    }
+    .header-toggle:checked ~ .header-drawer {
+        visibility: visible;
+        transform: translateX(0);
+        box-shadow: 6px 0 25px rgba(0, 0, 0, 0.15);
+        transition-delay: 0s;
+    }
+    .header-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        padding-top: 60px;
+    }
+    .header-link {
+        display: block;
+        width: 200px;
+        color: #fff;
+        text-align: center;
+    }
+    .header-link:hover {
+        color: #85a7cc;
+    }
+    .header-en,
+    .header-ja {
+        display: block;
+    }
+    .header-en {
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .header-ja {
+        font-size: 12px;
+    }
+
+    /* ---- PC: 横並び ---- */
+    @media (min-width: 901px) {
+        .header-toggle,
+        .header-burger,
+        .header-backdrop {
+            display: none;
+        }
+        .header-drawer {
+            position: static;
+            width: auto;
+            max-width: none;
+            height: auto;
+            overflow: visible;
+            background: none;
+            visibility: visible;
+            transform: none;
+            /* ドロワー用の白指定を戻す */
+            --sns-color: initial;
+            --sns-ring: initial;
+            --sns-hover-color: initial;
+        }
+        .header-list {
+            flex-direction: row;
+            gap: 15px;
+            padding-top: 0;
+        }
+        .header-link {
+            width: auto;
+            color: inherit;
+        }
+        .header-link:hover {
+            color: inherit;
+        }
+        .header-en {
+            font-size: 17px;
+            text-transform: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .header-backdrop,
+        .header-drawer {
+            transition: none;
+        }
+    }
+</style>

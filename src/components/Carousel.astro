@@ -1,0 +1,94 @@
+---
+import ArrowButton from './ArrowButton.astro';
+
+interface Props {
+    /** セクション名。矢印と帯の名前は「〈label〉の前の〈item〉」になる。例: "ロボット教室" */
+    label: string;
+    /** 並べているものの呼び名。例: "記事" */
+    item: string;
+}
+const { label, item } = Astro.props;
+---
+
+<!--
+    中身（default slot）は <Card> や <BlogCard> など <li> をそのまま並べる。
+    画面の横幅いっぱいに広がり、先頭のカードの左端は .container の中身にそろう
+-->
+<div class="carousel" data-carousel>
+    <ArrowButton direction="prev" label={`${label}の前の${item}`} />
+    <ul class="carousel-track" data-carousel-track tabindex="0" aria-label={`${label}の${item}`}>
+        <slot />
+    </ul>
+    <ArrowButton direction="next" label={`${label}の次の${item}`} />
+</div>
+
+<script>
+    // 矢印は横スクロールの補助。JSがなくてもスワイプ・トラックパッド・キーボードで送れるので、矢印は最初は隠しておく
+    const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+    document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+        const track = root.querySelector<HTMLElement>('[data-carousel-track]')!;
+        const prev = root.querySelector<HTMLButtonElement>('[data-arrow="prev"]')!;
+        const next = root.querySelector<HTMLButtonElement>('[data-arrow="next"]')!;
+
+        // 1回で見えている枚数ぶん進む
+        const move = (dir: number) => {
+            const [a, b] = track.children as HTMLCollectionOf<HTMLElement>;
+            const step = b ? b.offsetLeft - a.offsetLeft : track.clientWidth;
+            const gap = b ? step - a.offsetWidth : 0;
+            const visible = Math.max(1, Math.round((track.clientWidth + gap) / step));
+            track.scrollBy({ left: dir * visible * step, behavior });
+        };
+        const update = () => {
+            const overflow = track.scrollWidth > track.clientWidth + 1;
+            prev.hidden = next.hidden = !overflow;
+            prev.disabled = track.scrollLeft <= 1;
+            next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+        };
+        prev.addEventListener('click', () => move(-1));
+        next.addEventListener('click', () => move(1));
+        track.addEventListener('scroll', update, { passive: true });
+        new ResizeObserver(update).observe(track);
+        update();
+    });
+</script>
+
+<style>
+    .carousel {
+        --content: calc(min(var(--layout-content-width), 100vw) - 10vw); /* 見出しなどの本文幅（10vw = 左右 5% ぶん） */
+        --gutter: calc((100% - min(var(--layout-content-width), 100%)) / 2 + var(--layout-gutter)); /* 画面の左端から本文までの余白（先頭のカードを見出しにそろえる） */
+        --arrow-top: 45%;
+        position: relative;
+        margin-top: 1.5rem;
+    }
+    .carousel-track {
+        display: flex;
+        gap: 24px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        /* overflow で影が切れないように、上下に余白を取って打ち消す */
+        padding: 4px var(--gutter) 28px;
+        scroll-padding-inline: var(--gutter);
+        margin-bottom: -16px;
+    }
+    .carousel-track::-webkit-scrollbar {
+        display: none;
+    }
+    /* 本文幅に3枚並べたときと同じ大きさ */
+    .carousel-track > :global(*) {
+        flex: 0 0 calc((var(--content) - 48px) / 3);
+        scroll-snap-align: start;
+    }
+    @media (max-width: 900px) {
+        .carousel-track > :global(*) {
+            flex-basis: calc((var(--content) - 24px) / 2);
+        }
+    }
+    @media (max-width: 600px) {
+        .carousel-track > :global(*) {
+            flex-basis: calc(var(--content) * 0.85); /* 次の記事を少しのぞかせて、横に続くことを示す */
+        }
+    }
+</style>

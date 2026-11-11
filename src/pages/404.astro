@@ -3,9 +3,32 @@ import Base from '../layouts/Base.astro';
 ---
 
 <Base title="ページが見つかりません">
-    <div style="text-align: center; padding: 80px 20px;">
-        <p style="font-size: 2em; color: #ccc; margin-bottom: 16px;">404</p>
-        <p style="font-size: 1.1em; color: #666;">お探しのページが見つかりませんでした。</p>
-        <p style="margin-top: 24px;"><a href="/" style="color: var(--main-color); text-decoration: underline;">ホームに戻る</a></p>
+    <div class="not-found">
+        <p class="not-found-code">404</p>
+        <p class="not-found-message">お探しのページが見つかりませんでした。</p>
+        <a class="not-found-link" href="/">ホームに戻る</a>
     </div>
 </Base>
+
+<style>
+    .not-found {
+        padding: 80px 20px;
+        text-align: center;
+    }
+    .not-found-code {
+        margin-bottom: 16px;
+        font-size: 2em;
+        color: #ccc;
+    }
+    .not-found-message {
+        font-size: 1.1em;
+        color: var(--color-text-muted);
+    }
+    .not-found-link {
+        display: block;
+        width: fit-content;
+        margin: 24px auto 0;
+        color: var(--color-main);
+        text-decoration: underline;
+    }
+</style>
