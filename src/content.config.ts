@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { BLOG_SERIES_IDS } from './lib/series';
+import { BLOG_CATEGORY_IDS } from './lib/categories';
 
 /**
  * ブログ記事。ダッシュボードが PR で送る content/blog/<YY-MM-DD-slug>/index.md をそのまま受け入れる。
@@ -19,7 +19,7 @@ const blog = defineCollection({
             date: z.coerce.date(),
             author: z.string().default(''),
             description: z.string().default(''),
-            series: z.enum(BLOG_SERIES_IDS),
+            category: z.enum(BLOG_CATEGORY_IDS),
             pickup: z.boolean().default(false),
             thumbnail: image().optional(),
         }),

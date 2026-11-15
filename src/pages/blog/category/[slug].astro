@@ -4,32 +4,32 @@ import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import BlogCard from '../../../components/BlogCard.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
 import { getPosts } from '../../../lib/blog';
-import { byFiscalYear, getSections, type SectionWithPosts } from '../../../lib/sections';
+import { byFiscalYear, getCategories, type CategoryWithPosts } from '../../../lib/categories';
 
-/** セクション（種別・ピックアップ）ごとの全記事を、年度ごとの見出しで並べる */
+/** カテゴリ（ピックアップ含む）ごとの全記事を、年度ごとの見出しで並べる */
 export async function getStaticPaths() {
-    return getSections(await getPosts()).map((section) => ({ params: { slug: section.id }, props: section }));
+    return getCategories(await getPosts()).map((category) => ({ params: { slug: category.id }, props: category }));
 }
 
-type Props = SectionWithPosts;
+type Props = CategoryWithPosts;
 const { label, intro, posts } = Astro.props;
 ---
 
 <Base title={`${label}の記事`} description={intro} background="gray">
-    <div class="container tag-page-head">
+    <div class="container category-page-head">
         <Breadcrumbs items={[{ label: 'ブログ', href: '/blog/' }, { label }]} />
         <SectionHeading level={1} title={label} count={posts.length} intro={intro} />
     </div>
 
     {
         byFiscalYear(posts).map((group) => (
-            <section class="tag-page-year" aria-labelledby={`fy${group.year}`}>
+            <section class="category-page-year" aria-labelledby={`fy${group.year}`}>
                 <div class="container">
-                    <h2 class="tag-page-year-title" id={`fy${group.year}`}>
+                    <h2 class="category-page-year-title" id={`fy${group.year}`}>
                         {group.year}年度
                     </h2>
                 </div>
-                <ul class="container card-grid tag-page-grid">
+                <ul class="container card-grid category-page-grid">
                     {group.posts.map((post) => (
                         <BlogCard post={post} headingLevel={3} />
                     ))}
@@ -40,16 +40,16 @@ const { label, intro, posts } = Astro.props;
 </Base>
 
 <style>
-    .tag-page-year {
+    .category-page-year {
         margin-top: 2.5rem;
     }
-    .tag-page-year:last-of-type {
+    .category-page-year:last-of-type {
         margin-bottom: 4rem;
     }
-    .tag-page-grid {
+    .category-page-grid {
         margin-top: 1.5rem;
     }
-    .tag-page-year-title {
+    .category-page-year-title {
         font-size: 1.15rem;
         font-weight: 700;
         color: var(--color-text);

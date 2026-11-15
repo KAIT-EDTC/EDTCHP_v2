@@ -6,7 +6,7 @@ import PageHero from '../../components/PageHero.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import Carousel from '../../components/Carousel.astro';
 import { getPosts } from '../../lib/blog';
-import { getSections } from '../../lib/sections';
+import { getCategories, categoryHref } from '../../lib/categories';
 import hero from '../../assets/img/EDTC-GroupPhoto.webp';
 
 /** カルーセルに並べる件数（新しい順。全件はタグごとの一覧ページへ） */
@@ -14,7 +14,7 @@ const CAROUSEL_MAX = 12;
 /** 「年度別に見る」リンクを出す件数（これを超えるセクションだけ） */
 const MORE_FROM = 3;
 
-const sections = getSections(await getPosts());
+const categories = getCategories(await getPosts());
 ---
 
 <Base title="ブログ" description="神奈川工科大学EDTCのブログ記事一覧。活動報告やイベント情報をお届けします。" background="gray">
@@ -27,7 +27,7 @@ const sections = getSections(await getPosts());
     <nav class="blog-nav" aria-label="活動の種類">
         <ul class="blog-nav-list container">
             {
-                sections.map(({ id, label, posts }) => (
+                categories.map(({ id, label, posts }) => (
                     <li>
                         <a class="blog-nav-link" href={`#${id}`}>
                             {label}
@@ -40,10 +40,10 @@ const sections = getSections(await getPosts());
     </nav>
 
     {
-        sections.map(({ id, label, intro, href, posts }) => (
+        categories.map(({ id, label, intro, posts }) => (
             <section class="blog-section" id={id} aria-labelledby={`${id}-title`}>
                 <div class="container">
-                    <SectionHeading title={label} count={posts.length} intro={intro} href={href} id={id} level={2} />
+                    <SectionHeading title={label} count={posts.length} intro={intro} href={categoryHref(id)} id={id} level={2} />
                 </div>
                 <Carousel label={label} item="記事">
                     {posts.slice(0, CAROUSEL_MAX).map((post) => (
@@ -52,7 +52,7 @@ const sections = getSections(await getPosts());
                 </Carousel>
                 {posts.length > MORE_FROM && (
                     <div class="container">
-                        <a class="blog-section-more" href={href}>
+                        <a class="blog-section-more" href={categoryHref(id)}>
                             {label}を年度別に見る（{posts.length}件）→
                         </a>
                     </div>

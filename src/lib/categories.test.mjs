@@ -1,19 +1,19 @@
 // npm test（node --test）。@types/node を入れずに済むよう .mjs にしている（astro check の型検査の対象外）
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { byFiscalYear, getSections, sectionsOf } from './sections.ts';
+import { byFiscalYear, getCategories, categoryHref, categoriesOf } from './categories.ts';
 
 // 日付は frontmatter の date: 2026-06-01 と同じく UTC 0時
-const post = (id, date, series, pickup = false) => ({ id, data: { date: new Date(date), series, pickup } });
+const post = (id, date, category, pickup = false) => ({ id, data: { date: new Date(date), category, pickup } });
 
 const a = post('a', '2026-06-01', 'play', true);
 const b = post('b', '2026-05-01', 'yugyou');
 const c = post('c', '2026-04-01', 'play');
 
-test('セクションは ピックアップ → 種別の順で、記事のないものは出さない', () => {
-    const sections = getSections([a, b, c]);
+test('カテゴリは ピックアップ → カテゴリの順で、ブログのないものは出さない', () => {
+    const categories = getCategories([a, b, c]);
     assert.deepEqual(
-        sections.map((s) => [s.id, s.posts.map((p) => p.id)]),
+        categories.map((c) => [c.id, c.posts.map((p) => p.id)]),
         [
             ['pickup', ['a']],
             ['yugyou', ['b']],
@@ -21,21 +21,21 @@ test('セクションは ピックアップ → 種別の順で、記事のな�
         ],
     );
     assert.deepEqual(
-        sections.map((s) => s.href),
-        ['/blog/tag/pickup/', '/blog/tag/yugyou/', '/blog/tag/play/'],
+        categories.map((c) => categoryHref(c.id)),
+        ['/blog/category/pickup/', '/blog/category/yugyou/', '/blog/category/play/'],
     );
 });
 
-test('記事が属するセクションは一覧と同じ順', () => {
+test('ブログが属するカテゴリは一覧と同じ順', () => {
     assert.deepEqual(
-        sectionsOf(a).map((s) => [s.label, s.href]),
+        categoriesOf(a).map((c) => [c.label, categoryHref(c.id)]),
         [
-            ['ピックアップ', '/blog/tag/pickup/'],
-            ['レク', '/blog/tag/play/'],
+            ['ピックアップ', '/blog/category/pickup/'],
+            ['レク', '/blog/category/play/'],
         ],
     );
     assert.deepEqual(
-        sectionsOf(b).map((s) => s.label),
+        categoriesOf(b).map((c) => c.label),
         ['遊行塾'],
     );
 });
