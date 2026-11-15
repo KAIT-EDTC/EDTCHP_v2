@@ -5,7 +5,7 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ShareButtons from '../../components/ShareButtons.astro';
 import { formatDate, getPosts, relatedPosts, type BlogEntry } from '../../lib/blog';
-import { sectionsOf } from '../../lib/sections';
+import { categoryHref, categoriesOf } from '../../lib/categories';
 import fallback from '../../assets/img/EDTC-icon.webp';
 
 export async function getStaticPaths() {
@@ -34,8 +34,8 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
             <article class="post-main panel">
                 <header class="post-header">
                     <div class="chips">
-                        {sectionsOf(post).map((s) => (
-                            <a class="chip" href={s.href}>
+                        {categoriesOf(post).map((s) => (
+                            <a class="chip" href={categoryHref(s.id)}>
                                 {s.label}
                             </a>
                         ))}

@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type BlogEntry = CollectionEntry<'blog'>;
 
-/** 新しい順の全記事 */
+/** 新しい順の全ブログ */
 export async function getPosts(): Promise<BlogEntry[]> {
     const posts = await getCollection('blog');
     return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -16,9 +16,9 @@ export function formatDate(date: Date): string {
     return `${y}.${m}.${d}`;
 }
 
-/** 関連記事: 同じ種別を先に、同じ並びの中では実施日が近い順 */
+/** 関連ブログ: 同じカテゴリを先に、同じ並びの中では実施日が近い順 */
 export function relatedPosts(post: BlogEntry, posts: BlogEntry[], count = 4): BlogEntry[] {
-    const shared = (p: BlogEntry) => (p.data.series === post.data.series ? 1 : 0);
+    const shared = (p: BlogEntry) => (p.data.category === post.data.category ? 1 : 0);
     const distance = (p: BlogEntry) => Math.abs(p.data.date.valueOf() - post.data.date.valueOf());
     return posts
         .filter((p) => p.id !== post.id)

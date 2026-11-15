@@ -3,7 +3,7 @@ title: "藤嶺学園藤沢中学校第2回遊行塾教養講座を行いまし�
 date: 2025-05-17
 author: "棚橋"
 description: "第2回遊行塾行われました！今回から基板のはんだ付けに取り掛かります。"
-series: yugyou
+category: yugyou
 thumbnail: ./25-05-17-yugyou02.webp
 ---
 

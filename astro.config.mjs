@@ -7,6 +7,8 @@ export default defineConfig({
     output: 'static',
     trailingSlash: 'always',
     build: { format: 'directory' },
+    // 旧 URL を新 URL へ転送する
+    redirects: { '/blog/tag/[slug]': '/blog/category/[slug]' },
     image: {
         // Markdown 本文の画像も srcset 付きで縮小して出力する（元画像は最大1600px想定だが旧記事は大きいものがある）
         layout: 'constrained',

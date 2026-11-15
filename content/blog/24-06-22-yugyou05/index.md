@@ -3,7 +3,7 @@ title: "第五回遊行塾に行ってきました！"
 date: 2024-06-22
 author: "足立"
 description: "前期最終回となる遊行塾でしたが、楽しく学べる授業を提供できたと思います。当サイト初のブログになりますので至らぬ点もあるかと思いますが読んでいただけたら幸いです。"
-series: yugyou
+category: yugyou
 thumbnail: ./24-06-22-yugyou05-01.webp
 ---
 
