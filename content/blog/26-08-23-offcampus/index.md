@@ -3,7 +3,7 @@ title: "相撲ロボットづくり――子ども科学館にて"
 date: 2026-08-23
 author: "山隈　京祐"
 description: "子ども科学館にて相撲ロボットづくり教室を開催しました！"
-series: offcampus
+category: offcampus
 thumbnail: ./img-gsj9xu60.webp
 ---
 
